@@ -218,26 +218,26 @@
   </script>
 
   <!-- Layout Loader -->
-  <script type="module">
-    // Importar y cargar el layout
-    import './layout-loader.js';
-        <button class="btn-close d-lg-none" type="button" data-coreui-theme="dark" aria-label="Close" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()"></button>
-      </div>
-      <ul class="sidebar-nav" data-coreui="navigation" data-simplebar>
-        <li class="nav-item"><a class="nav-link" href="index.html">
-            <i class="ti ti-dashboard" style="font-size: 20px; vertical-align: middle;"></i> Dashboard<span class="badge badge-sm bg-info ms-auto">NEW</span></a></li>
-        <li class="nav-title">Theme</li>
-        <li class="nav-item"><a class="nav-link" href="colors.html">
-            <i class="ti ti-palette" style="font-size: 20px; vertical-align: middle;"></i> Colors</a></li>
-        <li class="nav-item"><a class="nav-link" href="typography.html">
-            <i class="ti ti-typography" style="font-size: 20px; vertical-align: middle;"></i> Typography</a></li>
-        <li class="nav-title">Components</li>
-        <li class="nav-item">
-          <a class="nav-link" href="fraudes.html">
-            <i class="ti ti-shield-lock" style="font-size: 20px; vertical-align: middle;"></i>
-            <span>Gestión de Fraudes</span>
-          </a>
-        </li>
+  <script src="../js/layout-loader.js"></script>
+  <script>
+    // Configuración de la página de dashboard
+    const pageConfig = {
+      activeMenuItem: 'index.html',
+      breadcrumbs: [
+        { name: 'Home', url: '#' },
+        { name: 'Dashboard', url: '#' }
+      ],
+      pageTitle: 'Dashboard'
+    };
+    
+    // Cargar layout reutilizable
+    loadLayout(pageConfig);
+  </script>
+
+  <!-- Scripts específicos para el dashboard -->
+  <script src="../js/main.js"></script>
+</body>
+</html>
         <li class="nav-group"><a class="nav-link nav-group-toggle" href="#">
             <i class="ti ti-box" style="font-size: 20px; vertical-align: middle;"></i> Base</a>
           <ul class="nav-group-items compact">
