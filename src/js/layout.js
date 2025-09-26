@@ -160,7 +160,13 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
   }
 
   // Layout principal
-  document.body.innerHTML = `
+  let app = document.getElementById('app');
+  if (!app) {
+    app = document.createElement('div');
+    app.id = 'app';
+    document.body.appendChild(app);
+  }
+  app.innerHTML = `
     <!-- SIDEBAR -->
     <div class="sidebar sidebar-dark sidebar-fixed border-end" id="sidebar">
       <div class="sidebar-header border-bottom">
