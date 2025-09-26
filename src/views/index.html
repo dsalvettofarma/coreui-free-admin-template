@@ -34,7 +34,56 @@
   
   <!-- Contenido específico del dashboard -->
   <div id="page-content" style="display: none;">
-    <div class="container-lg px-4">
+    <!-- Importar el layout como módulo JS -->
+    <script type="module">
+      import { renderLayout } from '../js/layout.js';
+      // Contenido específico del dashboard
+      const dashboardContent = `
+        <div class='container-lg px-4'>
+          <div class='row g-4 mb-4'>
+            <div class='col-sm-6 col-xl-3'>
+              <!-- ...dashboard card 1... -->
+            </div>
+            <div class='col-sm-6 col-xl-3'>
+              <!-- ...dashboard card 2... -->
+            </div>
+            <div class='col-sm-6 col-xl-3'>
+              <!-- ...dashboard card 3... -->
+            </div>
+            <div class='col-sm-6 col-xl-3'>
+              <!-- ...dashboard card 4... -->
+            </div>
+          </div>
+          <div class='card mb-4'>
+            <div class='card-body'>
+              <!-- ...main chart... -->
+            </div>
+            <div class='card-footer'>
+              <!-- ...chart footer... -->
+            </div>
+          </div>
+          <div class='row g-4 mb-4'>
+            <div class='col-sm-6 col-lg-4'>
+              <!-- ...social card 1... -->
+            </div>
+            <div class='col-sm-6 col-lg-4'>
+              <!-- ...social card 2... -->
+            </div>
+            <div class='col-sm-6 col-lg-4'>
+              <!-- ...social card 3... -->
+            </div>
+          </div>
+        </div>
+      `;
+      renderLayout({
+        pageTitle: 'Dashboard',
+        breadcrumbs: [
+          { name: 'Home', url: '#' },
+          { name: 'Dashboard', url: '#' }
+        ],
+        content: dashboardContent
+      });
+    </script>
       <div class="row g-4 mb-4">
         <div class="col-sm-6 col-xl-3">
           <div class="card text-white bg-primary">
