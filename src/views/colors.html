@@ -35,12 +35,11 @@
     <meta name="msapplication-TileImage" content="assets/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <!-- Vendors styles-->
-    <link rel="stylesheet" href="node_modules/simplebar/dist/simplebar.css">
-    <link rel="stylesheet" href="css/vendors/simplebar.css">
+  <link rel="stylesheet" href="assets/css/vendors/simplebar.css">
     <!-- Main styles for this application-->
-    <link href="css/style.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
     <!-- We use those styles to show code examples, you should remove them in your application.-->
-    <link href="css/examples.css" rel="stylesheet">
+  <link href="assets/css/examples.css" rel="stylesheet">
     <script src="js/config.js"></script>
     <script src="js/color-modes.js"></script>
   </head>
@@ -55,21 +54,24 @@
             <use xlink:href="assets/brand/coreui.svg#signet"></use>
           </svg>
         </div>
-        <button class="btn-close d-lg-none" type="button" data-coreui-theme="dark" aria-label="Close" onclick="coreui.Sidebar.getInstance(document.querySelector(&quot;#sidebar&quot;)).toggle()"></button>
+        <button class="btn-close d-lg-none" type="button" data-coreui-theme="dark" aria-label="Close" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()"></button>
       </div>
       <ul class="sidebar-nav" data-coreui="navigation" data-simplebar>
         <li class="nav-item"><a class="nav-link" href="index.html">
             <svg class="nav-icon">
-              <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-speedometer"></use>
+              <!-- Cambiado a CDN. Para volver a npm: node_modules/@coreui/icons/sprites/free.svg -->
+              <!-- Icono eliminado -->
             </svg> Dashboard<span class="badge badge-sm bg-info ms-auto">NEW</span></a></li>
         <li class="nav-title">Theme</li>
         <li class="nav-item"><a class="nav-link" href="colors.html">
             <svg class="nav-icon">
-              <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-drop"></use>
+              <!-- Cambiado a CDN. Para volver a npm: node_modules/@coreui/icons/sprites/free.svg -->
+              <!-- Icono eliminado -->
             </svg> Colors</a></li>
         <li class="nav-item"><a class="nav-link" href="typography.html">
             <svg class="nav-icon">
-              <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use>
+              <!-- Cambiado a CDN. Para volver a npm: node_modules/@coreui/icons/sprites/free.svg -->
+              <!-- Icono eliminado -->
             </svg> Typography</a></li>
         <li class="nav-title">Components</li>
         <li class="nav-group"><a class="nav-link nav-group-toggle" href="#">
@@ -211,7 +213,7 @@
             </svg> Docs</a></li>
         <li class="nav-item"><a class="nav-link text-primary fw-semibold" href="https://coreui.io/product/bootstrap-dashboard-template/" target="_top">
             <svg class="nav-icon text-primary">
-              <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-layers"></use>
+              <img src="../assets/icons/layers.svg" alt="layers" width="24" height="24" style="vertical-align:middle;"> 
             </svg> Try CoreUI PRO</a></li>
       </ul>
       <div class="sidebar-footer border-top d-none d-md-flex">     
@@ -223,7 +225,7 @@
         <div class="container-fluid border-bottom px-4">
           <button class="header-toggler" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()" style="margin-inline-start: -14px;">
             <svg class="icon icon-lg">
-              <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-menu"></use>
+              <img src="../assets/icons/menu.svg" alt="menu" width="24" height="24" style="vertical-align:middle;"> 
             </svg>
           </button>
           <ul class="header-nav d-none d-lg-flex">

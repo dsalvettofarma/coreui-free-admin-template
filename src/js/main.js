@@ -1,3 +1,11 @@
+// Utilidad para obtener un número aleatorio en un rango
+function random(min, max) {
+  return Math.floor((Math.random() * (max - min + 1)) + min);
+}
+// Utilidad para obtener variables CSS
+function getCssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
 /* global Chart, coreui */
 
 /**
@@ -12,25 +20,24 @@ Chart.defaults.pointHitDetectionRadius = 1
 Chart.defaults.plugins.tooltip.enabled = false
 Chart.defaults.plugins.tooltip.mode = 'index'
 Chart.defaults.plugins.tooltip.position = 'nearest'
-Chart.defaults.plugins.tooltip.external = coreui.ChartJS.customTooltips
-Chart.defaults.defaultFontColor = coreui.Utils.getStyle('--cui-body-color')
+
+Chart.defaults.defaultFontColor = getCssVar('--cui-body-color')
 
 document.documentElement.addEventListener('ColorSchemeChange', () => {
-  cardChart1.data.datasets[0].pointBackgroundColor = coreui.Utils.getStyle('--cui-primary')
-  cardChart2.data.datasets[0].pointBackgroundColor = coreui.Utils.getStyle('--cui-info')
-  mainChart.options.scales.x.grid.color = coreui.Utils.getStyle('--cui-border-color-translucent')
-  mainChart.options.scales.x.ticks.color = coreui.Utils.getStyle('--cui-body-color')
-  mainChart.options.scales.y.border.color = coreui.Utils.getStyle('--cui-border-color-translucent')
-  mainChart.options.scales.y.grid.color = coreui.Utils.getStyle('--cui-border-color-translucent')
-  mainChart.options.scales.y.ticks.color = coreui.Utils.getStyle('--cui-body-color')
+  cardChart1.data.datasets[0].pointBackgroundColor = getCssVar('--cui-primary')
+  cardChart2.data.datasets[0].pointBackgroundColor = getCssVar('--cui-info')
+  mainChart.options.scales.x.grid.color = getCssVar('--cui-border-color-translucent')
+  mainChart.options.scales.x.ticks.color = getCssVar('--cui-body-color')
+  mainChart.options.scales.y.border.color = getCssVar('--cui-border-color-translucent')
+  mainChart.options.scales.y.grid.color = getCssVar('--cui-border-color-translucent')
+  mainChart.options.scales.y.ticks.color = getCssVar('--cui-body-color')
 
   cardChart1.update()
   cardChart2.update()
   mainChart.update()
 })
 
-const random = (min, max) =>
-  Math.floor((Math.random() * (max - min + 1)) + min)
+
 
 const cardChart1 = new Chart(document.getElementById('card-chart1'), {
   type: 'line',
@@ -41,7 +48,7 @@ const cardChart1 = new Chart(document.getElementById('card-chart1'), {
         label: 'My First dataset',
         backgroundColor: 'transparent',
         borderColor: 'rgba(255,255,255,.55)',
-        pointBackgroundColor: coreui.Utils.getStyle('--cui-primary'),
+  pointBackgroundColor: getCssVar('--cui-primary'),
         data: [65, 59, 84, 84, 51, 55, 40]
       }
     ]
@@ -101,7 +108,7 @@ const cardChart2 = new Chart(document.getElementById('card-chart2'), {
         label: 'My First dataset',
         backgroundColor: 'transparent',
         borderColor: 'rgba(255,255,255,.55)',
-        pointBackgroundColor: coreui.Utils.getStyle('--cui-info'),
+  pointBackgroundColor: getCssVar('--cui-info'),
         data: [1, 18, 9, 17, 34, 22, 11]
       }
     ]
@@ -252,8 +259,8 @@ const mainChart = new Chart(document.getElementById('main-chart'), {
     datasets: [
       {
         label: 'My First dataset',
-        backgroundColor: `rgba(${coreui.Utils.getStyle('--cui-info-rgb')}, .1)`,
-        borderColor: coreui.Utils.getStyle('--cui-info'),
+  backgroundColor: `rgba(${getCssVar('--cui-info-rgb')}, .1)`,
+  borderColor: getCssVar('--cui-info'),
         pointHoverBackgroundColor: '#fff',
         borderWidth: 2,
         data: [
@@ -269,7 +276,7 @@ const mainChart = new Chart(document.getElementById('main-chart'), {
       },
       {
         label: 'My Second dataset',
-        borderColor: coreui.Utils.getStyle('--cui-success'),
+  borderColor: getCssVar('--cui-success'),
         pointHoverBackgroundColor: '#fff',
         borderWidth: 2,
         data: [
@@ -293,7 +300,7 @@ const mainChart = new Chart(document.getElementById('main-chart'), {
             type: 'line',
             yMin: 95,
             yMax: 95,
-            borderColor: coreui.Utils.getStyle('--cui-danger'),
+            borderColor: getCssVar('--cui-danger'),
             borderWidth: 1,
             borderDash: [8, 5]
           }
@@ -306,23 +313,23 @@ const mainChart = new Chart(document.getElementById('main-chart'), {
     scales: {
       x: {
         grid: {
-          color: coreui.Utils.getStyle('--cui-border-color-translucent'),
+          color: getCssVar('--cui-border-color-translucent'),
           drawOnChartArea: false
         },
         ticks: {
-          color: coreui.Utils.getStyle('--cui-body-color')
+          color: getCssVar('--cui-body-color')
         }
       },
       y: {
         border: {
-          color: coreui.Utils.getStyle('--cui-border-color-translucent')
+          color: getCssVar('--cui-border-color-translucent')
         },
         grid: {
-          color: coreui.Utils.getStyle('--cui-border-color-translucent')
+          color: getCssVar('--cui-border-color-translucent')
         },
         ticks: {
           beginAtZero: true,
-          color: coreui.Utils.getStyle('--cui-body-color'),
+          color: getCssVar('--cui-body-color'),
           max: 250,
           maxTicksLimit: 5,
           stepSize: Math.ceil(250 / 5)

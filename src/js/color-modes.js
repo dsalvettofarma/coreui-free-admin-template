@@ -34,16 +34,24 @@
   setTheme(getPreferredTheme())
 
   const showActiveTheme = theme => {
-    const activeThemeIcon = document.querySelector('.theme-icon-active use')
     const btnToActive = document.querySelector(`[data-coreui-theme-value="${theme}"]`)
-    const svgOfActiveBtn = btnToActive.querySelector('svg use').getAttribute('xlink:href')
-
-    for (const element of document.querySelectorAll('[data-coreui-theme-value]')) {
+    document.querySelectorAll('[data-coreui-theme-value]').forEach(element => {
       element.classList.remove('active')
+    })
+    if (btnToActive) {
+      btnToActive.classList.add('active')
     }
-
-    btnToActive.classList.add('active')
-    activeThemeIcon.setAttribute('xlink:href', svgOfActiveBtn)
+    // Cambiar el icono del botón principal según el tema
+    const themeBtnIcon = document.querySelector('.header-nav .nav-item.dropdown > button > i');
+    if (themeBtnIcon) {
+      if (theme === 'light') {
+        themeBtnIcon.className = 'ti ti-sun';
+      } else if (theme === 'dark') {
+        themeBtnIcon.className = 'ti ti-moon';
+      } else {
+        themeBtnIcon.className = 'ti ti-world';
+      }
+    }
   }
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
