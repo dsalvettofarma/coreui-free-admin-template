@@ -242,7 +242,13 @@ async function initInspector() {
         overlayTextElement = document.getElementById('overlay-text');
         selectCanalVenta = document.getElementById('canalVenta');
         selectComercio = document.getElementById('comercio');
-        estadoElement = document.getElementById('estado');
+        
+        console.log('INSPECTOR: Variables de elementos inicializadas:', {
+            tablaResultados: !!tablaResultados,
+            estadoElement: !!estadoElement,
+            overlaySpinnerElement: !!overlaySpinnerElement,
+            overlayTextElement: !!overlayTextElement
+        });
         
         console.log("INSPECTOR: Elementos encontrados:", {
             selectHoja: !!selectHoja,
@@ -281,6 +287,12 @@ async function initInspector() {
         if(btnUltimoRegistro) _addManagedEventListener(btnUltimoRegistro, 'click', _mostrarUltimo);
         if(btnPagosAnulados) _addManagedEventListener(btnPagosAnulados, 'click', _analizarAnulados);
         if(btnPagosRechazados) _addManagedEventListener(btnPagosRechazados, 'click', _analizarErrores);
+        
+        // Botón de test para tabla
+        const btnTestTabla = document.getElementById('btnTestTabla');
+        if (btnTestTabla) {
+            _addManagedEventListener(btnTestTabla, 'click', _testRenderTabla);
+        }
         if(selectHoja) {
             _addManagedEventListener(selectHoja, 'change', () => {
                 console.log("INSPECTOR: Hoja seleccionada cambiada. Se recomienda precargar.");
@@ -510,8 +522,18 @@ function _cargarLibreriaSortable() {
 
 // --- Renderizado de la tabla de resultados ---
 function _renderizarTabla(filas, headersOrdenadosParaMostrar, idxsDeOriginalesParaRenderizar, headersOriginalesCompletos) {
+    console.log('INSPECTOR: _renderizarTabla llamado con:', {
+        filas: filas ? filas.length : 0,
+        headers: headersOrdenadosParaMostrar ? headersOrdenadosParaMostrar.length : 0,
+        tablaResultados: !!tablaResultados
+    });
+    
     if (!tablaResultados) {
-        console.error("INSPECTOR: Elemento de tabla #results no encontrado para renderizar.");
+        console.error("INSPECTOR: Elemento tablaResultados no encontrado para renderizar.");
+        console.error("INSPECTOR: Elementos disponibles:", {
+            byId: !!document.getElementById('tablaResultados'),
+            inBody: !!document.body.querySelector('#tablaResultados')
+        });
         _updateStatus("Error: No se puede mostrar la tabla de resultados.", true);
         return;
     }
@@ -582,7 +604,16 @@ function _renderizarTabla(filas, headersOrdenadosParaMostrar, idxsDeOriginalesPa
     }
 
     cuerpoHtml += '</tbody>';
-    tablaResultados.innerHTML = cabeceraHtml + cuerpoHtml;
+    
+    const tableHtml = `<table class="table table-striped table-hover">${cabeceraHtml}${cuerpoHtml}</table>`;
+    console.log('INSPECTOR: Actualizando tablaResultados con HTML de longitud:', tableHtml.length);
+    tablaResultados.innerHTML = tableHtml;
+    
+    console.log('INSPECTOR: Tabla actualizada. Contenido verificado:', {
+        hasContent: tablaResultados.innerHTML.length > 0,
+        hasTable: !!tablaResultados.querySelector('table'),
+        hasRows: !!tablaResultados.querySelector('tbody tr')
+    });
 
     _updateStatus(filas && filas.length > 0 ? `Mostrando ${filas.length} resultados.` : 'No hay resultados.');
     _cargarLibreriaSortable().then(() => {
@@ -865,6 +896,25 @@ function _analizarErrores() {
 
     _updateStatus(`Análisis de ${rechazados.length} pagos rechazados completado.`);
     console.log('INSPECTOR: Análisis de pagos rechazados completado.');
+}
+
+// Función de test para verificar renderizado de tabla
+function _testRenderTabla() {
+    console.log('INSPECTOR: Test de renderizado de tabla iniciado');
+    
+    // Datos de prueba
+    const datosTest = [
+        ['Test 1', 'Valor A', 'Estado Autorizado', '2025-01-01', '100.00'],
+        ['Test 2', 'Valor B', 'Estado Rechazado', '2025-01-02', '250.50'],
+        ['Test 3', 'Valor C', 'Estado Anulado', '2025-01-03', '75.25']
+    ];
+    
+    const headersTest = ['ID', 'Descripción', 'Estado', 'Fecha', 'Monto'];
+    
+    console.log('INSPECTOR: Llamando a _renderizarTabla con datos de prueba');
+    _renderizarTabla(datosTest, headersTest, [0, 1, 2, 3, 4], headersTest);
+    
+    _updateStatus('Test de tabla ejecutado con 3 filas de prueba', false);
 }
 
 // Si necesitas exponer helpers para otros módulos:
