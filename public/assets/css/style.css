@@ -15,7 +15,9 @@ html[data-coreui-theme="light"] .sidebar .nav-title {
   letter-spacing: 1px;
   text-transform: uppercase;
 }
-
+.ti{
+  font-size: 2rem !important; /* Ajuste para iconos Tabler */ 
+}
 /* Sidebar nav-group-toggle (flechas) modo claro */
 html[data-coreui-theme="light"] .sidebar .nav-group-toggle::after {
   color: #6c757d;
