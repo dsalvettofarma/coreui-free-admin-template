@@ -168,14 +168,11 @@ function ordenarMiniCards(data, orden) {
 }
 
 // Obtener datos reales desde Apps Script (temporalmente restaurado)
+// Obtener datos reales desde Apps Script (temporalmente restaurado)
 async function fetchPersonas() {
   try {
-    // Build query URL and log for debugging
-    const params = new URLSearchParams({ module: 'fraudes', action: 'list' });
-    const url = `/api/gateway?${params.toString()}`;
-    console.log('fetchPersonas - calling API:', url);
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+    const response = await fetch('/api/gateway?module=fraudes&action=list');
+    if (!response.ok) throw new Error('Error al obtener datos');
     const data = await response.json();
     
     if (!data.success) {
@@ -194,13 +191,6 @@ async function fetchPersonas() {
       fecha: row[4] || '',
       logueado: row[5] || ''
     }));
-    
-    // Debug: Mostrar las primeras 5 fechas para verificar formato
-    console.log('📅 Fechas recibidas del API:', personas.slice(0, 5).map(p => ({ 
-  nombre: p.nombre, 
-      fecha: p.fecha 
-    })));
-    
     return personas;
   } catch (e) {
     console.error('No se pudieron obtener los datos reales:', e);
@@ -486,30 +476,9 @@ function onLeave() {
 
 export { onEnter, onLeave };
 
-// Inicialización mejorada para evitar conflictos
-function initFraudesModule() {
-  // Verificar que estamos en la página correcta
-  const mainContent = document.getElementById('main-content');
-  if (!mainContent || !mainContent.classList.contains('fraude-main-root')) {
-    console.log('Módulo de fraudes: No se detectó la página de fraudes, omitiendo inicialización');
-    return;
-  }
-
-  // Verificar que no se haya inicializado ya
-  if (window.__fraudesModuleInitialized) {
-    console.log('Módulo de fraudes: Ya inicializado, omitiendo');
-    return;
-  }
-
-  console.log('Módulo de fraudes: Inicializando...');
-  onEnter();
-  window.__fraudesModuleInitialized = true;
-}
-
-// Inicialización inteligente
+// Inicializar módulo de fraudes siempre que cargue la página
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initFraudesModule);
+  document.addEventListener('DOMContentLoaded', onEnter);
 } else {
-  // Pequeño delay para asegurar que el layout se haya cargado
-  setTimeout(initFraudesModule, 100);
+  onEnter();
 }
