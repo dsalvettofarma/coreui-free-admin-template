@@ -219,6 +219,10 @@ function _ordenarHeaders(headers, sheetName) {
 // --- Inicialización para producción ---
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("INSPECTOR: DOMContentLoaded - inicializando módulo inspector");
+    
+    // Wait a bit for layout to render
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
     try {
         // Obtener referencias a los elementos del DOM (IDs actualizados para production)
         selectHoja = document.getElementById('sheet');
@@ -451,11 +455,12 @@ async function _precargar(forzarRefrescoDeHojas = false) {
                     selectColumna.appendChild(option);
                 });
             }
-            if (tablaResultados && tablaResultados.tBodies && tablaResultados.tBodies.length > 0 && tablaResultados.tBodies[0]) {
-                tablaResultados.tBodies[0].innerHTML = '<tr><td colspan="100%" class="text-center">Datos precargados. Realiza una búsqueda.</td></tr>';
+            // Clear any existing table content and show preload message
+            if (tablaResultados) {
+                tablaResultados.innerHTML = '<div class="text-center p-4"><h5>Datos precargados</h5><p>Utiliza los filtros y haz clic en "🔍 Buscar" para ver los resultados.</p></div>';
             }
 
-            _updateStatus(`Hoja precargada - ${filas.length} filas en ${durationCargaDatos.toFixed(2)}s. Listo ✅`);
+            _updateStatus(`Hoja precargada - ${filas.length} filas en ${durationCargaDatos.toFixed(2)}s. Listo para búsquedas ✅`);
         
         } catch (error) {
             if (precargaTimerId) { clearInterval(precargaTimerId); precargaTimerId = null; }
@@ -645,12 +650,7 @@ function _buscar() { //
 
 
 
-    // 2. Filtrar por texto
-    if (!valorTexto && columnaTexto === '__all__') {
-        _updateStatus('Escribí algo en el campo de valor para buscar en todo.', true);
-        return;
-    }
-
+    // 2. Filtrar por texto (solo si hay valor de búsqueda)
     if (valorTexto) {
         if (columnaTexto === '__all__') {
             resultados = resultados.filter(row =>

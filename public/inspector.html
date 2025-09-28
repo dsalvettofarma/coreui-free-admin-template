@@ -303,7 +303,17 @@
     // Render layout
     document.addEventListener('DOMContentLoaded', () => {
       const user = JSON.parse(localStorage.getItem('user') || '{"role": "admin", "name": "Usuario"}');
-      renderLayout({ user });
+      
+      // Move inspector content to main body after layout renders
+      const inspectorContent = document.querySelector('.inspector-root').innerHTML;
+      
+      renderLayout({ 
+        user,
+        content: `<div class="inspector-root">${inspectorContent}</div>`
+      });
+      
+      // Remove the original inspector content since it's now in the layout
+      document.querySelector('main.inspector-root').remove();
     });
   </script>
   
