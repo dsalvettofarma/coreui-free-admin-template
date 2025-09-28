@@ -272,7 +272,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             _addManagedEventListener(selectHoja, 'change', () => {
                 console.log("INSPECTOR: Hoja seleccionada cambiada. Se recomienda precargar.");
                 _updateStatus("Hoja cambiada. Por favor, precarga los datos.", false);
-                if(tablaResultados && tablaResultados.tBodies[0]) tablaResultados.tBodies[0].innerHTML = '';
+                if(tablaResultados && tablaResultados.tBodies && tablaResultados.tBodies.length > 0 && tablaResultados.tBodies[0]) {
+                    tablaResultados.tBodies[0].innerHTML = '';
+                }
             });
         }
         _updateStatus('Selecciona una hoja y haz clic en "Precargar hoja".', false);
@@ -449,7 +451,9 @@ async function _precargar(forzarRefrescoDeHojas = false) {
                     selectColumna.appendChild(option);
                 });
             }
-            if (tablaResultados && tablaResultados.tBodies[0]) tablaResultados.tBodies[0].innerHTML = '<tr><td colspan="100%" class="text-center">Datos precargados. Realiza una búsqueda.</td></tr>';
+            if (tablaResultados && tablaResultados.tBodies && tablaResultados.tBodies.length > 0 && tablaResultados.tBodies[0]) {
+                tablaResultados.tBodies[0].innerHTML = '<tr><td colspan="100%" class="text-center">Datos precargados. Realiza una búsqueda.</td></tr>';
+            }
 
             _updateStatus(`Hoja precargada - ${filas.length} filas en ${durationCargaDatos.toFixed(2)}s. Listo ✅`);
         
@@ -580,7 +584,9 @@ function _buscar() { //
         } else {
             _updateStatus('No hay datos precargados. Por favor, selecciona una hoja y haz clic en "Precargar hoja".', true);
         }
-        if (tablaResultados && tablaResultados.tBodies[0]) tablaResultados.tBodies[0].innerHTML = ''; // Limpiar tabla
+        if (tablaResultados && tablaResultados.tBodies && tablaResultados.tBodies.length > 0 && tablaResultados.tBodies[0]) {
+            tablaResultados.tBodies[0].innerHTML = ''; // Limpiar tabla
+        }
         return;
     }
 
