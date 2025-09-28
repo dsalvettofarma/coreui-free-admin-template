@@ -42,55 +42,52 @@
                     <input type="text" class="form-control" id="documento" name="documento" required>
                   </div>
                   <div class="col-md-6">
-                    <label for="nombre" class="form-label">Nombre</label>
+                    <label for="nombre" class="form-label">Nombre Completo</label>
                     <input type="text" class="form-control" id="nombre" name="nombre" required>
                   </div>
-                  <div class="col-md-6">
-                    <label for="correo" class="form-label">Correo</label>
+                  <div class="col-md-8">
+                    <label for="correo" class="form-label">Correo Electrónico</label>
                     <input type="email" class="form-control" id="correo" name="correo" required>
                   </div>
-                  <div class="col-md-6">
-                    <label for="direccion" class="form-label">Dirección</label>
-                    <input type="text" class="form-control" id="direccion" name="direccion">
-                  </div>
-                  <div class="col-md-6">
-                    <label for="orden" class="form-label">ID de Orden (opcional)</label>
-                    <input type="text" class="form-control" id="orden" name="orden">
-                  </div>
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <div class="form-check mt-4">
                       <input class="form-check-input" type="checkbox" id="no_logueado" name="no_logueado">
-                      <label class="form-check-label" for="no_logueado">No logueado?</label>
+                      <label class="form-check-label" for="no_logueado">Usuario no logueado</label>
                     </div>
                   </div>
                   <div class="col-12">
-                    <label for="comentarios" class="form-label">Comentarios (opcional)</label>
-                    <textarea class="form-control" id="comentarios" name="comentarios" rows="3"></textarea>
+                    <label for="comentarios" class="form-label">Comentarios / Detalles del Fraude</label>
+                    <textarea class="form-control" id="comentarios" name="comentarios" rows="4" placeholder="Describe los detalles del fraude, dirección de envío, número de pedido, importe, etc."></textarea>
                   </div>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Enviar Reporte <i class="ti ti-send ms-1"></i></button>
+                <div id="mensaje" class="alert" style="display: none; margin-top: 1rem;"></div>
+                <button type="submit" class="btn btn-primary btn-primario mt-3">
+                  <span class="btn-text">Enviar Reporte</span>
+                  <span class="btn-spinner" style="display: none;">
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    Enviando...
+                  </span>
+                  <i class="ti ti-send ms-1"></i>
+                </button>
               </form>
             </div>
           </div>
           <div class="card mb-4">
-            <div class="card-header">Reportes Recientes</div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span>Reportes Recientes</span>
+              <div class="d-flex gap-2">
+                <input type="text" class="form-control form-control-sm" id="buscadorFraude" placeholder="Buscar..." style="width: 200px;">
+                <select class="form-select form-select-sm" id="ordenarMiniCards" style="width: 150px;">
+                  <option value="fecha-desc">Más recientes</option>
+                  <option value="fecha-asc">Más antiguos</option>
+                  <option value="az">A-Z</option>
+                  <option value="za">Z-A</option>
+                </select>
+              </div>
+            </div>
             <div class="card-body">
-              <div class="row row-cols-1 row-cols-md-2 g-3">
-                <!-- Ejemplo de tarjeta, repetir dinámicamente -->
-                <div class="col">
-                  <div class="card h-100">
-                    <div class="card-body">
-                      <div class="d-flex align-items-center mb-2">
-                        <i class="ti ti-user ti-lg text-primary me-2"></i>
-                        <h6 class="mb-0">Pablo Correa <i class="ti ti-check text-success ms-1" title="Confirmado"></i></h6>
-                      </div>
-                      <p class="mb-1"><i class="ti ti-mail me-1"></i>pablo.correa@example.com</p>
-                      <p class="mb-1"><i class="ti ti-file-text me-1"></i>Documento: 2704454</p>
-                      <p class="text-muted small"><i class="ti ti-calendar-event me-1"></i>25/09/2025 17:35</p>
-                    </div>
-                  </div>
-                </div>
-                <!-- Repeat cards dynamically -->
+              <div id="miniCardsContainer" class="row row-cols-1 row-cols-md-2 g-3">
+                <!-- Las tarjetas se cargan dinámicamente desde la API -->
               </div>
             </div>
           </div>
@@ -99,21 +96,18 @@
           <div class="card mb-4">
             <div class="card-header">Resumen de Bloqueos</div>
             <div class="card-body">
-              <ul class="list-unstyled mb-0">
-                <li class="d-flex justify-content-between mb-2"><span>Total bloqueados</span><span>151</span></li>
-                <li class="d-flex justify-content-between mb-2"><span>Logueados</span><span>131</span></li>
-                <li class="d-flex justify-content-between"><span>No logueados</span><span>20</span></li>
-              </ul>
+              <div id="bloqueados-resumen-cards">
+                <!-- Estadísticas se cargan dinámicamente -->
+              </div>
             </div>
           </div>
           <div class="card">
             <div class="card-header">Resumen Mensual de Bloqueos</div>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item d-flex justify-content-between"><span>09/2025</span><span>33</span></li>
-              <li class="list-group-item d-flex justify-content-between"><span>08/2025</span><span>32</span></li>
-              <li class="list-group-item d-flex justify-content-between"><span>07/2025</span><span>38</span></li>
-              <li class="list-group-item d-flex justify-content-between"><span>06/2025</span><span>36</span></li>
-            </ul>
+            <div class="card-body">
+              <div id="bloqueados-por-mes">
+                <!-- Datos mensuales se cargan dinámicamente -->
+              </div>
+            </div>
           </div>
         </div>
       </div>

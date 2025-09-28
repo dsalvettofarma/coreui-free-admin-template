@@ -1,22 +1,10 @@
 // ES Module para Registro de Fraudes
-// import { requireSession } from '../shared/authService.js'; // Temporalmente deshabilitado
-// import { loadLayout } from '../shared/layout.js'; // Comentado - layout se maneja en fraudes.html
-// import { getFraudes, addFraude } from '../shared/apiService.js'; // Temporalmente deshabilitado
+// TODO: Implementar autenticación real cuando esté lista
+// import { requireSession } from '../shared/authService.js';
+// import { getFraudes, addFraude } from '../shared/apiService.js';
 
-// Validar sesión antes de cualquier lógica
-// requireSession(['admin']); // Temporalmente deshabilitado
-
-// ⚠️ SESIÓN TEMPORAL PARA TESTING (REMOVER EN PRODUCCIÓN)
-if (!localStorage.getItem('session')) {
-    const fakeSession = {
-        tmpToken: '550e8400-e29b-41d4-a716-446655440000', // UUID format para que se vea más realista
-        email: 'dsalvetto@farmashop.com.uy', // Email más realista del dominio
-        status: 'ok',
-        rol: 'admin'
-    };
-    localStorage.setItem('session', JSON.stringify(fakeSession));
-    localStorage.setItem('sessionTimestamp', Date.now().toString());
-}
+// TODO: Validar sesión antes de cualquier lógica
+// requireSession(['admin']);
 
 function formatFechaUTC3(fechaIso) {
   if (!fechaIso) return '-';
@@ -167,13 +155,15 @@ function ordenarMiniCards(data, orden) {
   return data;
 }
 
-// Obtener datos reales desde Apps Script (temporalmente restaurado)
-// Obtener datos reales desde Apps Script (temporalmente restaurado)
+// Obtener datos reales desde API Gateway
 async function fetchPersonas() {
   try {
+    console.log('Fetching personas from API Gateway...');
     const response = await fetch('/api/gateway?module=fraudes&action=list');
-    if (!response.ok) throw new Error('Error al obtener datos');
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
+    
+    console.log('API Gateway Response:', data);
     
     if (!data.success) {
       throw new Error(data.message || 'Error al obtener datos');
@@ -191,9 +181,11 @@ async function fetchPersonas() {
       fecha: row[4] || '',
       logueado: row[5] || ''
     }));
+    
+    console.log('Personas procesadas:', personas.length);
     return personas;
   } catch (e) {
-    console.error('No se pudieron obtener los datos reales:', e);
+    console.error('Error obteniendo datos del API Gateway:', e);
     return [];
   }
 }
@@ -373,15 +365,28 @@ async function onEnter() {
         }
       }
       
-      // Prepare POST URL and payload
-      const postUrl = '/api/gateway';
-      const payload = { module: 'fraudes', action: 'add', documento: formData.documento, correo: formData.correo, nombre: formData.nombre, comentarios: formData.comentarios, logueado: formData.logueado };
-      console.log('submitFraude - POST to', postUrl, 'payload:', payload);
-      const response = await fetch(postUrl, {
+      // Enviar datos a través del API Gateway
+      const formData = {
+        documento: form.documento.value || '',
+        correo: form.correo.value || '',
+        nombre: form.nombre.value || '',
+        comentarios: form.comentarios.value || '',
+        logueado: form.no_logueado.checked ? 'No' : 'Sí'
+      };
+
+      console.log('Enviando al API Gateway:', formData);
+      const response = await fetch('/api/gateway', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          module: 'fraudes',
+          action: 'add',
+          ...formData
+        })
       });
+      
       if (!response.ok) throw new Error(`HTTP error ${response.status}`);
       const result = await response.json();
       
