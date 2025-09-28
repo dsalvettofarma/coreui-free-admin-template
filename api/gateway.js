@@ -1,19 +1,34 @@
 // Vercel Serverless Function - API Gateway
 import { google } from 'googleapis';
 
-// Google Sheets Configuration - Using the same SHEET_ID from Nova
-const SHEET_ID = '1X7HJGFqGwQrqI8J_nOcV9c2XLqB7N3SWgOGm_rJ6VFk8';
-const RANGE = 'Hoja1!A:F'; // documento, correo, nombre, comentarios, fecha, logueado
+// Google Sheets Configuration - All SHEET_IDs from Nova project
+const SPREADSHEET_IDS = {
+  TOKENS: '1mCzYzEruqrgoEQvmz7l5qIA4v-fRVkSkScXW5swNvnM',
+  ALERTAS: '1L1KvMg-rD3Lq90e5lMW-KZhg-dHOrsF-pa5SnlhZ-WI',
+  FRAUDES: '12mgWvEzfvBi6eYqDmY_Jmpdb00lp4r1FWvERuVhM7gY',
+  INSPECTOR: '1SBniJctF3j2nMt4M1IQWFkvjsKhCqJ_h6kqEtcvGdsg' 
+};
+
+const SHEET_NAMES = {
+  SESSIONS: 'Sessions',
+  ALERTAS: 'Alertas',
+  LOG_EJECUCIONES: 'Log Ejecuciones',
+  CONFIG_ALERTAS: 'ConfiguracionAlertas',
+  FRAUDES: 'Fraudes'
+};
 
 // Helper function to get Google Sheets service
 function getGoogleSheetsService() {
+  // Validar variables de entorno requeridas
+  if (!process.env.GOOGLE_PROJECT_ID || !process.env.GOOGLE_CLIENT_EMAIL || !process.env.GOOGLE_PRIVATE_KEY) {
+    throw new Error('Missing required Google Cloud environment variables');
+  }
+
   const credentials = {
     type: 'service_account',
     project_id: process.env.GOOGLE_PROJECT_ID,
-    private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-    private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
-    client_id: process.env.GOOGLE_CLIENT_ID,
     auth_uri: 'https://accounts.google.com/o/oauth2/auth',
     token_uri: 'https://oauth2.googleapis.com/token',
     auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
@@ -28,42 +43,77 @@ function getGoogleSheetsService() {
   return google.sheets({ version: 'v4', auth });
 }
 
-// Get data from Google Sheets
-async function getSheetData() {
+// Get data from Google Sheets - supports any module
+async function getSheetData(module = 'FRAUDES') {
   try {
+    const moduleUpper = module.toUpperCase();
+    if (!SPREADSHEET_IDS[moduleUpper]) {
+      throw new Error(`Module ${module} not configured`);
+    }
+    
     const sheets = getGoogleSheetsService();
     const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SHEET_ID,
-      range: RANGE,
+      spreadsheetId: SPREADSHEET_IDS[moduleUpper],
+      range: RANGES[moduleUpper] || RANGES.FRAUDES,
     });
     
     return response.data.values || [];
   } catch (error) {
-    console.error('Error fetching sheet data:', error);
-    throw new Error('Error al obtener datos de Google Sheets');
+    console.error(`Error fetching sheet data for ${module}:`, error);
+    throw new Error(`Error al obtener datos de Google Sheets para ${module}`);
   }
 }
 
-// Add data to Google Sheets
-async function addToSheet(data) {
+// Add data to Google Sheets - supports any module with UTC-3 timezone (Uruguay/Brasil)
+async function addToSheet(data, module = 'FRAUDES') {
   try {
-    const sheets = getGoogleSheetsService();
-    const now = new Date();
-    const fechaFormateada = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    const moduleUpper = module.toUpperCase();
+    if (!SPREADSHEET_IDS[moduleUpper]) {
+      throw new Error(`Module ${module} not configured`);
+    }
     
-    const values = [[
-      data.documento || '',
-      data.correo || '',
-      data.nombre || '',
-      data.comentarios || '',
-      fechaFormateada,
-      data.logueado || 'Sí'
-    ]];
+    const sheets = getGoogleSheetsService();
+    
+    // Generar fecha en UTC-3 como en Nova
+    const now = new Date();
+    const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const utcMinus3 = new Date(utcTime + (-3 * 3600000));
+    
+    const day = String(utcMinus3.getDate()).padStart(2, '0');
+    const month = String(utcMinus3.getMonth() + 1).padStart(2, '0');
+    const year = utcMinus3.getFullYear();
+    const hours = String(utcMinus3.getHours()).padStart(2, '0');
+    const minutes = String(utcMinus3.getMinutes()).padStart(2, '0');
+    
+    const fechaFormateada = `${day}/${month}/${year} ${hours}:${minutes}`;
+    
+    // Sanitizar campos como en Nova
+    const sanitizeField = (field) => String(field || '').replace(/\r?\n|\r/g, ' ').trim();
+    
+    // Preparar datos según el módulo
+    let values;
+    if (moduleUpper === 'FRAUDES') {
+      values = [[
+        sanitizeField(data.documento || ''),
+        sanitizeField(data.correo || ''),
+        sanitizeField(data.nombre || ''),
+        sanitizeField(data.comentarios || ''),
+        sanitizeField(fechaFormateada),
+        sanitizeField(data.logueado || 'Sí')
+      ]];
+    } else {
+      // Para otros módulos, usar estructura genérica
+      values = [Object.values(data).map(field => sanitizeField(field))];
+      // Agregar fecha al final si no está presente
+      if (!data.fecha) {
+        values[0].push(sanitizeField(fechaFormateada));
+      }
+    }
 
     const response = await sheets.spreadsheets.values.append({
-      spreadsheetId: SHEET_ID,
-      range: RANGE,
-      valueInputOption: 'USER_ENTERED',
+      spreadsheetId: SPREADSHEET_IDS[moduleUpper],
+      range: RANGES[moduleUpper] || RANGES.FRAUDES,
+      valueInputOption: 'RAW',
       requestBody: {
         values: values
       }
@@ -71,12 +121,12 @@ async function addToSheet(data) {
     
     return response.data;
   } catch (error) {
-    console.error('Error adding to sheet:', error);
-    throw new Error('Error al agregar datos a Google Sheets');
+    console.error(`Error adding to sheet for ${module}:`, error);
+    throw new Error(`Error al agregar datos a Google Sheets para ${module}`);
   }
 }
 
-// Main handler function
+// Main handler function - Supports all modules from Nova project
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -91,16 +141,41 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const { module, action } = req.query;
       
-      if (module === 'fraudes' && action === 'list') {
-        const data = await getSheetData();
+      if (!module || !action) {
+        return res.status(400).json({
+          success: false,
+          message: 'Parámetros module y action son requeridos'
+        });
+      }
+      
+      // Validar que el módulo esté configurado
+      const moduleUpper = module.toUpperCase();
+      if (!SPREADSHEET_IDS[moduleUpper]) {
+        return res.status(400).json({
+          success: false,
+          message: `Módulo ${module} no configurado`
+        });
+      }
+      
+      if (action === 'list') {
+        const data = await getSheetData(module);
         return res.status(200).json({
           success: true,
-          data: data
+          data: data,
+          module: module
+        });
+      } else if (action === 'info') {
+        return res.status(200).json({
+          success: true,
+          module: module,
+          spreadsheetId: SPREADSHEET_IDS[moduleUpper],
+          range: RANGES[moduleUpper],
+          sheetName: SHEET_NAMES[moduleUpper]
         });
       } else {
         return res.status(400).json({
           success: false,
-          message: 'Acción no válida'
+          message: `Acción ${action} no válida para módulo ${module}`
         });
       }
     }
@@ -108,16 +183,33 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const { module, action, ...formData } = req.body;
       
-      if (module === 'fraudes' && action === 'add') {
-        await addToSheet(formData);
+      if (!module || !action) {
+        return res.status(400).json({
+          success: false,
+          message: 'Parámetros module y action son requeridos'
+        });
+      }
+      
+      // Validar que el módulo esté configurado
+      const moduleUpper = module.toUpperCase();
+      if (!SPREADSHEET_IDS[moduleUpper]) {
+        return res.status(400).json({
+          success: false,
+          message: `Módulo ${module} no configurado`
+        });
+      }
+      
+      if (action === 'add') {
+        await addToSheet(formData, module);
         return res.status(200).json({
           success: true,
-          message: 'Datos agregados correctamente'
+          message: `Datos agregados correctamente a ${module}`,
+          module: module
         });
       } else {
         return res.status(400).json({
           success: false,
-          message: 'Acción no válida'
+          message: `Acción ${action} no válida para módulo ${module}`
         });
       }
     }

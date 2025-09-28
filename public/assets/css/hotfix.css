@@ -1,0 +1,23 @@
+/* Hotfix para referencias de assets eliminados */
+
+/* Ocultar cualquier imagen rota */
+img[src*="assets/icons"], 
+img[src*="assets/img/avatars"] {
+    display: none !important;
+}
+
+/* Placeholder para avatares rotos */
+.avatar img[src*="assets/img/avatars"] {
+    background: #6f42c1;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Reemplazar imágenes rotas con iconos Tabler */
+.avatar img[src*="assets/img/avatars"]:after {
+    content: "\f4d6"; /* Tabler user icon */
+    font-family: "tabler-icons";
+    font-size: 1.5rem;
+}

@@ -74,7 +74,7 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
       { label: 'Error 500', href: '500.html', external: false }
     ]},
     { type: 'item', label: 'Docs', href: 'https://coreui.io/bootstrap/docs/templates/installation/', icon: 'ti-file-description', external: true, show: true },
-    { type: 'item', label: 'Try CoreUI PRO', href: 'https://coreui.io/product/bootstrap-dashboard-template/', icon: '', customIcon: '<img src="../assets/icons/layers.svg" alt="layers" width="24" height="24" style="vertical-align:middle;">', show: true, external: true, badge: null, classes: 'text-primary fw-semibold' }
+    { type: 'item', label: 'Try CoreUI PRO', href: 'https://coreui.io/product/bootstrap-dashboard-template/', icon: 'ti-stack', customIcon: '', show: true, external: true, badge: null, classes: 'text-primary fw-semibold' }
   ];
 
   // Renderizar el menú lateral dinámico
@@ -146,7 +146,7 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
     return `
       <li class="nav-item dropdown">
         <a class="nav-link py-0 pe-0" data-coreui-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-          <div class="avatar avatar-md"><img class="avatar-img" src="${user.avatar || '../assets/img/avatars/8.jpg'}" alt="${user.email || ''}"></div>
+          <div class="avatar avatar-md bg-primary text-white d-flex align-items-center justify-content-center"><i class="ti ti-user fs-5"></i></div>
         </a>
         <div class="dropdown-menu dropdown-menu-end pt-0">
           <div class="dropdown-header bg-body-tertiary text-body-secondary fw-semibold rounded-top mb-2">Account</div>
