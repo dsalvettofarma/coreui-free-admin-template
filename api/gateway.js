@@ -50,6 +50,28 @@ function getGoogleSheetsService() {
   return google.sheets({ version: 'v4', auth });
 }
 
+// Get available sheets from a spreadsheet (for inspector module)
+async function getAvailableSheets(module = 'INSPECTOR') {
+  try {
+    const moduleUpper = module.toUpperCase();
+    if (!SPREADSHEET_IDS[moduleUpper]) {
+      throw new Error(`Module ${module} not configured`);
+    }
+    
+    const sheets = getGoogleSheetsService();
+    const response = await sheets.spreadsheets.get({
+      spreadsheetId: SPREADSHEET_IDS[moduleUpper],
+    });
+    
+    // Extract sheet names
+    const sheetNames = response.data.sheets.map(sheet => sheet.properties.title);
+    return sheetNames;
+  } catch (error) {
+    console.error(`Error fetching available sheets for ${module}:`, error);
+    throw new Error(`Error al obtener hojas disponibles para ${module}`);
+  }
+}
+
 // Get data from Google Sheets - supports any module
 async function getSheetData(module = 'FRAUDES') {
   try {
@@ -169,6 +191,14 @@ export default async function handler(req, res) {
         return res.status(200).json({
           success: true,
           data: data,
+          module: module
+        });
+      } else if (action === 'getSheets') {
+        // Para el inspector, devolver las hojas disponibles
+        const sheets = await getAvailableSheets(module);
+        return res.status(200).json({
+          success: true,
+          sheets: sheets,
           module: module
         });
       } else if (action === 'info') {
