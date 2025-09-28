@@ -413,11 +413,15 @@ async function _precargar(forzarRefrescoDeHojas = false) {
                 throw new Error("Respuesta del servidor para precarga no tiene formato esperado (results y headers).");
             }
             // Usar SIEMPRE los headers de la búsqueda como fuente principal
-            const headersOriginales = dataSheet.headers;
-            const filas = dataSheet.results;
+            const headersOriginales = dataSheet.headers || [];
+            const filas = dataSheet.results || [];
             // Si hay más columnas en alguna fila que en los headers, rellenar headers
             let maxCols = headersOriginales.length;
-            filas.forEach(r => { if (r.length > maxCols) maxCols = r.length; });
+            filas.forEach(r => { 
+                if (r && Array.isArray(r) && r.length > maxCols) {
+                    maxCols = r.length; 
+                }
+            });
             let headersCompletos = headersOriginales.slice();
             if (headersCompletos.length < maxCols) {
                 for (let i = headersCompletos.length; i < maxCols; i++) {
@@ -514,6 +518,11 @@ function _renderizarTabla(filas, headersOrdenadosParaMostrar, idxsDeOriginalesPa
 
     if (filas && filas.length > 0) {
         filas.forEach((fila, rowIndex) => {
+            // Skip null or undefined rows
+            if (!fila || !Array.isArray(fila)) {
+                return;
+            }
+            
             cuerpoHtml += '<tr>';
             cuerpoHtml += `<td class="col-index">${rowIndex + 1}</td>`;
             for (let idx = 0; idx < maxCols; idx++) {
