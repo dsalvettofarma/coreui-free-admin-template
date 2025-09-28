@@ -17,6 +17,13 @@ const SHEET_NAMES = {
   FRAUDES: 'Fraudes'
 };
 
+const RANGES = {
+  TOKENS: 'Sessions!A:Z',
+  ALERTAS: 'Alertas!A:Z', 
+  FRAUDES: 'Fraudes!A:F',
+  INSPECTOR: 'Log Ejecuciones!A:Z'
+};
+
 // Helper function to get Google Sheets service
 function getGoogleSheetsService() {
   // Validar variables de entorno requeridas
