@@ -92,7 +92,7 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
             return `
               <li class="nav-item">
                 <a class="nav-link ${item.classes || ''}" href="${item.href}"${item.external ? ' target="_blank"' : ''}>
-                  ${item.icon ? `<i class="ti ${item.icon}" style="font-size: 20px; vertical-align: middle;"></i>` : (item.customIcon || '')}
+                  ${item.icon ? `<i class="ti ${item.icon}" style="font-size: 2rem; vertical-align: middle;"></i>` : (item.customIcon || '')}
                   ${item.label}
                   ${item.badge ? `<span class="badge badge-sm bg-${item.badge.color} ms-auto">${item.badge.text}</span>` : ''}
                 </a>
@@ -103,7 +103,7 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
             return `
               <li class="nav-group">
                 <a class="nav-link nav-group-toggle" href="#">
-                  <i class="ti ${item.icon}" style="font-size: 20px; vertical-align: middle;"></i> ${item.label}
+                  <i class="ti ${item.icon}" style="font-size: 2rem; vertical-align: middle;"></i> ${item.label}
                 </a>
                 <ul class="nav-group-items compact">
                   ${item.items.map(sub =>
@@ -112,7 +112,7 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
                         ${sub.customIcon || ''}
                         ${sub.label}
                         ${sub.badge ? `<span class="badge badge-sm bg-${sub.badge.color} ms-auto">${sub.badge.text}</span>` : ''}
-                        ${sub.external ? '<i class="ti ti-external-link" style="font-size: 1.1rem; margin-left: 0.5em; vertical-align: middle;"></i>' : ''}
+                        ${sub.external ? '<i class="ti ti-external-link" style="font-size: 1.8rem; margin-left: 0.5em; vertical-align: middle;"></i>' : ''}
                       </a>
                     </li>`
                   ).join('')}
@@ -191,7 +191,7 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
       <!-- HEADER -->
       <header class="header header-sticky p-0 mb-4" id="main-header">
         <div class="container-fluid border-bottom px-4 d-flex align-items-center">
-          <button class="header-toggler" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()" style="margin-inline-start: -14px;">
+          <button class="header-toggler" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()" style="margin-inline-start: -1.4rem;">
             <i class="ti ti-menu" style="font-size: 2rem;"></i>
           </button>
           <ul class="header-nav d-none d-lg-flex">

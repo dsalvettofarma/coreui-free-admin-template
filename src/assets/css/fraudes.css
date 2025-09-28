@@ -18,13 +18,13 @@
   color: var(--fraude-text);
   border: 1px solid var(--fraude-border);
   border-radius: 5px;
-  padding:16px;
+  padding:1.6rem;
   margin-bottom: 15px;
 }
 
 /* Cabecera */
 .fraude-header h2 {
-  margin-bottom:16px;
+  margin-bottom:1.6rem;
   font-weight: 600;
 }
 
@@ -32,7 +32,7 @@
 .fraude-container form {
   display: flex;
   flex-direction: column;
-  gap:16px;
+  gap:1.6rem;
 }
 .fraude-container form .campo label {
   margin-bottom: 2.5px;
@@ -69,11 +69,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom:16px;
+  margin-bottom:1.6rem;
 }
 .fraude-mini-cards #miniCardsContainer {
   display: grid;
-  gap:16px;
+  gap:1.6rem;
 }
 @media (min-width: 576px) {
   .fraude-mini-cards #miniCardsContainer {
@@ -100,7 +100,7 @@
   background-color: var(--fraude-bg) !important;
   border: 1px solid var(--fraude-border) !important;
   border-radius: 2px;
-  margin: 0px 14px;
+  margin: 0px 1.4rem;
 }
 .card-header {
   background-color: transparent !important;
