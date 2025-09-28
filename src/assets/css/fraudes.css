@@ -1,0 +1,95 @@
+/* fraudes.css: estilos específicos para la página de Gestión de Fraudes */
+
+/* Variables para tema claro/oscuro */
+:root {
+  --fraude-bg: #ffffff;
+  --fraude-text: #212529;
+  --fraude-border: #dee2e6;
+}
+[data-coreui-theme="dark"] {
+  --fraude-bg: #2e2e3e;
+  --fraude-text: #e9ecef;
+  --fraude-border: #444;
+}
+
+/* Contenedor principal */
+.fraude-container {
+  background-color: var(--fraude-bg);
+  color: var(--fraude-text);
+  border: 1px solid var(--fraude-border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Cabecera */
+.fraude-header h2 {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+/* Formulario */
+.fraude-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.fraude-container form .campo label {
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+.fraude-container form input,
+.fraude-container form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--fraude-border);
+  border-radius: 0.25rem;
+  background-color: var(--fraude-bg);
+  color: var(--fraude-text);
+}
+
+/* Buscador */
+.fraude-buscador {
+  margin-top: 1.5rem;
+}
+.fraude-buscador input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--fraude-border);
+  border-radius: 0.25rem;
+  background-color: var(--fraude-bg);
+  color: var(--fraude-text);
+}
+
+/* Mini-cards */
+.fraude-mini-cards {
+  margin-top: 1.5rem;
+}
+.fraude-mini-cards .mini-cards-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.fraude-mini-cards #miniCardsContainer {
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 576px) {
+  .fraude-mini-cards #miniCardsContainer {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+/* Layout fluido */
+.fraude-flex-root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+.fraude-col.principal {
+  flex: 1 1 60%;
+}
+.fraude-col.lateral {
+  flex: 1 1 35%;
+}
