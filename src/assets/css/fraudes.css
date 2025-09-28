@@ -93,3 +93,92 @@
 .fraude-col.lateral {
   flex: 1 1 35%;
 }
+
+/* Fraud Module Wrapper */
+.fraude-module {
+  font-family: "Segoe UI", sans-serif;
+  padding: 1rem;
+}
+
+/* Status Icon */
+.status-icon {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  color: #28a745;
+}
+
+/* Form Grid Layout */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.checkbox-label {
+  grid-column: 1 / span 2;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.campo {
+  display: flex;
+  flex-direction: column;
+}
+.campo-full {
+  grid-column: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Resumen de Bloqueos */
+.bloqueos-summary {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+.stats-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.stats-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--fraude-border);
+}
+.stats-list li:last-child {
+  border: none;
+}
+
+/* Light Theme */
+.light-theme .fraude-container {
+  background-color: #ffffff;
+  color: #212529;
+  border: 1px solid #ced4da;
+}
+.light-theme .fraude-header h2 {
+  color: #343a40;
+}
+.light-theme .bloqueos-summary {
+  background-color: #f8f9fa;
+}
+.light-theme .stats-list li span {
+  color: #007bff;
+}
+
+/* Dark Theme */
+.dark-theme .fraude-container {
+  background-color: #1f1f2e;
+  color: #e9ecef;
+  border: 1px solid #44475a;
+}
+.dark-theme .fraude-header h2 {
+  color: #f8f9fa;
+}
+.dark-theme .bloqueos-summary {
+  background-color: #2e2e3e;
+}
+.dark-theme .stats-list li span {
+  color: #4d94ff;
+}

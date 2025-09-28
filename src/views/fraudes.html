@@ -23,94 +23,64 @@
   <script src="../js/color-modes.js"></script>
 </head>
 <body>
-  <!-- Importar el layout como módulo JS -->
-  <script type="module">
-    import { renderLayout } from '../js/layout.js';
-    // Contenido específico de fraudes
-    const fraudesContent = `
-      <div class='fraude-flex-root'>
-        <section class='fraude-col principal'>
-          <section class='fraude-container'>
-            <header class='fraude-header'>
-              <h2>Registro de fraudes</h2>
-              <a href='https://docs.google.com/spreadsheets/d/12mgWvEzfvBi6eYqDmY_Jmpdb00lp4r1FWvERuVhM7gY/edit?usp=sharing' target='_blank' class='btn-secundario'>Ver tabla</a>
-            </header>
-            <form id='fraude-form' autocomplete='off'>
-              <div class='form-grid grid-2col'>
-                <div class='campo' id='campo-no-logueado' style='grid-column: 1 / span 2; display: flex; align-items: center; gap: 1rem;'>
-                  <input type='checkbox' id='no_logueado' name='no_logueado' />
-                  <label for='no_logueado'>No logueado?</label>
-                </div>
-                <div class='campo' id='campo-documento'>
-                  <label for='documento'>Documento</label>
-                  <input type='text' id='documento' name='documento' required />
-                </div>
-                <div class='campo'>
-                  <label for='correo'>Correo</label>
-                  <input type='email' id='correo' name='correo' required />
-                </div>
-                <div class='campo'>
-                  <label for='nombre'>Nombre</label>
-                  <input type='text' id='nombre' name='nombre' required />
-                </div>
-                <div class='campo'>
-                  <label for='comentarios'>Comentarios (opcional)</label>
-                  <textarea id='comentarios' name='comentarios'></textarea>
-                </div>
-                <div class='campo campo-full' style='grid-column: 1 / span 2;'>
-                  <button type='submit' class='btn-primario'>
-                    <span class='btn-text'>Enviar</span>
-                    <span class='btn-spinner' style='display:none;'><span class='loader'></span></span>
-                  </button>
-                </div>
-              </div>
-              <div class='mensaje' id='mensaje'>✅ ¡Reporte enviado con éxito!</div>
-            </form>
-            <section class='fraude-buscador'>
-              <h3>Buscar en gestión de fraude</h3>
-              <input type='text' id='buscadorFraude' placeholder='Buscar por documento, nombre, etc...'>
-            </section>
-            <section class='fraude-mini-cards'>
-              <div class='mini-cards-header' style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.7rem;'>
-                <h3 style='margin:0;'>Personas agregadas</h3>
-                <select id='ordenarMiniCards' style='max-width:220px;'>
-                  <option value='fecha-desc'>Fecha (más reciente primero)</option>
-                  <option value='fecha-asc'>Fecha (más antiguo primero)</option>
-                  <option value='az'>Nombre A-Z</option>
-                  <option value='za'>Nombre Z-A</option>
-                </select>
-              </div>
-              <div id='miniCardsContainer'></div>
-            </section>
-          </section>
-        </section>
-        <aside class='fraude-col lateral'>
-          <section id='bloqueados-estadisticas-container' class='section-container'>
-            <h3 class='section-title'>Resumen de bloqueados</h3>
-            <div id='bloqueados-resumen-cards' class='bloqueados-resumen-cards'></div>
-            <div id='bloqueados-por-mes' class='bloqueados-por-mes'></div>
-          </section>
-        </aside>
-      </div>
-    `;
-    renderLayout({
-      pageTitle: 'Gestión de Fraudes',
-      breadcrumbs: [
-        { name: 'Home', url: 'index.html' },
-        { name: 'Gestión de Fraudes', url: '#' }
-      ],
-      content: fraudesContent,
-      user: { role: 'admin' } // Ajusta el rol según corresponda
-    });
-  </script>
+  <!-- Fraud Module: Light Theme -->
+  <div class="fraude-module light-theme" style="max-width:1024px;margin:2rem auto;">
+    <section class="fraude-container">
+      <header class="fraude-header d-flex justify-content-between align-items-center">
+        <h2>Registro de Reporte de Fraude <span class="status-icon status-confirmed" title="Verificado">✔️</span></h2>
+        <button class="btn btn-outline-primary">Ver Tabla</button>
+      </header>
+      <form id="fraude-form" autocomplete="off">
+        <div class="form-grid grid-2col">
+          <label class="checkbox-label"><input type="checkbox" id="no_logueado" name="no_logueado"/> No logueado?</label>
+          <div class="campo"><label for="documento">Documento</label><input type="text" id="documento" name="documento" required/></div>
+          <div class="campo"><label for="correo">Correo</label><input type="email" id="correo" name="correo" required/></div>
+          <div class="campo"><label for="nombre">Nombre Completo</label><input type="text" id="nombre" name="nombre" required/></div>
+          <div class="campo"><label for="direccion">Dirección</label><input type="text" id="direccion" name="direccion"/></div>
+          <div class="campo"><label for="orden">ID de Orden (opcional)</label><input type="text" id="orden" name="orden"/></div>
+          <div class="campo-full"><label for="comentarios">Descripción del Fraude</label><textarea id="comentarios" name="comentarios" rows="4"></textarea></div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Enviar Reporte</button>
+      </form>
+      <aside class="bloqueos-summary">
+        <h3>Resumen de Bloqueos</h3>
+        <ul class="stats-list">
+          <li><strong>Total bloqueados</strong><span>151</span></li>
+          <li><strong>Logueados</strong><span>131</span></li>
+          <li><strong>No logueados</strong><span>20</span></li>
+        </ul>
+      </aside>
+    </section>
+  </div>
 
-  <!-- Scripts necesarios -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.0/dist/js/coreui.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/simplebar@6.2.5/dist/simplebar.min.js"></script>
-  
-  <!-- Scripts específicos de fraudes -->
-  <script type="module" src="../modulos/form-fraudes/form-fraudes.js"></script>
-  
+  <!-- Fraud Module: Dark Theme -->
+  <div class="fraude-module dark-theme" style="max-width:1024px;margin:2rem auto;">
+    <section class="fraude-container">
+      <header class="fraude-header d-flex justify-content-between align-items-center">
+        <h2>Registro de Reporte de Fraude <span class="status-icon status-confirmed" title="Verificado">✔️</span></h2>
+        <button class="btn btn-outline-primary">Ver Tabla</button>
+      </header>
+      <form id="fraude-form" autocomplete="off">
+        <div class="form-grid grid-2col">
+          <label class="checkbox-label"><input type="checkbox" id="no_logueado" name="no_logueado"/> No logueado?</label>
+          <div class="campo"><label for="documento">Documento</label><input type="text" id="documento" name="documento" required/></div>
+          <div class="campo"><label for="correo">Correo</label><input type="email" id="correo" name="correo" required/></div>
+          <div class="campo"><label for="nombre">Nombre Completo</label><input type="text" id="nombre" name="nombre" required/></div>
+          <div class="campo"><label for="direccion">Dirección</label><input type="text" id="direccion" name="direccion"/></div>
+          <div class="campo"><label for="orden">ID de Orden (opcional)</label><input type="text" id="orden" name="orden"/></div>
+          <div class="campo-full"><label for="comentarios">Descripción del Fraude</label><textarea id="comentarios" name="comentarios" rows="4"></textarea></div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Enviar Reporte</button>
+      </form>
+      <aside class="bloqueos-summary">
+        <h3>Resumen de Bloqueos</h3>
+        <ul class="stats-list">
+          <li><strong>Total bloqueados</strong><span>151</span></li>
+          <li><strong>Logueados</strong><span>131</span></li>
+          <li><strong>No logueados</strong><span>20</span></li>
+        </ul>
+      </aside>
+    </section>
+  </div>
 </body>
 </html>
