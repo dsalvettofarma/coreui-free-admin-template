@@ -7,6 +7,7 @@
     "dev": "vercel dev",
     "build": "echo 'Static site build complete'",
     "start": "vercel dev",
+    "setup": "node setup-env.js",
     "vercel-build": "echo 'Vercel build for static site'"
   },
   "repository": {
