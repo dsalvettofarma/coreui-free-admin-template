@@ -26,71 +26,85 @@
   <!-- Importar el layout como módulo JS -->
   <script type="module">
     import { renderLayout } from '../js/layout.js';
-    // Contenido específico de fraudes
     const fraudesContent = `
-      <div class='fraude-flex-root'>
-        <section class='fraude-col principal'>
-          <section class='fraude-container'>
-            <header class='fraude-header'>
-              <h2>Registro de fraudes</h2>
-              <a href='https://docs.google.com/spreadsheets/d/12mgWvEzfvBi6eYqDmY_Jmpdb00lp4r1FWvERuVhM7gY/edit?usp=sharing' target='_blank' class='btn-secundario'>Ver tabla</a>
-            </header>
-            <form id='fraude-form' autocomplete='off'>
-              <div class='form-grid grid-2col'>
-                <div class='campo' id='campo-no-logueado' style='grid-column: 1 / span 2; display: flex; align-items: center; gap: 1rem;'>
-                  <input type='checkbox' id='no_logueado' name='no_logueado' />
-                  <label for='no_logueado'>No logueado?</label>
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <form id="fraude-form" autocomplete="off">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="documento" class="form-label">Documento</label>
+                    <input type="text" class="form-control" id="documento" name="documento" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="correo" class="form-label">Correo</label>
+                    <input type="email" class="form-control" id="correo" name="correo" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="direccion" class="form-label">Dirección</label>
+                    <input type="text" class="form-control" id="direccion" name="direccion">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="orden" class="form-label">ID de Orden (opcional)</label>
+                    <input type="text" class="form-control" id="orden" name="orden">
+                  </div>
+                  <div class="col-12">
+                    <label for="comentarios" class="form-label">Comentarios (opcional)</label>
+                    <textarea class="form-control" id="comentarios" name="comentarios" rows="3"></textarea>
+                  </div>
                 </div>
-                <div class='campo' id='campo-documento'>
-                  <label for='documento'>Documento</label>
-                  <input type='text' id='documento' name='documento' required />
+                <button type="submit" class="btn btn-primary mt-3">Enviar Reporte <i class="ti ti-send ms-1"></i></button>
+              </form>
+            </div>
+          </div>
+          <div class="card mb-4">
+            <div class="card-header">Reportes Recientes</div>
+            <div class="card-body">
+              <div class="row row-cols-1 row-cols-md-2 g-3">
+                <div class="col">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <div class="d-flex align-items-center mb-2">
+                        <i class="ti ti-user ti-lg me-2 text-primary"></i>
+                        <h5 class="card-title mb-0">Pablo Correa <i class="ti ti-check text-success ms-1" title="Confirmado"></i></h5>
+                      </div>
+                      <p class="card-text mb-1"><i class="ti ti-mail me-1"></i>pablo.correa@example.com</p>
+                      <p class="card-text mb-1"><i class="ti ti-file-text me-1"></i>Documento: 2704454</p>
+                      <p class="card-text text-muted small"><i class="ti ti-calendar-event me-1"></i>25/09/2025 17:35</p>
+                    </div>
+                  </div>
                 </div>
-                <div class='campo'>
-                  <label for='correo'>Correo</label>
-                  <input type='email' id='correo' name='correo' required />
-                </div>
-                <div class='campo'>
-                  <label for='nombre'>Nombre</label>
-                  <input type='text' id='nombre' name='nombre' required />
-                </div>
-                <div class='campo'>
-                  <label for='comentarios'>Comentarios (opcional)</label>
-                  <textarea id='comentarios' name='comentarios'></textarea>
-                </div>
-                <div class='campo campo-full' style='grid-column: 1 / span 2;'>
-                  <button type='submit' class='btn-primario'>
-                    <span class='btn-text'>Enviar</span>
-                    <span class='btn-spinner' style='display:none;'><span class='loader'></span></span>
-                  </button>
-                </div>
+                <!-- Repeat cards dynamically -->
               </div>
-              <div class='mensaje' id='mensaje'>✅ ¡Reporte enviado con éxito!</div>
-            </form>
-            <section class='fraude-buscador'>
-              <h3>Buscar en gestión de fraude</h3>
-              <input type='text' id='buscadorFraude' placeholder='Buscar por documento, nombre, etc...'>
-            </section>
-            <section class='fraude-mini-cards'>
-              <div class='mini-cards-header' style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.7rem;'>
-                <h3 style='margin:0;'>Personas agregadas</h3>
-                <select id='ordenarMiniCards' style='max-width:220px;'>
-                  <option value='fecha-desc'>Fecha (más reciente primero)</option>
-                  <option value='fecha-asc'>Fecha (más antiguo primero)</option>
-                  <option value='az'>Nombre A-Z</option>
-                  <option value='za'>Nombre Z-A</option>
-                </select>
-              </div>
-              <div id='miniCardsContainer'></div>
-            </section>
-          </section>
-        </section>
-        <aside class='fraude-col lateral'>
-          <section id='bloqueados-estadisticas-container' class='section-container'>
-            <h3 class='section-title'>Resumen de bloqueados</h3>
-            <div id='bloqueados-resumen-cards' class='bloqueados-resumen-cards'></div>
-            <div id='bloqueados-por-mes' class='bloqueados-por-mes'></div>
-          </section>
-        </aside>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-header">Resumen de Bloqueos</div>
+            <div class="card-body">
+              <ul class="list-unstyled mb-0">
+                <li class="d-flex justify-content-between mb-2"><span>Total bloqueados</span><span>151</span></li>
+                <li class="d-flex justify-content-between mb-2"><span>Logueados</span><span>131</span></li>
+                <li class="d-flex justify-content-between"><span>No logueados</span><span>20</span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">Resumen Mensual de Bloqueos</div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between"><span>09/2025</span><span>33</span></li>
+              <li class="list-group-item d-flex justify-content-between"><span>08/2025</span><span>32</span></li>
+              <li class="list-group-item d-flex justify-content-between"><span>07/2025</span><span>38</span></li>
+              <li class="list-group-item d-flex justify-content-between"><span>06/2025</span><span>36</span></li>
+            </ul>
+          </div>
+        </div>
       </div>
     `;
     renderLayout({
@@ -100,7 +114,7 @@
         { name: 'Gestión de Fraudes', url: '#' }
       ],
       content: fraudesContent,
-      user: { role: 'admin' } // Ajusta el rol según corresponda
+      user: { role: 'admin' }
     });
   </script>
 
