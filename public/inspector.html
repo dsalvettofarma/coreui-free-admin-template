@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inspector de pagos</title>
   
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- CoreUI CSS (includes Bootstrap) -->
+  <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.0/dist/css/coreui.min.css" rel="stylesheet">
   
   <!-- Tabler Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -253,6 +253,43 @@
       background-color: #e2e3e5 !important;
       color: #41464b !important;
     }
+    
+    /* Asegurar que el layout CoreUI se muestre correctamente */
+    .sidebar {
+      width: 256px;
+      background-color: var(--cui-sidebar-bg, #fff);
+      border-right: 1px solid var(--cui-border-color, #dee2e6);
+    }
+    
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    .body {
+      margin-left: 0;
+      transition: margin-left 0.15s;
+    }
+    
+    @media (min-width: 992px) {
+      .sidebar:not(.sidebar-narrow) ~ .wrapper .body {
+        margin-left: 256px;
+      }
+    }
+    
+    /* Asegurar altura completa */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    #app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
   </style>
 </head>
 <body>
@@ -351,8 +388,8 @@
     </div>
   </main>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- CoreUI JS (includes Bootstrap) -->
+  <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.0/dist/js/coreui.bundle.min.js"></script>
   
   <!-- Layout and Module Scripts -->
   <script type="module">
@@ -401,6 +438,23 @@
       console.log('INSPECTOR: Esperando elementos críticos...');
       await waitForElements(criticalElements);
       console.log('INSPECTOR: Todos los elementos críticos encontrados');
+      
+      // Initialize CoreUI components
+      if (window.coreui) {
+        console.log('INSPECTOR: Inicializando componentes CoreUI...');
+        
+        // Initialize sidebar
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar && window.coreui.Sidebar) {
+          window.coreui.Sidebar.getOrCreateInstance(sidebar);
+        }
+        
+        // Initialize tooltips and other components
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-coreui-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new window.coreui.Tooltip(tooltipTriggerEl);
+        });
+      }
       
       // Initialize inspector
       if (window.initInspector) {
