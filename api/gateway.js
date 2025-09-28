@@ -72,6 +72,87 @@ async function getAvailableSheets(module = 'INSPECTOR') {
   }
 }
 
+// Search in Google Sheets with filters (for inspector module)
+async function searchInSheet(module = 'INSPECTOR', sheetName = '', searchParams = {}) {
+  try {
+    const moduleUpper = module.toUpperCase();
+    if (!SPREADSHEET_IDS[moduleUpper]) {
+      throw new Error(`Module ${module} not configured`);
+    }
+    
+    const sheets = getGoogleSheetsService();
+    
+    // Construir el rango usando el nombre de la hoja si se proporciona
+    let range = RANGES[moduleUpper] || 'A:Z';
+    if (sheetName) {
+      range = `${sheetName}!A:Z`;
+    }
+    
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_IDS[moduleUpper],
+      range: range,
+    });
+    
+    let data = response.data.values || [];
+    
+    // Aplicar filtros si se proporcionan
+    if (searchParams.value && searchParams.value.trim() !== '') {
+      const { column, value, matchType = 'contains' } = searchParams;
+      
+      // Si hay encabezados, preservar la primera fila
+      const headers = data.length > 0 ? data[0] : [];
+      const rows = data.slice(1);
+      
+      const filteredRows = rows.filter(row => {
+        // Si se especifica una columna, buscar solo en esa columna
+        if (column && column !== '' && column !== 'todos') {
+          const columnIndex = headers.findIndex(header => 
+            header.toLowerCase().includes(column.toLowerCase())
+          );
+          
+          if (columnIndex !== -1 && row[columnIndex]) {
+            return matchText(row[columnIndex].toString(), value, matchType);
+          }
+          return false;
+        } else {
+          // Buscar en todas las columnas
+          return row.some(cell => {
+            if (cell) {
+              return matchText(cell.toString(), value, matchType);
+            }
+            return false;
+          });
+        }
+      });
+      
+      data = headers.length > 0 ? [headers, ...filteredRows] : filteredRows;
+    }
+    
+    return data;
+  } catch (error) {
+    console.error(`Error searching in sheet for ${module}:`, error);
+    throw new Error(`Error al buscar en Google Sheets para ${module}`);
+  }
+}
+
+// Helper function for text matching
+function matchText(text, searchValue, matchType) {
+  const textLower = text.toLowerCase();
+  const searchLower = searchValue.toLowerCase();
+  
+  switch (matchType) {
+    case 'exact':
+      return textLower === searchLower;
+    case 'starts':
+      return textLower.startsWith(searchLower);
+    case 'ends':
+      return textLower.endsWith(searchLower);
+    case 'contains':
+    default:
+      return textLower.includes(searchLower);
+  }
+}
+
 // Get data from Google Sheets - supports any module
 async function getSheetData(module = 'FRAUDES') {
   try {
@@ -200,6 +281,16 @@ export default async function handler(req, res) {
           success: true,
           sheets: sheets,
           module: module
+        });
+      } else if (action === 'search') {
+        // Para el inspector, realizar búsquedas con filtros
+        const { sheet, column, value, matchType } = req.query;
+        const results = await searchInSheet(module, sheet, { column, value, matchType });
+        return res.status(200).json({
+          success: true,
+          data: results,
+          module: module,
+          searchParams: { sheet, column, value, matchType }
         });
       } else if (action === 'info') {
         return res.status(200).json({
