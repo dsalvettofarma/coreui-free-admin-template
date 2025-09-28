@@ -18,6 +18,47 @@ html[data-coreui-theme="light"] .sidebar .nav-title {
 .ti{
   font-size: 2rem !important; /* Ajuste para iconos Tabler */ 
 }
+
+li.nav-item, li.nav-group, li.nav-title {
+    font-size: 1.6rem !important;
+}
+.sidebar{
+    --cui-sidebar-width: 25rem;
+}
+@media (min-width: 992px) {
+    .sidebar:not(.hide):not(.sidebar-narrow):not(.sidebar-narrow-unfoldable:not(:hover)):not(.sidebar-narrow-unfoldable):not(.sidebar-overlaid):not(.sidebar-end)~* {
+        --cui-sidebar-occupy-start: 26rem;
+    }
+}
+.breadcrumb{
+    font-size:1.6rem;
+}
+
+.header-nav .dropdown-menu{
+    font-size:1.6rem;
+}
+
+.row.g-4.mb-4 {
+    font-size: 1.6rem;
+}
+
+button.btn.btn-transparent.text-white.p-0 {
+    font-size: 2rem;
+}
+
+.card-body {
+    font-size: 1.6rem;
+}
+
+label.btn.btn-outline-secondary {
+    font-size: 1.6rem;
+}
+
+button.btn.btn-primary {
+    font-size: 1.6rem;
+}
+
+
 /* Sidebar nav-group-toggle (flechas) modo claro */
 html[data-coreui-theme="light"] .sidebar .nav-group-toggle::after {
   color: #6c757d;
