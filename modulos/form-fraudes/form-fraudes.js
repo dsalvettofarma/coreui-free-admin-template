@@ -270,7 +270,7 @@ function renderBloqueadosMesSimple(mesKey, cantidad) {
 }
 
 async function onEnter() {
-  loadLayout();
+  // layout is rendered in fraudes.html via renderLayout, no need to call loadLayout here
   const form = document.getElementById('fraude-form');
   const mensaje = document.getElementById('mensaje');
   const btn = form.querySelector('.btn-primario');
