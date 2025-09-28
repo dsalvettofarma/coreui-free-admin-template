@@ -30,6 +30,10 @@
       <div class="row g-4">
         <div class="col-lg-8">
           <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Registro de Reporte de Fraude</h5>
+              <button class="btn btn-outline-secondary btn-sm">Ver Tabla</button>
+            </div>
             <div class="card-body">
               <form id="fraude-form" autocomplete="off">
                 <div class="row g-3">
@@ -53,6 +57,12 @@
                     <label for="orden" class="form-label">ID de Orden (opcional)</label>
                     <input type="text" class="form-control" id="orden" name="orden">
                   </div>
+                  <div class="col-md-6">
+                    <div class="form-check mt-4">
+                      <input class="form-check-input" type="checkbox" id="no_logueado" name="no_logueado">
+                      <label class="form-check-label" for="no_logueado">No logueado?</label>
+                    </div>
+                  </div>
                   <div class="col-12">
                     <label for="comentarios" class="form-label">Comentarios (opcional)</label>
                     <textarea class="form-control" id="comentarios" name="comentarios" rows="3"></textarea>
@@ -66,16 +76,17 @@
             <div class="card-header">Reportes Recientes</div>
             <div class="card-body">
               <div class="row row-cols-1 row-cols-md-2 g-3">
+                <!-- Ejemplo de tarjeta, repetir dinámicamente -->
                 <div class="col">
                   <div class="card h-100">
                     <div class="card-body">
                       <div class="d-flex align-items-center mb-2">
-                        <i class="ti ti-user ti-lg me-2 text-primary"></i>
-                        <h5 class="card-title mb-0">Pablo Correa <i class="ti ti-check text-success ms-1" title="Confirmado"></i></h5>
+                        <i class="ti ti-user ti-lg text-primary me-2"></i>
+                        <h6 class="mb-0">Pablo Correa <i class="ti ti-check text-success ms-1" title="Confirmado"></i></h6>
                       </div>
-                      <p class="card-text mb-1"><i class="ti ti-mail me-1"></i>pablo.correa@example.com</p>
-                      <p class="card-text mb-1"><i class="ti ti-file-text me-1"></i>Documento: 2704454</p>
-                      <p class="card-text text-muted small"><i class="ti ti-calendar-event me-1"></i>25/09/2025 17:35</p>
+                      <p class="mb-1"><i class="ti ti-mail me-1"></i>pablo.correa@example.com</p>
+                      <p class="mb-1"><i class="ti ti-file-text me-1"></i>Documento: 2704454</p>
+                      <p class="text-muted small"><i class="ti ti-calendar-event me-1"></i>25/09/2025 17:35</p>
                     </div>
                   </div>
                 </div>

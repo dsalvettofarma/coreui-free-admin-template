@@ -93,3 +93,34 @@
 .fraude-col.lateral {
   flex: 1 1 35%;
 }
+/**
+ * Override Bootstrap card styles to integrate with theme variables
+ */
+.card {
+  background-color: var(--fraude-bg) !important;
+  border: 1px solid var(--fraude-border) !important;
+  border-radius: 0.5rem;
+}
+.card-header {
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--fraude-border) !important;
+  color: var(--fraude-text);
+  font-weight: 600;
+}
+/**
+ * Ensure text and form labels match theme
+ */
+.form-label,
+.list-group-item,
+.list-unstyled li {
+  color: var(--fraude-text) !important;
+}
+/**
+ * Button and icon spacing
+ */
+.btn-primary {
+  min-width: 160px;
+}
+.ti {
+  vertical-align: middle;
+}
