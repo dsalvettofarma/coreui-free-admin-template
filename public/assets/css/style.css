@@ -1,0 +1,112 @@
+/* Set base font-size: 1rem *//*1.6rem = 1rem */
+html {
+  font-size: 62.5%;
+}
+
+/* Hover más claro para links del sidebar en modo claro */
+html[data-coreui-theme="light"] .sidebar .nav-link:hover {
+  background-color: #f1f3f5;
+  color: #0d6efd;
+}
+/* Sidebar section titles (Theme, Components, Extras) modo claro */
+html[data-coreui-theme="light"] .sidebar .nav-title {
+  color: #6c757d;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Sidebar nav-group-toggle (flechas) modo claro */
+html[data-coreui-theme="light"] .sidebar .nav-group-toggle::after {
+  color: #6c757d;
+  opacity: 0.7;
+}
+/* Sidebar estilos para modo claro */
+html[data-coreui-theme="light"] .sidebar {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+html[data-coreui-theme="light"] .sidebar .nav-link,
+html[data-coreui-theme="light"] .sidebar .sidebar-header {
+  color: #212529;
+}
+
+html[data-coreui-theme="light"] .sidebar .nav-link.active {
+  background-color: #e9ecef;
+  color: #0d6efd;
+}
+html[data-coreui-theme="light"] body {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+html[data-coreui-theme="light"] .header,
+html[data-coreui-theme="light"] .sidebar {
+  background-color: #fff;
+  color: #212529;
+}
+html[data-coreui-theme="dark"] body {
+  background-color: #23272b;
+  color: #dee2e6;
+}
+html[data-coreui-theme="dark"] .header,
+html[data-coreui-theme="dark"] .sidebar {
+  background-color: #23272b;
+  color: #dee2e6;
+}
+body {
+  background-color: var(--cui-tertiary-bg);
+}
+
+.wrapper {
+  width: 100%;
+  padding-inline: var(--cui-sidebar-occupy-start, 0) var(--cui-sidebar-occupy-end, 0);
+  will-change: auto;
+  transition: padding .15s;
+}
+
+.header > .container-fluid,
+.sidebar-header {
+  min-height: calc(4rem + 1px);
+}
+
+.sidebar-brand-full {
+  margin-left: 3px;
+}
+
+.sidebar-header .nav-underline-border {
+  --cui-nav-underline-border-link-padding-x:1.6rem;
+  --cui-nav-underline-border-gap: 0;
+}
+
+.sidebar-header .nav-link {
+  display: flex;
+  align-items: center;
+  min-height: calc(4rem + 1px);
+}
+
+.sidebar-toggler {
+  margin-inline-start: auto;
+}
+
+.sidebar-narrow .sidebar-toggler,
+.sidebar-narrow-unfoldable:not(:hover) .sidebar-toggler {
+  margin-inline-end: auto;
+}
+
+.header > .container-fluid + .container-fluid {
+  min-height:4.8rem;
+}
+
+.footer {
+  min-height: calc(3rem + 1px);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--cui-dark-bg-subtle);
+  }
+  .footer {
+    --cui-footer-bg: var(--cui-body-bg);
+  }
+}

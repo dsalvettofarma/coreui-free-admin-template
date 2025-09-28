@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Fraudes - Dashboard</title>
+  <!-- Tabler Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <!-- CDN CoreUI & Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/simplebar@6.2.5/dist/simplebar.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.0/dist/css/coreui.min.css" rel="stylesheet">
+  <!-- Local custom styles -->
+  <link href="./assets/css/style.css" rel="stylesheet">
+  <link href="./assets/css/examples.css" rel="stylesheet">
+  <!-- Estilos específicos de fraudes -->
+  <link rel="stylesheet" href="./assets/css/fraudes.css">
+  <!-- Scripts CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.0/dist/js/coreui.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/simplebar@6.2.5/dist/simplebar.min.js"></script>
+  <!-- Local custom scripts -->
+  <script src="./js/config.js"></script>
+  <script src="./js/color-modes.js"></script>
+</head>
+<body>
+  <!-- Importar el layout como módulo JS -->
+  <script type="module">
+    import { renderLayout } from './js/layout.js';
+    const fraudesContent = `
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Registro de Reporte de Fraude</h5>
+              <button class="btn btn-outline-secondary btn-sm">Ver Tabla</button>
+            </div>
+            <div class="card-body">
+              <form id="fraude-form" autocomplete="off">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="documento" class="form-label">Documento</label>
+                    <input type="text" class="form-control" id="documento" name="documento" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="nombre" class="form-label">Nombre Completo</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                  </div>
+                  <div class="col-md-8">
+                    <label for="correo" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="correo" name="correo" required>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-check mt-4">
+                      <input class="form-check-input" type="checkbox" id="no_logueado" name="no_logueado">
+                      <label class="form-check-label" for="no_logueado">Usuario no logueado</label>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label for="comentarios" class="form-label">Comentarios / Detalles del Fraude</label>
+                    <textarea class="form-control" id="comentarios" name="comentarios" rows="4" placeholder="Describe los detalles del fraude, dirección de envío, número de pedido, importe, etc."></textarea>
+                  </div>
+                </div>
+                <div id="mensaje" class="alert" style="display: none; margin-top: 1rem;"></div>
+                <button type="submit" class="btn btn-primary btn-primario mt-3">
+                  <span class="btn-text">Enviar Reporte</span>
+                  <span class="btn-spinner" style="display: none;">
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    Enviando...
+                  </span>
+                  <i class="ti ti-send ms-1"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span>Reportes Recientes</span>
+              <div class="d-flex gap-2">
+                <input type="text" class="form-control form-control-sm" id="buscadorFraude" placeholder="Buscar..." style="width: 200px;">
+                <select class="form-select form-select-sm" id="ordenarMiniCards" style="width: 150px;">
+                  <option value="fecha-desc">Más recientes</option>
+                  <option value="fecha-asc">Más antiguos</option>
+                  <option value="az">A-Z</option>
+                  <option value="za">Z-A</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="miniCardsContainer" class="row row-cols-1 row-cols-md-2 g-3">
+                <!-- Las tarjetas se cargan dinámicamente desde la API -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-header">Resumen de Bloqueos</div>
+            <div class="card-body">
+              <div id="bloqueados-resumen-cards">
+                <!-- Estadísticas se cargan dinámicamente -->
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">Resumen Mensual de Bloqueos</div>
+            <div class="card-body">
+              <div id="bloqueados-por-mes">
+                <!-- Datos mensuales se cargan dinámicamente -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    renderLayout({
+      pageTitle: 'Gestión de Fraudes',
+      breadcrumbs: [
+        { name: 'Home', url: 'index.html' },
+        { name: 'Gestión de Fraudes', url: '#' }
+      ],
+      content: fraudesContent,
+      user: { role: 'admin' }
+    });
+  </script>
+
+  <!-- Scripts necesarios -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.0/dist/js/coreui.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/simplebar@6.2.5/dist/simplebar.min.js"></script>
+  
+  <!-- Scripts específicos de fraudes -->
+  <script type="module" src="./modulos/form-fraudes/form-fraudes.js"></script>
+  
+</body>
+</html>

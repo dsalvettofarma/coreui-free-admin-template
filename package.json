@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "vercel dev",
-    "build": "echo 'Build complete'",
-    "start": "vercel dev"
+    "build": "echo 'Static site build complete'",
+    "start": "vercel dev",
+    "vercel-build": "echo 'Vercel build for static site'"
   },
   "repository": {
     "type": "git",
