@@ -170,8 +170,12 @@ function ordenarMiniCards(data, orden) {
 // Obtener datos reales desde Apps Script (temporalmente restaurado)
 async function fetchPersonas() {
   try {
-    const response = await fetch('/api/gateway?module=fraudes&action=list');
-    if (!response.ok) throw new Error('Error al obtener datos');
+    // Build query URL and log for debugging
+    const params = new URLSearchParams({ module: 'fraudes', action: 'list' });
+    const url = `/api/gateway?${params.toString()}`;
+    console.log('fetchPersonas - calling API:', url);
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
     const data = await response.json();
     
     if (!data.success) {
@@ -379,28 +383,16 @@ async function onEnter() {
         }
       }
       
-      // Usar API Gateway para enviar datos
-      const formData = {
-        documento: form.documento.value || '',
-        correo: form.correo.value || '',
-        nombre: form.nombre.value || '',
-        comentarios: form.comentarios.value || '',
-        logueado: form.no_logueado.checked ? 'No' : 'Sí' // Convertir checkbox a texto
-        // Campos removidos: apellido, levantado_mail, automatizacion, confirmado
-      };
-
-      const response = await fetch('/api/gateway', {
+      // Prepare POST URL and payload
+      const postUrl = '/api/gateway';
+      const payload = { module: 'fraudes', action: 'add', documento: formData.documento, correo: formData.correo, nombre: formData.nombre, comentarios: formData.comentarios, logueado: formData.logueado };
+      console.log('submitFraude - POST to', postUrl, 'payload:', payload);
+      const response = await fetch(postUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          module: 'fraudes',
-          action: 'add',
-          ...formData
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
-
+      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
       const result = await response.json();
       
       if (!result.success) {
