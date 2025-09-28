@@ -72,7 +72,7 @@ async function getAvailableSheets(module = 'INSPECTOR') {
   }
 }
 
-// Search in Google Sheets with filters (for inspector module)
+// Search in Google Sheets with filters (for inspector module) - Nova compatible
 async function searchInSheet(module = 'INSPECTOR', sheetName = '', searchParams = {}) {
   try {
     const moduleUpper = module.toUpperCase();
@@ -82,53 +82,85 @@ async function searchInSheet(module = 'INSPECTOR', sheetName = '', searchParams 
     
     const sheets = getGoogleSheetsService();
     
-    // Construir el rango usando el nombre de la hoja si se proporciona
-    let range = RANGES[moduleUpper] || 'A:Z';
-    if (sheetName) {
-      range = `${sheetName}!A:Z`;
+    // Get sheet metadata to determine last column like Nova does
+    const sheetMeta = await sheets.spreadsheets.get({ 
+      spreadsheetId: SPREADSHEET_IDS[moduleUpper] 
+    });
+    const sheetInfo = sheetMeta.data.sheets.find(s => s.properties.title === sheetName);
+    if (!sheetInfo) throw new Error(`Hoja '${sheetName}' no encontrada`);
+    
+    const lastColIndex = sheetInfo.properties.gridProperties.columnCount;
+    
+    // Convert index to column letter (A, B, ..., Z, AA, AB, ...)
+    function colIdxToLetter(idx) {
+      let letter = '';
+      while (idx > 0) {
+        let rem = (idx - 1) % 26;
+        letter = String.fromCharCode(65 + rem) + letter;
+        idx = Math.floor((idx - 1) / 26);
+      }
+      return letter;
     }
+    const lastColLetter = colIdxToLetter(lastColIndex);
+    const range = `${sheetName}!A:${lastColLetter}`;
     
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_IDS[moduleUpper],
       range: range,
     });
     
-    let data = response.data.values || [];
+    const rows = response.data.values || [];
+    if (rows.length < 2) return { headers: [], results: [] };
     
-    // Aplicar filtros si se proporcionan
-    if (searchParams.value && searchParams.value.trim() !== '') {
-      const { column, value, matchType = 'contains' } = searchParams;
-      
-      // Si hay encabezados, preservar la primera fila
-      const headers = data.length > 0 ? data[0] : [];
-      const rows = data.slice(1);
-      
-      const filteredRows = rows.filter(row => {
-        // Si se especifica una columna, buscar solo en esa columna
-        if (column && column !== '' && column !== 'todos') {
-          const columnIndex = headers.findIndex(header => 
-            header.toLowerCase().includes(column.toLowerCase())
-          );
+    const headers = rows[0];
+    let results = [];
+    
+    const { column, value, matchType = 'contains' } = searchParams;
+    
+    if (column === 'todos' && value === '__all__') {
+      // Return all data as array of arrays (not objects) - Nova format
+      results = rows.slice(1);
+    } else if (value && value.trim() !== '') {
+      // Specific search
+      if (column && column !== 'todos') {
+        const columnIndex = headers.indexOf(column);
+        if (columnIndex === -1) {
+          throw new Error(`Columna '${column}' no encontrada`);
+        }
+        
+        results = rows.slice(1).filter(row => {
+          const cellValue = (row[columnIndex] || '').toString().toLowerCase();
+          const searchValue = value.toLowerCase();
           
-          if (columnIndex !== -1 && row[columnIndex]) {
-            return matchText(row[columnIndex].toString(), value, matchType);
+          switch (matchType) {
+            case 'exact':
+              return cellValue === searchValue;
+            case 'starts':
+              return cellValue.startsWith(searchValue);
+            case 'ends':
+              return cellValue.endsWith(searchValue);
+            case 'contains':
+            default:
+              return cellValue.includes(searchValue);
           }
-          return false;
-        } else {
-          // Buscar en todas las columnas
+        });
+      } else {
+        // Search in all columns
+        results = rows.slice(1).filter(row => {
           return row.some(cell => {
             if (cell) {
               return matchText(cell.toString(), value, matchType);
             }
             return false;
           });
-        }
-      });
-      
-      data = headers.length > 0 ? [headers, ...filteredRows] : filteredRows;
+        });
+      }
+    } else {
+      results = rows.slice(1);
     }
     
-    return data;
+    // Return in Nova format: { headers: [], results: [] }
+    return { headers, results };
   } catch (error) {
     console.error(`Error searching in sheet for ${module}:`, error);
     throw new Error(`Error al buscar en Google Sheets para ${module}`);
@@ -153,8 +185,8 @@ function matchText(text, searchValue, matchType) {
   }
 }
 
-// Get data from Google Sheets - supports any module
-async function getSheetData(module = 'FRAUDES') {
+// Get data from Google Sheets - supports any module, sheet name, and range
+async function getSheetData(module = 'FRAUDES', sheetName = '', range = '') {
   try {
     const moduleUpper = module.toUpperCase();
     if (!SPREADSHEET_IDS[moduleUpper]) {
@@ -162,9 +194,18 @@ async function getSheetData(module = 'FRAUDES') {
     }
     
     const sheets = getGoogleSheetsService();
+    
+    // Build range string
+    let finalRange = RANGES[moduleUpper] || RANGES.FRAUDES;
+    if (sheetName && range) {
+      finalRange = `${sheetName}!${range}`;
+    } else if (sheetName) {
+      finalRange = `${sheetName}!A:Z`;
+    }
+    
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_IDS[moduleUpper],
-      range: RANGES[moduleUpper] || RANGES.FRAUDES,
+      range: finalRange,
     });
     
     return response.data.values || [];
@@ -283,14 +324,19 @@ export default async function handler(req, res) {
           module: module
         });
       } else if (action === 'search') {
-        // Para el inspector, realizar búsquedas con filtros
-        const { sheet, column, value, matchType } = req.query;
-        const results = await searchInSheet(module, sheet, { column, value, matchType });
+        // Para el inspector, realizar búsquedas con filtros - Nova compatible
+        const { sheet, column, value, matchType, spreadsheetId } = req.query;
+        const searchResult = await searchInSheet(module, sheet, { column, value, matchType });
+        
+        // Return exact Nova format
+        return res.status(200).json(searchResult);
+      } else if (action === 'getData') {
+        // Para el inspector, obtener datos de una hoja específica
+        const { sheet, range = 'A:Z', spreadsheetId } = req.query;
+        const data = await getSheetData(module, sheet, range);
         return res.status(200).json({
           success: true,
-          data: results,
-          module: module,
-          searchParams: { sheet, column, value, matchType }
+          data: data
         });
       } else if (action === 'info') {
         return res.status(200).json({
