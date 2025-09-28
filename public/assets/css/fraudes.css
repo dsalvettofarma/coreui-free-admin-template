@@ -132,9 +132,10 @@
 .mini-card {
   background-color: var(--fraude-bg);
   border: 1px solid var(--fraude-border);
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
+  border-radius: 0.4rem;
+  padding: 1rem;
+  margin: 0.6rem 0.6rem;
+  width: 32%;
 }
 
 .mini-card-header {
@@ -172,9 +173,9 @@
  */
 .bloqueados-resumen-card {
   text-align: center;
-  padding: 16px;
+  padding: 1.4rem;
   border: 1px solid var(--fraude-border);
-  border-radius: 8px;
+  border-radius: 0.4rem;
   margin-bottom: 12px;
 }
 
@@ -185,7 +186,7 @@
 }
 
 .bloqueados-label {
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   color: var(--fraude-text);
   margin-top: 4px;
 }
@@ -221,7 +222,9 @@
   border-radius: 4px;
   cursor: pointer;
 }
-
+.card-header.d-flex.justify-content-between.align-items-center {
+    margin-bottom: 0.6rem;
+}
 .bloqueados-mes-vermas button:hover {
   background-color: var(--fraude-border);
 }
@@ -232,4 +235,35 @@
 .readonly-doc {
   background-color: #f8f9fa !important;
   opacity: 0.7;
+}
+
+h5.mb-0 {
+    font-size: 2rem;
+}
+
+button.btn.btn-outline-secondary.btn-sm {
+    font-size: 1.6rem;
+}
+
+.card-header {
+    font-size: 1.6rem;
+}
+
+input#buscadorFraude {
+    width: 30 rem;
+    font-size: 1.6rem;
+}
+
+select#ordenarMiniCards {
+    font-size: 1.2rem;
+}
+
+@media (min-width: 992px) {
+    .col-lg-4 {
+        width: 25% !important;
+    }
+    .col-lg-8 {
+        flex: 0 0 auto;
+        width: 75%;
+    }
 }
