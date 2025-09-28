@@ -217,11 +217,9 @@ function _ordenarHeaders(headers, sheetName) {
 }
 
 // --- Inicialización para producción ---
-document.addEventListener('DOMContentLoaded', async () => {
-    console.log("INSPECTOR: DOMContentLoaded - inicializando módulo inspector");
-    
-    // Wait a bit for layout to render
-    await new Promise(resolve => setTimeout(resolve, 100));
+// Función de inicialización exportable
+async function initInspector() {
+    console.log("INSPECTOR: initInspector llamado - inicializando módulo inspector");
     
     try {
         // Obtener referencias a los elementos del DOM (IDs actualizados para production)
@@ -245,12 +243,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         selectCanalVenta = document.getElementById('canalVenta');
         selectComercio = document.getElementById('comercio');
         estadoElement = document.getElementById('estado');
+        
+        console.log("INSPECTOR: Elementos encontrados:", {
+            selectHoja: !!selectHoja,
+            btnPrecargar: !!btnPrecargar,
+            btnBuscar: !!btnBuscar,
+            inputValor: !!inputValor,
+            tablaResultados: !!tablaResultados,
+            overlaySpinnerElement: !!overlaySpinnerElement,
+            overlayTextElement: !!overlayTextElement
+        });
+        
         // Verificar que los elementos principales existen
         if (!selectHoja || !btnPrecargar || !btnBuscar || !inputValor || !tablaResultados|| !overlaySpinnerElement || !overlayTextElement) {
             console.error("INSPECTOR: Faltan elementos cruciales del DOM. La sección no puede inicializarse.");
             if(estadoElement) estadoElement.textContent = "Error: Interfaz del inspector no cargada correctamente.";
-            const mainContent = document.getElementById('main-content');
-            if(mainContent) mainContent.innerHTML = '<p class="status-message error-message" style="padding:20px;">Error al cargar la interfaz del Inspector. Elementos no encontrados.</p>';
+            const mainBody = document.getElementById('main-body');
+            if(mainBody) mainBody.innerHTML = '<p class="status-message error-message" style="padding:20px;">Error al cargar la interfaz del Inspector. Elementos no encontrados.</p>';
             return;
         }
         // Añadir Listeners usando el helper
@@ -288,7 +297,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("INSPECTOR: Error en inicialización:", err);
         if(estadoElement) _updateStatus("Error al inicializar el módulo: " + (err.message || err), true);
     }
-});
+}
+
+// Exportar la función globalmente para ser llamada desde inspector.html
+window.initInspector = initInspector;
 
 // --- Funciones de Caché y Precarga ---
 function _cacheExpirada() { //

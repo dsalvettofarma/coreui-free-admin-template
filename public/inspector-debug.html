@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inspector Debug</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  
+  <!-- CoreUI CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.0/dist/css/coreui.min.css" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <!-- Layout se renderizará aquí -->
+  </div>
+
+  <!-- Content original (oculto) -->
+  <div id="main-content" class="inspector-root" style="display: none;">
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h5 class="card-title mb-0">
+                <i class="ti ti-search me-2"></i>
+                Inspector Debug
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label for="sheet" class="form-label">Hoja:</label>
+                <select id="sheet" class="form-select">
+                  <option value="">Seleccionar hoja...</option>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <button id="btnPrecargar" class="btn btn-secondary">🔄 Precargar hoja</button>
+                <button id="btnBuscar" class="btn btn-primary">🔍 Buscar</button>
+              </div>
+              
+              <div class="mb-3">
+                <input type="text" id="valor" class="form-control" placeholder="Valor a buscar...">
+              </div>
+              
+              <div id="estado" class="alert" style="display: none;"></div>
+              
+              <div id="tablaResultados">
+                <p class="text-muted">Los resultados aparecerán aquí...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Spinner oculto -->
+    <div id="overlay-spinner" style="display: none;">
+      <div id="overlay-text">Cargando...</div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- CoreUI JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.0/dist/js/coreui.bundle.min.js"></script>
+  
+  <!-- Test Script -->
+  <script type="module">
+    import { renderLayout } from './js/layout.js';
+    
+    // Función de test simple
+    function testInspector() {
+      console.log('=== TEST INSPECTOR ===');
+      
+      // Verificar elementos críticos
+      const elementos = {
+        sheet: document.getElementById('sheet'),
+        btnPrecargar: document.getElementById('btnPrecargar'),
+        btnBuscar: document.getElementById('btnBuscar'),
+        valor: document.getElementById('valor'),
+        tablaResultados: document.getElementById('tablaResultados'),
+        estado: document.getElementById('estado'),
+        overlaySpinner: document.getElementById('overlay-spinner'),
+        overlayText: document.getElementById('overlay-text')
+      };
+      
+      console.log('Elementos encontrados:');
+      Object.entries(elementos).forEach(([nombre, elemento]) => {
+        console.log(`  ${nombre}: ${elemento ? 'ENCONTRADO' : 'NO ENCONTRADO'}`);
+      });
+      
+      // Test básico de funcionalidad
+      if (elementos.btnBuscar) {
+        elementos.btnBuscar.addEventListener('click', () => {
+          console.log('Test: Botón buscar clickeado');
+          if (elementos.tablaResultados) {
+            elementos.tablaResultados.innerHTML = `
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Test Column</th>
+                    <th>Data</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Test</td>
+                    <td>Data rendered successfully!</td>
+                  </tr>
+                </tbody>
+              </table>
+            `;
+            if (elementos.estado) {
+              elementos.estado.className = 'alert alert-success';
+              elementos.estado.style.display = 'block';
+              elementos.estado.textContent = '✅ Test de tabla exitoso';
+            }
+          }
+        });
+      }
+      
+      if (elementos.btnPrecargar) {
+        elementos.btnPrecargar.addEventListener('click', () => {
+          console.log('Test: Botón precargar clickeado');
+          if (elementos.sheet) {
+            elementos.sheet.innerHTML = `
+              <option value="">Seleccionar hoja...</option>
+              <option value="TOKENS">TOKENS</option>
+              <option value="FRAUDES">FRAUDES</option>
+              <option value="INSPECTOR">INSPECTOR</option>
+            `;
+            if (elementos.estado) {
+              elementos.estado.className = 'alert alert-info';
+              elementos.estado.style.display = 'block';
+              elementos.estado.textContent = '📋 Hojas cargadas';
+            }
+          }
+        });
+      }
+    }
+    
+    // Renderizar layout y probar
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('DEBUG: DOM loaded');
+      
+      const user = { role: "admin", name: "Debug User" };
+      const content = document.getElementById('main-content').innerHTML;
+      
+      console.log('DEBUG: Rendering layout...');
+      renderLayout({ user, content });
+      
+      console.log('DEBUG: Layout rendered, waiting for elements...');
+      
+      setTimeout(() => {
+        testInspector();
+      }, 300);
+    });
+  </script>
+</body>
+</html>

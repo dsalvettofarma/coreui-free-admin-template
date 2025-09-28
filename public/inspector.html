@@ -199,9 +199,9 @@
   </style>
 </head>
 <body>
-  <div id="layout"></div>
+  <div id="app"></div>
   
-  <main id="main-content" class="inspector-root">
+  <main id="main-content" class="inspector-root" style="display: none;">
     <div id="overlay-spinner" class="overlay-spinner" style="display:none;">
       <div class="spinner-container">
         <div class="spinner"></div>
@@ -299,24 +299,67 @@
   <!-- Layout and Module Scripts -->
   <script type="module">
     import { renderLayout } from './js/layout.js';
+    import './modulos/inspector/inspector.js';
     
-    // Render layout
-    document.addEventListener('DOMContentLoaded', () => {
+    // Función para verificar que todos los elementos estén disponibles
+    function waitForElements(selectors) {
+      return new Promise((resolve) => {
+        const checkElements = () => {
+          const missing = selectors.filter(selector => !document.getElementById(selector));
+          if (missing.length === 0) {
+            resolve();
+          } else {
+            console.log('INSPECTOR: Esperando elementos:', missing);
+            setTimeout(checkElements, 50);
+          }
+        };
+        checkElements();
+      });
+    }
+    
+    // Render layout with inspector content
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('INSPECTOR: DOM loaded, starting layout render...');
+      
       const user = JSON.parse(localStorage.getItem('user') || '{"role": "admin", "name": "Usuario"}');
       
-      // Move inspector content to main body after layout renders
-      const inspectorContent = document.querySelector('.inspector-root').innerHTML;
+      // Get the inspector content
+      const inspectorContent = document.getElementById('main-content').innerHTML;
+      console.log('INSPECTOR: Content length:', inspectorContent.length);
       
-      renderLayout({ 
-        user,
-        content: `<div class="inspector-root">${inspectorContent}</div>`
-      });
+      // Render layout with the inspector content
+      renderLayout({ user, content: inspectorContent });
+      console.log('INSPECTOR: Layout rendered');
       
-      // Remove the original inspector content since it's now in the layout
-      document.querySelector('main.inspector-root').remove();
+      // Hide the original content since it's now inside the layout
+      document.getElementById('main-content').style.display = 'none';
+      
+      // Wait for critical elements to be available
+      const criticalElements = [
+        'sheet', 'btnPrecargar', 'btnBuscar', 'valor', 
+        'tablaResultados', 'overlay-spinner', 'overlay-text'
+      ];
+      
+      console.log('INSPECTOR: Esperando elementos críticos...');
+      await waitForElements(criticalElements);
+      console.log('INSPECTOR: Todos los elementos críticos encontrados');
+      
+      // Initialize inspector
+      if (window.initInspector) {
+        console.log('INSPECTOR: Inicializando módulo...');
+        try {
+          await window.initInspector();
+          console.log('INSPECTOR: Módulo inicializado correctamente');
+        } catch (error) {
+          console.error('INSPECTOR: Error al inicializar:', error);
+        }
+      } else {
+        console.error('INSPECTOR: initInspector no está disponible en window');
+      }
     });
   </script>
   
-  <script type="module" src="modulos/inspector/inspector.js"></script>
+  <!-- Debug Script -->
+  <script src="debug-inspector.js"></script>
 </body>
 </html>
