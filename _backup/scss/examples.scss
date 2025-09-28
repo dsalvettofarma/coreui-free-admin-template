@@ -34,7 +34,7 @@
     > .alert + .alert,
     > .navbar + .navbar,
     > .progress + .progress {
-      margin-top: 1rem;
+      margin-top:1.6rem;
     }
 
     > .dropdown-menu {
@@ -74,21 +74,21 @@
     .fixed-top,
     .sticky-top {
       position: static;
-      margin: -1rem -1rem 1rem;
+      margin: -1rem -1rem1.6rem;
     }
 
     .fixed-bottom {
       position: static;
-      margin: 1rem -1rem -1rem;
+      margin:1.6rem -1rem -1rem;
     }
 
     @include media-breakpoint-up(sm) {
       .fixed-top,
       .sticky-top {
-        margin: -1.5rem -1.5rem 1rem;
+        margin: -1.5rem -1.5rem1.6rem;
       }
       .fixed-bottom {
-        margin: 1rem -1.5rem -1.5rem;
+        margin:1.6rem -1.5rem -1.5rem;
       }
     }
 

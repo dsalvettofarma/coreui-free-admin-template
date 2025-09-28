@@ -1,4 +1,4 @@
-/* Set base font-size: 10px *//* 1rem = 10px */
+/* Set base font-size: 10px *//*1.6rem = 10px */
 html {
   font-size: 62.5%;
 }
@@ -75,7 +75,7 @@ body {
 }
 
 .sidebar-header .nav-underline-border {
-  --cui-nav-underline-border-link-padding-x: 1rem;
+  --cui-nav-underline-border-link-padding-x:1.6rem;
   --cui-nav-underline-border-gap: 0;
 }
 
