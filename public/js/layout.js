@@ -13,6 +13,7 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
     { type: 'item', label: 'Typography', href: 'typography.html', icon: 'ti-typography', show: true },
     { type: 'title', label: 'Components', show: true },
     { type: 'item', label: 'Gestión de Fraudes', href: 'fraudes.html', icon: 'ti-shield-lock', show: user.role === 'admin' || user.role === 'fraude' },
+    { type: 'item', label: 'Inspector de Pagos', href: 'inspector.html', icon: 'ti-search', show: user.role === 'admin' },
     { type: 'group', label: 'Base', icon: 'ti-box', show: user.role !== 'guest', items: [
       { label: 'Accordion', href: 'base/accordion.html' },
       { label: 'Breadcrumb', href: 'base/breadcrumb.html' },
