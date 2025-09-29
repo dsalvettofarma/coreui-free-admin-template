@@ -350,9 +350,9 @@ async function onEnter() {
     return;
   }
   
-  const btn = form.querySelector('.btn-primario');
+  const btn = form.querySelector('.btn-send-report');
   if (!btn) {
-    console.error('FRAUDES: No se encontró el botón .btn-primario');
+    console.error('FRAUDES: No se encontró el botón .btn-send-report');
     return;
   }
   
