@@ -355,37 +355,148 @@ export default async function handler(req, res) {
     }
     
     if (req.method === 'POST') {
-      const { module, action, ...formData } = req.body;
+      const { action, sheetName, searchTerm, maxResults, uid, module, ...formData } = req.body;
       
-      if (!module || !action) {
+      if (!action) {
         return res.status(400).json({
           success: false,
-          message: 'Parámetros module y action son requeridos'
+          message: 'Parámetro action es requerido'
         });
       }
       
-      // Validar que el módulo esté configurado
-      const moduleUpper = module.toUpperCase();
-      if (!SPREADSHEET_IDS[moduleUpper]) {
-        return res.status(400).json({
-          success: false,
-          message: `Módulo ${module} no configurado`
-        });
+      // Handle searchInSheet action (for alertas module)
+      if (action === 'searchInSheet') {
+        const moduleToUse = sheetName === 'ALERTAS' ? 'ALERTAS' : (module || 'INSPECTOR');
+        const finalSheetName = sheetName === 'ALERTAS' ? 'Alertas' : sheetName;
+        
+        try {
+          const result = await searchInSheet(moduleToUse, finalSheetName, {
+            column: 'todos',
+            value: searchTerm || '__all__',
+            matchType: 'contains'
+          });
+          
+          // Convert results to objects using headers
+          const data = result.results.map(row => {
+            const obj = {};
+            result.headers.forEach((header, index) => {
+              obj[header] = row[index] || '';
+            });
+            return obj;
+          });
+          
+          return res.status(200).json({
+            success: true,
+            data: data,
+            headers: result.headers,
+            total: data.length
+          });
+        } catch (error) {
+          console.error('Error in searchInSheet:', error);
+          return res.status(500).json({
+            success: false,
+            error: error.message
+          });
+        }
       }
       
+      // Handle markAsReviewed action (for alertas module)
+      if (action === 'markAsReviewed') {
+        try {
+          const sheets = getGoogleSheetsService();
+          const moduleToUse = sheetName === 'ALERTAS' ? 'ALERTAS' : 'ALERTAS';
+          const finalSheetName = 'Alertas';
+          
+          // Get all data to find the row with the UID
+          const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_IDS[moduleToUse],
+            range: `${finalSheetName}!A:Z`,
+          });
+          
+          const rows = response.data.values || [];
+          if (rows.length < 2) {
+            return res.status(404).json({
+              success: false,
+              error: 'No se encontraron datos en la hoja'
+            });
+          }
+          
+          const headers = rows[0];
+          const uidIndex = headers.findIndex(h => h.toLowerCase() === 'uid');
+          const revisadoIndex = headers.findIndex(h => h.toLowerCase() === 'revisado');
+          
+          if (uidIndex === -1 || revisadoIndex === -1) {
+            return res.status(400).json({
+              success: false,
+              error: 'No se encontraron las columnas UID o Revisado'
+            });
+          }
+          
+          // Find the row with the matching UID
+          let rowIndex = -1;
+          for (let i = 1; i < rows.length; i++) {
+            if (rows[i][uidIndex] === uid) {
+              rowIndex = i;
+              break;
+            }
+          }
+          
+          if (rowIndex === -1) {
+            return res.status(404).json({
+              success: false,
+              error: 'No se encontró la alerta con ese UID'
+            });
+          }
+          
+          // Update the "Revisado" column to "Sí"
+          const columnLetter = String.fromCharCode(65 + revisadoIndex); // A=65, B=66, etc.
+          const cellRange = `${finalSheetName}!${columnLetter}${rowIndex + 1}`;
+          
+          await sheets.spreadsheets.values.update({
+            spreadsheetId: SPREADSHEET_IDS[moduleToUse],
+            range: cellRange,
+            valueInputOption: 'RAW',
+            requestBody: {
+              values: [['Sí']]
+            }
+          });
+          
+          return res.status(200).json({
+            success: true,
+            message: 'Alerta marcada como revisada'
+          });
+        } catch (error) {
+          console.error('Error in markAsReviewed:', error);
+          return res.status(500).json({
+            success: false,
+            error: error.message
+          });
+        }
+      }
+      
+      // Handle add action (existing functionality)
       if (action === 'add') {
-        await addToSheet(formData, module);
+        const moduleToUse = module || 'FRAUDES';
+        const moduleUpper = moduleToUse.toUpperCase();
+        if (!SPREADSHEET_IDS[moduleUpper]) {
+          return res.status(400).json({
+            success: false,
+            message: `Módulo ${moduleToUse} no configurado`
+          });
+        }
+        
+        await addToSheet(formData, moduleToUse);
         return res.status(200).json({
           success: true,
-          message: `Datos agregados correctamente a ${module}`,
-          module: module
-        });
-      } else {
-        return res.status(400).json({
-          success: false,
-          message: `Acción ${action} no válida para módulo ${module}`
+          message: `Datos agregados correctamente a ${moduleToUse}`,
+          module: moduleToUse
         });
       }
+      
+      return res.status(400).json({
+        success: false,
+        message: `Acción ${action} no válida`
+      });
     }
     
     return res.status(405).json({
