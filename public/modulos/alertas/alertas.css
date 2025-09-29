@@ -1,0 +1,242 @@
+/* modulos/alertas/alertas.css - Estilos para el módulo de alertas con CoreUI */
+
+/* Estilos específicos para el módulo de alertas que complementan CoreUI */
+
+/* Estado de desvanecimiento para animación */
+.alerta-desvaneciendo {
+  opacity: 0.3 !important;
+  transform: scale(0.95) !important;
+  transition: all 0.5s ease-out !important;
+}
+
+/* Hover effects para elementos interactivos */
+.alerta-item:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+/* Estilos para textos resaltados en modal */
+.texto-destacado-modal {
+  background-color: #fff3cd;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+/* Estilos para el motivo de alerta en modal */
+.motivo-alerta-modal {
+  background-color: #f8f9fa;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  border-left: 4px solid #fd7e14;
+}
+
+.motivo-alerta-modal i {
+  color: #fd7e14;
+  margin-right: 8px;
+}
+
+/* Estilos para datos parseados */
+.datos-parseados {
+  background-color: #e3f2fd;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.datos-parseados pre {
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+  margin: 5px 0 0 0;
+}
+
+/* Estilos para iconos de información */
+.info-disparo-icon {
+  color: #0dcaf0;
+  cursor: help;
+  font-size: 1.1em;
+  margin-right: 5px;
+}
+
+.info-disparo-icon:hover {
+  color: #31d2f2;
+}
+
+/* Estilos para botones de acción mejorados */
+.btn-marcar-revisado {
+  background-color: #198754 !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  border-radius: 6px !important;
+  font-size: 0.85rem !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-marcar-revisado:hover {
+  background-color: #157347 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 8px rgba(21, 115, 71, 0.3) !important;
+}
+
+.btn-marcar-revisado:disabled {
+  background-color: #6c757d !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+/* Estilos para estados de revisión */
+.revisado-si {
+  color: #198754;
+  font-weight: 500;
+}
+
+.revisado-no {
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Animaciones de carga mejoradas */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.loading-animation {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Estilos para tooltips personalizados */
+.tooltip-content {
+  background-color: #212529;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  max-width: 200px;
+  word-wrap: break-word;
+}
+
+/* Estilos responsivos adicionales */
+@media (max-width: 576px) {
+  .alerta-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .alerta-contenido {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  .alerta-acciones {
+    margin-left: 0 !important;
+    text-align: center;
+  }
+  
+  .btn-marcar-revisado {
+    justify-content: center !important;
+  }
+}
+
+/* Estilos para mejorar la accesibilidad */
+.btn-marcar-revisado:focus {
+  outline: 2px solid #0d6efd;
+  outline-offset: 2px;
+}
+
+.modal-close-button:focus {
+  outline: 2px solid #dc3545;
+  outline-offset: 2px;
+}
+
+/* Estilos para el contenido del modal */
+.modal-body-content pre {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 6px;
+  max-height: 400px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+  margin: 0;
+  border: 1px solid #dee2e6;
+}
+
+/* Tema oscuro - Estilos adicionales */
+html[data-coreui-theme="dark"] .texto-destacado-modal {
+  background-color: #664d03;
+  color: #fff3cd;
+}
+
+html[data-coreui-theme="dark"] .motivo-alerta-modal {
+  background-color: #374151;
+  border-left-color: #fd7e14;
+}
+
+html[data-coreui-theme="dark"] .datos-parseados {
+  background-color: #1e3a8a;
+  color: #dbeafe;
+}
+
+html[data-coreui-theme="dark"] .modal-body-content pre {
+  background-color: #374151;
+  border-color: #4a5568;
+  color: #f7fafc;
+}
+
+html[data-coreui-theme="dark"] .tooltip-content {
+  background-color: #f7fafc;
+  color: #2d3748;
+}
+
+/* Estilos para indicadores de estado mejorados */
+.estado-tag.positivo {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c2c7;
+}
+
+.estado-tag.negativo {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+}
+
+html[data-coreui-theme="dark"] .estado-tag.positivo {
+  background-color: #58151c;
+  color: #f1aeb5;
+  border-color: #842029;
+}
+
+html[data-coreui-theme="dark"] .estado-tag.negativo {
+  background-color: #051b11;
+  color: #75b798;
+  border-color: #0a3622;
+}
+
+/* Mejoras visuales para la tabla */
+.data-table tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+html[data-coreui-theme="dark"] .data-table tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Estilos para elementos de carga */
+.ti-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

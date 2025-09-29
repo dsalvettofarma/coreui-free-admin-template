@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es" data-coreui-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitor de alertas</title>
+  
+  <!-- CoreUI CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.0/dist/css/coreui.min.css" rel="stylesheet">
+  
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="modulos/alertas/alertas.css">
+  
+  <style>
+    /* Alertas root styles */
+    .alertas-root {
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+    
+    /* Header compacto y elegante para alertas */
+    .compact-header {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-bottom: 2px solid #dee2e6;
+      padding: 12px 20px;
+      border-radius: 8px 8px 0 0;
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .header-left {
+      flex: 1;
+      min-width: 300px;
+    }
+    
+    .module-title {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #2d3748;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .header-subtitle {
+      color: #6c757d;
+      font-size: 0.85rem;
+      margin-left: 28px;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    /* Botones de acción */
+    .btn-group-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    
+    .btn-action {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    
+    .btn-action.btn-primary {
+      background-color: #0d6efd;
+      color: white;
+    }
+    
+    .btn-action.btn-primary:hover {
+      background-color: #0b5ed7;
+      transform: translateY(-1px);
+    }
+    
+    .btn-action.btn-success {
+      background-color: #198754;
+      color: white;
+    }
+    
+    .btn-action.btn-success:hover {
+      background-color: #157347;
+      transform: translateY(-1px);
+    }
+    
+    .btn-action.btn-warning {
+      background-color: #fd7e14;
+      color: white;
+    }
+    
+    .btn-action.btn-warning:hover {
+      background-color: #e8681a;
+      transform: translateY(-1px);
+    }
+    
+    /* Contenido principal */
+    .alertas-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin: 0 auto;
+      max-width: 1400px;
+    }
+    
+    .alertas-content {
+      padding: 20px;
+    }
+    
+    /* Secciones */
+    .section-container {
+      margin-bottom: 30px;
+    }
+    
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .section-title-alertas::before {
+      content: "⚠️";
+      font-size: 1.1em;
+    }
+    
+    .section-title-historial::before {
+      content: "📋";
+      font-size: 1.1em;
+    }
+    
+    /* Status messages */
+    .status-message {
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin: 15px 0;
+      font-weight: 500;
+      text-align: center;
+    }
+    
+    .status-message.info {
+      background-color: #d1edff;
+      color: #0c5460;
+      border-left: 4px solid #0dcaf0;
+    }
+    
+    .status-message.error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+      border-left: 4px solid #dc3545;
+    }
+    
+    .status-message.success {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      border-left: 4px solid #198754;
+    }
+    
+    /* Lista de alertas */
+    .alertas-list {
+      background-color: #f8f9fa;
+      border-radius: 6px;
+      padding: 15px;
+      min-height: 100px;
+    }
+    
+    /* Tabla responsive */
+    .table-responsive-container {
+      margin-top: 15px;
+    }
+    
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .data-table th {
+      background-color: #f8f9fa;
+      color: #495057;
+      font-weight: 600;
+      padding: 12px 8px;
+      text-align: left;
+      border-bottom: 2px solid #dee2e6;
+    }
+    
+    .data-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #dee2e6;
+      vertical-align: middle;
+    }
+    
+    .data-table tr:hover {
+      background-color: #f5f5f5;
+    }
+    
+    /* Estados */
+    .estado-tag {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    
+    .estado-tag.positivo {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .estado-tag.negativo {
+      background-color: #d1e7dd;
+      color: #0f5132;
+    }
+    
+    /* Utility classes */
+    .hidden {
+      display: none !important;
+    }
+    
+    .text-center {
+      text-align: center;
+    }
+    
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    .modal-dialog {
+      background: white;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #dee2e6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h3 {
+      margin: 0;
+      color: #2d3748;
+    }
+    
+    .modal-close-button {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #6c757d;
+      padding: 5px;
+    }
+    
+    .modal-close-button:hover {
+      color: #dc3545;
+    }
+    
+    .modal-body-content {
+      padding: 20px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .header-left {
+        min-width: auto;
+        text-align: center;
+      }
+      
+      .btn-group-actions {
+        justify-content: center;
+      }
+      
+      .data-table {
+        font-size: 0.85rem;
+      }
+      
+      .data-table th,
+      .data-table td {
+        padding: 8px 4px;
+      }
+    }
+    
+    /* Tema oscuro */
+    html[data-coreui-theme="dark"] .compact-header {
+      background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+      border-bottom-color: #4a5568;
+    }
+    
+    html[data-coreui-theme="dark"] .module-title {
+      color: #f7fafc;
+    }
+    
+    html[data-coreui-theme="dark"] .header-subtitle {
+      color: #a0aec0;
+    }
+    
+    html[data-coreui-theme="dark"] .alertas-card {
+      background-color: #2d3748;
+    }
+    
+    html[data-coreui-theme="dark"] .alertas-list {
+      background-color: #374151;
+    }
+    
+    html[data-coreui-theme="dark"] .data-table {
+      background-color: #2d3748;
+      color: #f7fafc;
+    }
+    
+    html[data-coreui-theme="dark"] .data-table th {
+      background-color: #374151;
+      color: #f7fafc;
+      border-color: #4a5568;
+    }
+    
+    html[data-coreui-theme="dark"] .data-table td {
+      border-color: #4a5568;
+    }
+    
+    html[data-coreui-theme="dark"] .data-table tr:hover {
+      background-color: #374151;
+    }
+    
+    html[data-coreui-theme="dark"] .modal-dialog {
+      background-color: #2d3748;
+      color: #f7fafc;
+    }
+    
+    html[data-coreui-theme="dark"] .modal-header {
+      border-color: #4a5568;
+    }
+    
+    html[data-coreui-theme="dark"] .status-message.info {
+      background-color: #1c4966;
+      color: #9ec5fe;
+      border-left-color: #0dcaf0;
+    }
+    
+    html[data-coreui-theme="dark"] .status-message.error-message {
+      background-color: #58151c;
+      color: #f1aeb5;
+      border-left-color: #dc3545;
+    }
+    
+    html[data-coreui-theme="dark"] .status-message.success {
+      background-color: #064e3b;
+      color: #6ee7b7;
+      border-left-color: #198754;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  
+  <main id="main-content" class="alertas-root" style="display: none;">
+    <div class="alertas-card">
+      <!-- Header compacto y elegante -->
+      <div class="compact-header">
+        <div class="header-content">
+          <div class="header-left">
+            <h4 class="module-title">
+              <i class="ti ti-alert-triangle" style="font-size: 1.2em; color: #fd7e14;"></i>
+              Monitor de alertas
+            </h4>
+            <small class="header-subtitle">Sistema de monitoreo de emails y alertas automáticas</small>
+          </div>
+          
+          <div class="header-actions">
+            <!-- Botones principales -->
+            <div class="btn-group-actions">
+              <button id="btn-recargar-alertas" class="btn-action btn-primary" title="Recargar alertas">
+                <i class="ti ti-refresh"></i> Recargar
+              </button>
+              <button id="btn-recargar-historial" class="btn-action btn-success" title="Recargar historial">
+                <i class="ti ti-history"></i> Historial
+              </button>
+              <button id="btn-configuracion" class="btn-action btn-warning" title="Configuración">
+                <i class="ti ti-settings"></i> Config
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Contenido principal -->
+      <div class="alertas-content">
+        <!-- Sección de alertas activas -->
+        <section id="alertas-positivas-container" class="section-container">
+          <h2 class="section-title section-title-alertas">Alertas que requieren revisión</h2>
+          <div id="lista-alertas-content" class="alertas-list">
+            <p id="loading-alertas" class="status-message info">Cargando alertas...</p>
+            <p id="no-alertas" class="status-message success hidden">No hay alertas positivas recientes sin revisar.</p>
+            <p id="error-alertas" class="status-message error-message hidden">Error al cargar las alertas.</p>
+          </div>
+        </section>
+
+        <hr style="border: none; border-top: 1px solid #dee2e6; margin: 30px 0;">
+
+        <!-- Sección de historial -->
+        <section id="registro-historico-container" class="section-container">
+          <div class="historial-header">
+            <h2 class="section-title section-title-historial">Historial de alertas disparadas</h2>
+          </div>
+          <div class="historial-legend">
+            <p>
+              <span class="estado-tag positivo">Positivo</span>: El email coincidió con una regla y requiere atención.
+              <span class="estado-tag negativo">Negativo</span>: El email fue procesado pero no cumplió las condiciones de ninguna regla positiva.
+              <i class="ti ti-info-circle" style="color: #0dcaf0; margin-left: 10px;"></i>: Pasa el mouse sobre este ícono para ver por qué se disparó la alerta.
+            </p>
+          </div>
+          <div class="table-responsive-container">
+            <table id="tabla-historial" class="data-table">
+              <thead>
+                <tr>
+                  <th class="col-index">#</th>
+                  <th class="col-timestamp">Fecha y hora</th>
+                  <th class="col-asunto">Asunto</th>
+                  <th class="col-condicion">Estado</th>
+                  <th class="col-revisado">Revisado</th>
+                  <th class="col-razon">Razón de disparo</th>
+                </tr>
+              </thead>
+              <tbody id="cuerpo-tabla-historial">
+                <tr id="loading-historial-row">
+                  <td colspan="6" class="status-message info text-center">Cargando historial...</td>
+                </tr>
+                <tr id="no-historial-row" class="hidden">
+                  <td colspan="6" class="status-message info text-center">No hay historial disponible.</td>
+                </tr>
+                <tr id="error-historial-row" class="hidden">
+                  <td colspan="6" class="status-message error-message text-center">Error al cargar el historial.</td>
+                </tr>
+              </tbody>
+            </table>
+            <div id="historial-paginado-container"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- MODAL de detalle de alerta -->
+    <div id="alertaDetalleModal" class="modal-overlay hidden">
+      <div class="modal-dialog">
+        <header class="modal-header">
+          <h3 id="modalDetalleTitulo">Detalle de la Alerta</h3>
+          <button id="modalDetalleCerrarBtn" class="modal-close-button" aria-label="Cerrar">
+            <i class="ti ti-x"></i>
+          </button>
+        </header>
+        <section id="modalDetalleCuerpo" class="modal-body-content"></section>
+        <div id="modalDetalleDatosParseados" class="modal-parsed-data" style="display: none;"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- CoreUI JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.0/dist/js/coreui.bundle.min.js"></script>
+  
+  <!-- Layout and Module Scripts -->
+  <script type="module">
+    import { renderLayout } from './js/layout.js';
+    import './modulos/alertas/alertas.js';
+    
+    // Función para verificar que todos los elementos estén disponibles
+    function waitForElements(selectors) {
+      return new Promise((resolve) => {
+        const checkElements = () => {
+          const missing = selectors.filter(selector => !document.getElementById(selector));
+          if (missing.length === 0) {
+            resolve();
+          } else {
+            console.log('ALERTAS: Esperando elementos:', missing);
+            setTimeout(checkElements, 50);
+          }
+        };
+        checkElements();
+      });
+    }
+    
+    // Render layout with alertas content
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('ALERTAS: DOM loaded, starting layout render...');
+      
+      const user = JSON.parse(localStorage.getItem('user') || '{"role": "admin", "name": "Usuario"}');
+      
+      // Get the alertas content
+      const alertasContent = document.getElementById('main-content').innerHTML;
+      console.log('ALERTAS: Content length:', alertasContent.length);
+      
+      // Render layout with the alertas content
+      renderLayout({ user, content: alertasContent });
+      console.log('ALERTAS: Layout rendered');
+      
+      // Hide the original content since it's now inside the layout
+      document.getElementById('main-content').style.display = 'none';
+      
+      // Wait for critical elements to be available
+      const criticalElements = [
+        'lista-alertas-content', 'tabla-historial', 'btn-recargar-alertas', 'btn-recargar-historial'
+      ];
+      
+      console.log('ALERTAS: Esperando elementos críticos...');
+      await waitForElements(criticalElements);
+      console.log('ALERTAS: Todos los elementos críticos encontrados');
+      
+      // Initialize CoreUI components and theme switcher
+      setTimeout(() => {
+        console.log('ALERTAS: Inicializando CoreUI...');
+        
+        if (window.coreui) {
+          // Initialize sidebar
+          const sidebar = document.querySelector('#sidebar');
+          if (sidebar && window.coreui.Sidebar) {
+            const sidebarInstance = window.coreui.Sidebar.getOrCreateInstance(sidebar);
+            console.log('ALERTAS: Sidebar inicializado:', !!sidebarInstance);
+          }
+          
+          // Initialize theme system
+          function initTheme() {
+            const savedTheme = localStorage.getItem('coreui-theme') || 'light';
+            document.documentElement.setAttribute('data-coreui-theme', savedTheme);
+            console.log('ALERTAS: Tema inicial:', savedTheme);
+          }
+          
+          function changeTheme(newTheme) {
+            document.documentElement.setAttribute('data-coreui-theme', newTheme);
+            localStorage.setItem('coreui-theme', newTheme);
+            
+            if (window.updateThemeIcon) {
+              window.updateThemeIcon();
+            }
+            
+            console.log('ALERTAS: Tema cambiado a:', newTheme);
+            window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: newTheme } }));
+          }
+          
+          initTheme();
+          
+          // Set up theme button listeners
+          const themeButtons = document.querySelectorAll('[data-coreui-theme-value]');
+          themeButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              const theme = button.getAttribute('data-coreui-theme-value');
+              changeTheme(theme);
+            });
+          });
+        }
+      }, 200);
+      
+      // Initialize alertas module
+      setTimeout(async () => {
+        if (window.initAlertas) {
+          console.log('ALERTAS: Inicializando módulo...');
+          try {
+            await window.initAlertas();
+            console.log('ALERTAS: Módulo inicializado correctamente');
+          } catch (error) {
+            console.error('ALERTAS: Error al inicializar:', error);
+          }
+        } else {
+          console.error('ALERTAS: initAlertas no está disponible en window');
+        }
+      }, 500);
+    });
+  </script>
+</body>
+</html>
