@@ -15,6 +15,12 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="modulos/inspector/inspector.css">
   
+  <!-- Force light theme -->
+  <script>
+    // Asegurar tema claro antes de que cargue el CSS
+    document.documentElement.setAttribute('data-coreui-theme', 'light');
+  </script>
+  
   <style>
     /* Hotfix para referencias rotas */
     .inspector-root {
@@ -254,19 +260,21 @@
       color: #41464b !important;
     }
     
-    /* Layout CoreUI arreglado */
+    /* Layout CoreUI unificado - tema claro consistente */
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
+      background-color: #f8f9fa;
     }
     
     #app {
       height: 100vh;
       display: flex;
+      background-color: #f8f9fa;
     }
     
-    /* Sidebar fijo */
+    /* Sidebar tema claro unificado */
     .sidebar {
       position: fixed;
       top: 0;
@@ -274,61 +282,115 @@
       bottom: 0;
       width: 256px;
       z-index: 1000;
+      background-color: #fff !important;
+      border-right: 1px solid #dee2e6 !important;
     }
     
-    /* Wrapper ajustado para sidebar fijo */
+    .sidebar .sidebar-header {
+      background-color: #fff !important;
+      border-bottom: 1px solid #dee2e6;
+      padding: 1rem 1.5rem;
+    }
+    
+    .sidebar .nav-link {
+      color: #495057 !important;
+      padding: 0.75rem 1.5rem;
+    }
+    
+    .sidebar .nav-link:hover {
+      background-color: #f8f9fa !important;
+      color: #0d6efd !important;
+    }
+    
+    .sidebar .nav-link.active {
+      background-color: #e7f3ff !important;
+      color: #0d6efd !important;
+      border-right: 3px solid #0d6efd;
+    }
+    
+    .sidebar .nav-title {
+      color: #6c757d !important;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 1rem 1.5rem 0.5rem;
+    }
+    
+    /* Wrapper conectado sin separación */
     .wrapper {
       margin-left: 256px;
       width: calc(100% - 256px);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      background-color: #f8f9fa;
     }
     
-    /* Header limpio */
+    /* Header conectado y unificado */
     .header {
-      background: #fff;
+      background-color: #fff !important;
       border-bottom: 1px solid #dee2e6;
-      position: sticky;
-      top: 0;
-      z-index: 999;
+      margin: 0;
+      position: relative;
     }
     
-    .header .container-fluid:first-child {
+    .header .container-fluid {
+      background-color: #fff !important;
       padding: 0.75rem 1.5rem;
-      background: #fff;
+      border: none;
     }
     
-    .header .container-fluid:last-child {
-      padding: 0.5rem 1.5rem;
-      background: #f8f9fa;
-      border-top: 1px solid #dee2e6;
+    .header .header-toggler {
+      color: #495057;
+      border: none;
+      background: none;
+      padding: 0.5rem;
     }
     
-    /* Body content */
+    .header .header-nav .nav-link {
+      color: #6c757d !important;
+      padding: 0.5rem 1rem;
+    }
+    
+    .header .header-nav .nav-link:hover {
+      color: #0d6efd !important;
+    }
+    
+    /* Body sin separación */
     .body {
       flex: 1;
       padding: 1.5rem;
-      background: #f8f9fa;
+      background-color: #f8f9fa;
+      margin: 0;
     }
     
-    /* Footer fijo al bottom */
+    /* Footer unificado */
     .footer {
-      background: #fff;
+      background-color: #fff;
       border-top: 1px solid #dee2e6;
       padding: 1rem 1.5rem;
       margin-top: auto;
+      color: #6c757d;
     }
     
-    /* Responsive */
+    /* Breadcrumbs integrados */
+    .breadcrumb {
+      background-color: transparent;
+      padding: 0;
+      margin: 0;
+    }
+    
+    /* Responsive unificado */
     @media (max-width: 991px) {
       .sidebar {
         transform: translateX(-100%);
-        transition: transform 0.15s;
+        transition: transform 0.15s ease;
       }
       
       .sidebar.show {
         transform: translateX(0);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
       }
       
       .wrapper {
@@ -484,13 +546,33 @@
       await waitForElements(criticalElements);
       console.log('INSPECTOR: Todos los elementos críticos encontrados');
       
-      // Initialize CoreUI components
+      // Force light theme and initialize CoreUI components
       setTimeout(() => {
+        console.log('INSPECTOR: Forzando tema claro...');
+        
+        // Force light theme on all elements
+        document.documentElement.setAttribute('data-coreui-theme', 'light');
+        document.body.classList.remove('dark');
+        document.body.classList.add('light');
+        
+        // Force light theme on sidebar and header specifically
+        const sidebar = document.querySelector('.sidebar');
+        const header = document.querySelector('.header');
+        
+        if (sidebar) {
+          sidebar.setAttribute('data-coreui-theme', 'light');
+          sidebar.classList.remove('sidebar-dark');
+          sidebar.classList.add('sidebar-light');
+        }
+        
+        if (header) {
+          header.setAttribute('data-coreui-theme', 'light');
+        }
+        
         if (window.coreui) {
           console.log('INSPECTOR: Inicializando componentes CoreUI...');
           
           // Initialize sidebar
-          const sidebar = document.querySelector('#sidebar');
           if (sidebar && window.coreui.Sidebar) {
             const sidebarInstance = window.coreui.Sidebar.getOrCreateInstance(sidebar);
             console.log('INSPECTOR: Sidebar inicializado:', !!sidebarInstance);
@@ -512,6 +594,8 @@
           tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new window.coreui.Tooltip(tooltipTriggerEl);
           });
+          
+          console.log('INSPECTOR: Tema unificado aplicado');
         }
       }, 100);
       
