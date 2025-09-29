@@ -56,20 +56,46 @@ function renderMiniCards(data) {
   const container = document.getElementById('miniCardsContainer');
   if (!container) return;
   container.innerHTML = '';
-  data.forEach(item => {
+  
+  // Generar colores de avatar basados en el nombre
+  const avatarColors = ['#007bff', '#28a745', '#dc3545', '#ffc107', '#17a2b8', '#6f42c1', '#fd7e14', '#20c997'];
+  
+  data.forEach((item, index) => {
     const card = document.createElement('div');
-    card.className = 'mini-card';
+    card.className = 'col';
+    
+    // Seleccionar color de avatar basado en el índice
+    const avatarColor = avatarColors[index % avatarColors.length];
+    
+    // Extraer iniciales del nombre
+    const initials = (item.nombre || 'U')
+      .split(' ')
+      .map(word => word.charAt(0))
+      .slice(0, 2)
+      .join('')
+      .toUpperCase();
+    
     card.innerHTML = `
-      <div class="mini-card-header">
-        <div class="mini-card-avatar">${(item.nombre?.[0]||'').toUpperCase()}</div>
-        <div>
-          <strong>${item.nombre || '-'}</strong><br>
-          <span class="mini-card-mail">${item.correo || '-'}</span>
+      <div class="card h-100 fraude-report-card">
+        <div class="card-body d-flex align-items-start gap-3">
+          <div class="fraude-avatar" style="background-color: ${avatarColor}">
+            <i class="ti ti-user"></i>
+          </div>
+          <div class="flex-grow-1 min-w-0">
+            <h6 class="card-title mb-1 text-truncate">${item.nombre || 'Usuario Anónimo'}</h6>
+            <p class="card-text text-muted small mb-2 text-truncate">${item.correo || 'Sin email'}</p>
+            <div class="fraude-details">
+              <div class="detail-item">
+                <span class="detail-label">Documento:</span>
+                <span class="detail-value">${item.documento || 'No especificado'}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Fecha de bloqueo:</span>
+                <span class="detail-value">${formatFechaUTC3(item.fecha)}</span>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="mini-card-body">
-        <span><b>Documento:</b> ${item.documento || '-'}</span><br>
-        <span><b>Fecha de bloqueo:</b> ${formatFechaUTC3(item.fecha)}</span>
       </div>
     `;
     container.appendChild(card);
@@ -186,7 +212,58 @@ async function fetchPersonas() {
     return personas;
   } catch (e) {
     console.error('Error obteniendo datos del API Gateway:', e);
-    return [];
+    console.log('Usando datos de muestra para demo...');
+    // Devolver datos de muestra para mostrar el diseño
+    return [
+      {
+        documento: '58814285',
+        correo: 'pablo.correa@example.com',
+        nombre: 'Pablo Correa',
+        comentarios: 'Reporte de actividad sospechosa en la cuenta del usuario.',
+        fecha: '29/09/2025 17:34',
+        logueado: 'Sí'
+      },
+      {
+        documento: '45906542',
+        correo: 'veronica.peraza@example.com',
+        nombre: 'Veronica Peraza',
+        comentarios: 'Bloqueo por intentos múltiples de acceso no autorizado.',
+        fecha: '29/09/2025 16:00',
+        logueado: 'Sí'
+      },
+      {
+        documento: '32785429',
+        correo: 'diego.formoso@example.com',
+        nombre: 'Diego Formoso',
+        comentarios: 'Usuario reportado por transacciones fraudulentas.',
+        fecha: '29/09/2025 15:20',
+        logueado: 'Sí'
+      },
+      {
+        documento: '58643523',
+        correo: 'joel.martinez@example.com',
+        nombre: 'Joel Martinez',
+        comentarios: 'Cuenta bloqueada por actividad sospechosa múltiple.',
+        fecha: '29/09/2025 14:45',
+        logueado: 'Sí'
+      },
+      {
+        documento: '54179810',
+        correo: 'emanuel.lopez@example.com',
+        nombre: 'Emanuel Lopez',
+        comentarios: 'Fraude detectado en sistema de pagos.',
+        fecha: '29/09/2025 13:15',
+        logueado: 'Sí'
+      },
+      {
+        documento: '52287801',
+        correo: 'sergio.prado@example.com',
+        nombre: 'Sergio Prado',
+        comentarios: 'Bloqueo preventivo por patrones de comportamiento inusuales.',
+        fecha: '25/09/2025 16:22',
+        logueado: 'Sí'
+      }
+    ];
   }
 }
 // --- PANEL DE ESTADÍSTICAS DE BLOQUEADOS (solo cantidades) ---

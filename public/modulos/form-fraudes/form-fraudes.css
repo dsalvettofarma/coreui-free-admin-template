@@ -425,3 +425,107 @@ select, input[type="checkbox"] {
     padding: 1.3rem 0.9rem 1.5rem 0.9rem;
   }
 }
+
+/* --- Estilos para las tarjetas de reportes de fraude --- */
+.fraude-report-card {
+  border: 1px solid var(--cui-border-color);
+  border-radius: var(--cui-border-radius);
+  transition: all 0.15s ease-in-out;
+  background: var(--cui-card-bg);
+  margin-bottom: 1rem;
+}
+
+.fraude-report-card:hover {
+  border-color: var(--cui-primary);
+  box-shadow: 0 0 0 0.2rem rgba(var(--cui-primary-rgb), 0.1);
+  transform: translateY(-2px);
+}
+
+.fraude-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.fraude-avatar .ti {
+  font-size: 1.5rem;
+}
+
+.fraude-details {
+  margin-top: 0.75rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  color: var(--cui-secondary-color);
+  font-weight: 500;
+  white-space: nowrap;
+  margin-right: 0.5rem;
+}
+
+.detail-value {
+  color: var(--cui-body-color);
+  text-align: right;
+  word-break: break-word;
+  flex: 1;
+}
+
+/* Responsive adjustments for fraude cards */
+@media (max-width: 768px) {
+  .fraude-report-card .card-body {
+    padding: 1rem;
+  }
+  
+  .fraude-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+  
+  .fraude-avatar .ti {
+    font-size: 1.25rem;
+  }
+  
+  .detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .detail-value {
+    text-align: left;
+  }
+}
+
+/* Dark theme adjustments */
+[data-coreui-theme="dark"] .fraude-report-card {
+  background: var(--cui-dark);
+  border-color: var(--cui-border-color-translucent);
+}
+
+[data-coreui-theme="dark"] .detail-label {
+  color: var(--cui-secondary-bg-subtle);
+}
+
+[data-coreui-theme="dark"] .detail-value {
+  color: var(--cui-body-color);
+}
