@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-coreui-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -381,6 +381,96 @@
       background-color: #58151c !important;
       color: #f1aeb5 !important;
       border-color: #842029 !important;
+    }
+    
+    /* Camino de hormigas - Loading animation */
+    .overlay-spinner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    .spinner-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0d6efd;
+      border-radius: 50%;
+      animation: spin 1s linear infinite, pulse 2s ease-in-out infinite alternate;
+      margin: 0 auto 15px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1); }
+    }
+    
+    .overlay-text {
+      color: #333;
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+    
+    /* Progreso con camino de hormigas */
+    .progress-bar-animated {
+      background-image: linear-gradient(
+        45deg,
+        rgba(255,255,255,0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255,255,255,0.15) 50%,
+        rgba(255,255,255,0.15) 75%,
+        transparent 75%,
+        transparent
+      );
+      background-size: 1rem 1rem;
+      animation: progress-bar-stripes 1s linear infinite;
+    }
+    
+    @keyframes progress-bar-stripes {
+      0% { background-position: 1rem 0; }
+      100% { background-position: 0 0; }
+    }
+    
+    /* Status messages con mejor visibilidad */
+    .mensaje-estado {
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin: 15px 0;
+      font-weight: 500;
+      border-left: 4px solid;
+    }
+    
+    .status-mensaje-exito {
+      background-color: #d1edff !important;
+      color: #0c5460 !important;
+      border-left-color: #198754 !important;
+    }
+    
+    .status-mensaje-error {
+      background-color: #f8d7da !important;
+      color: #721c24 !important;
+      border-left-color: #dc3545 !important;
     }
     
     /* Forzar actualización de estilos cuando cambie el tema */
@@ -807,6 +897,49 @@
       background-color: #374151;
       color: #f9fafb;
     }
+    
+    /* Spinner y overlay para tema oscuro */
+    html[data-coreui-theme="dark"] .overlay-spinner {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+    
+    html[data-coreui-theme="dark"] .spinner-container {
+      background-color: #2d3748;
+      color: #f7fafc;
+    }
+    
+    html[data-coreui-theme="dark"] .spinner {
+      border-color: #4a5568;
+      border-top-color: #60a5fa;
+    }
+    
+    html[data-coreui-theme="dark"] .overlay-text {
+      color: #f7fafc;
+    }
+    
+    /* Status messages para tema oscuro */
+    html[data-coreui-theme="dark"] .status-mensaje-exito {
+      background-color: #064e3b !important;
+      color: #6ee7b7 !important;
+      border-left-color: #10b981 !important;
+    }
+    
+    html[data-coreui-theme="dark"] .status-mensaje-error {
+      background-color: #7f1d1d !important;
+      color: #fca5a5 !important;
+      border-left-color: #ef4444 !important;
+    }
+    
+    /* Asegurar que los elementos del inspector se actualicen */
+    html[data-coreui-theme="light"] .inspector-root {
+      background-color: #f8f9fa !important;
+      color: #212529 !important;
+    }
+    
+    html[data-coreui-theme="dark"] .inspector-root {
+      background-color: #1a1d21 !important;
+      color: #dee2e6 !important;
+    }
   </style>
 </head>
 <body>
@@ -1060,30 +1193,62 @@
             return new window.coreui.Tooltip(tooltipTriggerEl);
           });
           
-          // Initialize theme buttons
+          // Initialize theme system
+          function initTheme() {
+            // Load saved theme or default to light
+            const savedTheme = localStorage.getItem('coreui-theme') || 'light';
+            document.documentElement.setAttribute('data-coreui-theme', savedTheme);
+            console.log('INSPECTOR: Tema inicial:', savedTheme);
+            
+            // Update theme button states
+            updateThemeButtons(savedTheme);
+          }
+          
+          function updateThemeButtons(currentTheme) {
+            const themeButtons = document.querySelectorAll('[data-coreui-theme-value]');
+            themeButtons.forEach(button => {
+              const buttonTheme = button.getAttribute('data-coreui-theme-value');
+              if (buttonTheme === currentTheme) {
+                button.classList.add('active');
+              } else {
+                button.classList.remove('active');
+              }
+            });
+          }
+          
+          function changeTheme(newTheme) {
+            document.documentElement.setAttribute('data-coreui-theme', newTheme);
+            localStorage.setItem('coreui-theme', newTheme);
+            updateThemeButtons(newTheme);
+            
+            // Actualizar icono del tema en el header
+            if (window.updateThemeIcon) {
+              window.updateThemeIcon();
+            }
+            
+            // Force DOM refresh
+            document.body.style.display = 'none';
+            document.body.offsetHeight; // Trigger reflow
+            document.body.style.display = '';
+            
+            console.log('INSPECTOR: Tema cambiado a:', newTheme);
+            
+            // Trigger a custom event for theme change
+            window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: newTheme } }));
+          }
+          
+          // Initialize theme on load
+          initTheme();
+          
+          // Set up theme button listeners
           const themeButtons = document.querySelectorAll('[data-coreui-theme-value]');
           themeButtons.forEach(button => {
-            button.addEventListener('click', () => {
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
               const theme = button.getAttribute('data-coreui-theme-value');
-              document.documentElement.setAttribute('data-coreui-theme', theme);
-              localStorage.setItem('coreui-theme', theme);
-              
-              // Force refresh all elements
-              document.body.className = document.body.className;
-              
-              console.log('INSPECTOR: Tema cambiado a:', theme);
-              
-              // Trigger a custom event for theme change
-              window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
+              changeTheme(theme);
             });
           });
-          
-          // Load saved theme on startup
-          const savedTheme = localStorage.getItem('coreui-theme');
-          if (savedTheme) {
-            document.documentElement.setAttribute('data-coreui-theme', savedTheme);
-            console.log('INSPECTOR: Tema cargado desde localStorage:', savedTheme);
-          }
         }
       }, 200);
       

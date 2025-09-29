@@ -202,8 +202,8 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
           </ul>
           <ul class="header-nav ms-auto">
             <li class="nav-item dropdown">
-              <button class="btn btn-link nav-link py-2 px-2 d-flex align-items-center" type="button" aria-expanded="false" data-bs-toggle="dropdown">
-                <i class="ti ti-moon" style="font-size: 1.5rem;"></i>
+              <button class="btn btn-link nav-link py-2 px-2 d-flex align-items-center" type="button" aria-expanded="false" data-bs-toggle="dropdown" id="theme-toggle-btn">
+                <i id="theme-icon" class="ti ti-sun" style="font-size: 1.5rem;"></i>
               </button>
               <ul class="dropdown-menu dropdown-menu-end" style="--cui-dropdown-min-width: 8rem;">
                 <li><button class="dropdown-item d-flex align-items-center" type="button" data-coreui-theme-value="light"><i class="ti ti-sun me-3" style="font-size: 1.2rem;"></i>Light</button></li>
@@ -234,4 +234,56 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
       </footer>
     </div>
   `;
+  
+  // Actualizar icono del tema después de renderizar
+  setTimeout(() => {
+    updateThemeIcon();
+  }, 100);
 }
+
+// Función para actualizar el icono del tema
+function updateThemeIcon() {
+  const themeIcon = document.getElementById('theme-icon');
+  if (!themeIcon) return;
+  
+  const currentTheme = document.documentElement.getAttribute('data-coreui-theme') || 'light';
+  
+  // Remover todas las clases de icono
+  themeIcon.className = themeIcon.className.replace(/ti-\w+/g, '');
+  
+  // Añadir el icono correcto según el tema
+  switch(currentTheme) {
+    case 'dark':
+      themeIcon.classList.add('ti', 'ti-moon');
+      break;
+    case 'auto':
+      themeIcon.classList.add('ti', 'ti-world');
+      break;
+    case 'light':
+    default:
+      themeIcon.classList.add('ti', 'ti-sun');
+      break;
+  }
+}
+
+// Observer para cambios en el atributo data-coreui-theme
+const themeObserver = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.type === 'attributes' && mutation.attributeName === 'data-coreui-theme') {
+      updateThemeIcon();
+    }
+  });
+});
+
+// Inicializar observer cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+  // Observar cambios en el atributo del html
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-coreui-theme']
+  });
+});
+
+// Exportar funciones
+window.renderLayout = renderLayout;
+window.updateThemeIcon = updateThemeIcon;
