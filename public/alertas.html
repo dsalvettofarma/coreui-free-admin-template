@@ -426,7 +426,7 @@
               <button id="btn-recargar-historial" class="btn-action btn-success" title="Recargar historial">
                 <i class="ti ti-history"></i> Historial
               </button>
-              <button id="btn-configuracion" class="btn-action btn-warning" title="Configuración">
+              <button id="btn-configuracion" class="btn-action btn-warning" onclick="window.location.href='config-alertas.html'" title="Ir a configuración de reglas">
                 <i class="ti ti-settings"></i> Config
               </button>
             </div>
@@ -436,6 +436,7 @@
       
       <!-- Contenido principal -->
       <div class="alertas-content">
+
         <!-- Sección de alertas activas -->
         <section id="alertas-positivas-container" class="section-container">
           <h2 class="section-title section-title-alertas">Alertas que requieren revisión</h2>
@@ -503,6 +504,8 @@
         <div id="modalDetalleDatosParseados" class="modal-parsed-data" style="display: none;"></div>
       </div>
     </div>
+
+
   </main>
 
   <!-- Bootstrap JS -->

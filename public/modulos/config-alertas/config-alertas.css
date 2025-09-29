@@ -1,0 +1,523 @@
+/* modulos/config-alertas/config-alertas.css - Estilos para el módulo de configuración de alertas */
+
+/* --- Contenedor Principal --- */
+.config-alertas-container {
+    min-height: calc(100vh - 200px);
+    padding: 1rem 0;
+}
+
+/* --- Header de la página --- */
+.config-alertas-header {
+    background: var(--cui-card-bg);
+    border-radius: var(--cui-border-radius);
+    border: 1px solid var(--cui-border-color);
+    margin-bottom: 1.5rem;
+    box-shadow: var(--cui-box-shadow-sm);
+}
+
+.config-header-content {
+    padding: 1.5rem;
+}
+
+.config-header-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--cui-body-color);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.config-header-title .ti {
+    font-size: 1.75rem;
+    color: var(--cui-primary);
+}
+
+.config-header-description {
+    margin: 0.5rem 0 0 0;
+    color: var(--cui-secondary-color);
+    font-size: 0.95rem;
+}
+
+.config-header-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+/* --- Cards de Reglas --- */
+.reglas-card {
+    background: var(--cui-card-bg);
+    border: 1px solid var(--cui-border-color);
+    border-radius: var(--cui-border-radius);
+    box-shadow: var(--cui-box-shadow-sm);
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.reglas-card:hover {
+    box-shadow: var(--cui-box-shadow);
+}
+
+.reglas-card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--cui-border-color);
+    background: var(--cui-tertiary-bg);
+}
+
+.reglas-card-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--cui-body-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reglas-card-title .ti {
+    font-size: 1.25rem;
+}
+
+.reglas-card-title .ti-check-circle {
+    color: var(--cui-success);
+}
+
+.reglas-card-title .ti-x-circle {
+    color: var(--cui-secondary);
+}
+
+.reglas-card-body {
+    padding: 1.5rem;
+}
+
+/* --- Lista de Reglas --- */
+.reglas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.regla-item {
+    background: var(--cui-body-bg);
+    border: 1px solid var(--cui-border-color);
+    border-radius: var(--cui-border-radius);
+    padding: 1rem;
+    transition: all 0.15s ease-in-out;
+    position: relative;
+}
+
+.regla-item:hover {
+    border-color: var(--cui-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--cui-primary-rgb), 0.1);
+}
+
+.regla-item.activa {
+    border-left: 4px solid var(--cui-success);
+}
+
+.regla-item.inactiva {
+    border-left: 4px solid var(--cui-secondary);
+    opacity: 0.8;
+}
+
+.regla-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.regla-info {
+    flex: 1;
+}
+
+.regla-titulo {
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--cui-body-color);
+    line-height: 1.3;
+}
+
+.regla-asunto {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--cui-secondary-color);
+    font-style: italic;
+}
+
+.regla-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.regla-actions .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.regla-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--cui-border-color-translucent);
+}
+
+.regla-tipo {
+    background: var(--cui-primary-bg-subtle);
+    color: var(--cui-primary-text-emphasis);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--cui-border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.regla-valor {
+    font-size: 0.875rem;
+    color: var(--cui-secondary-color);
+}
+
+.regla-valor strong {
+    color: var(--cui-body-color);
+}
+
+/* --- Estados Especiales --- */
+.loading-state,
+.empty-state,
+.error-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--cui-secondary-color);
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.loading-spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid var(--cui-border-color);
+    border-top: 2px solid var(--cui-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.empty-state {
+    color: var(--cui-secondary-color);
+}
+
+.empty-state .ti {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.error-state {
+    color: var(--cui-danger);
+    background: var(--cui-danger-bg-subtle);
+    border: 1px solid var(--cui-danger-border-subtle);
+    border-radius: var(--cui-border-radius);
+}
+
+.error-state .ti {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+/* --- Modales --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    padding: 1rem;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: var(--cui-modal-bg);
+    border-radius: var(--cui-border-radius-lg);
+    box-shadow: var(--cui-box-shadow-lg);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid var(--cui-modal-border-color);
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--cui-border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--cui-tertiary-bg);
+    border-radius: var(--cui-border-radius-lg) var(--cui-border-radius-lg) 0 0;
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--cui-modal-header-border-color);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--cui-secondary-color);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--cui-border-radius);
+    transition: color 0.15s ease-in-out;
+}
+
+.modal-close:hover {
+    color: var(--cui-body-color);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--cui-border-color);
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    background: var(--cui-tertiary-bg);
+    border-radius: 0 0 var(--cui-border-radius-lg) var(--cui-border-radius-lg);
+}
+
+/* --- Formularios --- */
+.form-config {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group-config {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group-config label {
+    font-weight: 600;
+    color: var(--cui-body-color);
+    font-size: 0.9rem;
+}
+
+.form-group-config .form-control {
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-group-config .form-control:focus {
+    border-color: var(--cui-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--cui-primary-rgb), 0.25);
+}
+
+.form-help-text {
+    font-size: 0.875rem;
+    color: var(--cui-secondary-color);
+    margin-top: 0.25rem;
+}
+
+/* --- Keywords Section --- */
+.keywords-section {
+    border: 1px solid var(--cui-border-color);
+    border-radius: var(--cui-border-radius);
+    padding: 1rem;
+    background: var(--cui-tertiary-bg);
+}
+
+.keywords-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.keywords-title {
+    font-weight: 600;
+    color: var(--cui-body-color);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.keywords-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.keyword-tag {
+    background: var(--cui-primary-bg-subtle);
+    color: var(--cui-primary-text-emphasis);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--cui-border-radius-pill);
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.keyword-remove {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.keyword-input-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.keyword-input {
+    flex: 1;
+}
+
+/* --- Breadcrumb Personalizado --- */
+.config-breadcrumb {
+    background: var(--cui-tertiary-bg);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--cui-border-radius);
+    border: 1px solid var(--cui-border-color);
+    margin-bottom: 1.5rem;
+}
+
+.config-breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.9rem;
+}
+
+.config-breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.config-breadcrumb-link {
+    color: var(--cui-primary);
+    text-decoration: none;
+    transition: color 0.15s ease-in-out;
+}
+
+.config-breadcrumb-link:hover {
+    color: var(--cui-primary-emphasis);
+    text-decoration: underline;
+}
+
+.config-breadcrumb-separator {
+    color: var(--cui-secondary-color);
+    font-size: 0.75rem;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    .config-header-actions {
+        flex-direction: column;
+    }
+    
+    .regla-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .regla-actions {
+        align-self: stretch;
+        justify-content: flex-end;
+    }
+    
+    .regla-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .modal-content {
+        margin: 1rem;
+        max-height: calc(100vh - 2rem);
+    }
+    
+    .modal-footer {
+        flex-direction: column-reverse;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+    }
+}
+
+/* --- Dark Mode Adjustments --- */
+[data-coreui-theme="dark"] .regla-item {
+    background: var(--cui-dark);
+}
+
+[data-coreui-theme="dark"] .reglas-card-header {
+    background: var(--cui-gray-800);
+}
+
+[data-coreui-theme="dark"] .config-breadcrumb {
+    background: var(--cui-gray-800);
+}
+
+[data-coreui-theme="dark"] .keywords-section {
+    background: var(--cui-gray-800);
+}
+
+/* --- Utility Classes --- */
+.hidden {
+    display: none !important;
+}
+
+.text-muted {
+    color: var(--cui-secondary-color) !important;
+}
+
+.fw-semibold {
+    font-weight: 600 !important;
+}
+
+.small {
+    font-size: 0.875rem !important;
+}

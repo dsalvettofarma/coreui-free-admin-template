@@ -14,7 +14,10 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
     { type: 'title', label: 'Components', show: true },
     { type: 'item', label: 'Gestión de Fraudes', href: 'fraudes.html', icon: 'ti-shield-lock', show: user.role === 'admin' || user.role === 'fraude' },
     { type: 'item', label: 'Inspector de Pagos', href: 'inspector.html', icon: 'ti-search', show: user.role === 'admin' },
-    { type: 'item', label: 'Monitor de Alertas', href: 'alertas.html', icon: 'ti-alert-triangle', show: user.role === 'admin' || user.role === 'monitor' },
+    { type: 'group', label: 'Monitor de Alertas', icon: 'ti-alert-triangle', show: user.role === 'admin' || user.role === 'monitor', items: [
+      { label: 'Dashboard de Alertas', href: 'alertas.html' },
+      { label: 'Configuración de Reglas', href: 'config-alertas.html' }
+    ]},
     { type: 'group', label: 'Base', icon: 'ti-box', show: user.role !== 'guest', items: [
       { label: 'Accordion', href: 'base/accordion.html' },
       { label: 'Breadcrumb', href: 'base/breadcrumb.html' },

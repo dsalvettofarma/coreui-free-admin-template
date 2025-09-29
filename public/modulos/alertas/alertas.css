@@ -170,6 +170,263 @@
   border: 1px solid #dee2e6;
 }
 
+/* === ESTILOS PARA CONFIGURACIÓN DE ALERTAS === */
+
+/* Sección de configuración colapsable */
+.configuracion-container {
+  border-left: 4px solid #fd7e14;
+  background: linear-gradient(135deg, #fff9f5 0%, #ffffff 100%);
+}
+
+.config-header {
+  margin-bottom: 20px;
+}
+
+.config-header .section-title {
+  color: #fd7e14;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.config-toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.config-toolbar .btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+}
+
+/* Secciones de reglas */
+.config-reglas {
+  display: grid;
+  gap: 25px;
+}
+
+.reglas-subtitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reglas-list {
+  min-height: 80px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 15px;
+  background-color: #f8f9fa;
+}
+
+.regla-item {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+  border-left: 4px solid #fd7e14;
+}
+
+.regla-item:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.regla-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.regla-titulo {
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+}
+
+.regla-asunto {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin: 0;
+  font-style: italic;
+}
+
+.regla-actions {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.regla-actions .btn {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+}
+
+.regla-details {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e9ecef;
+}
+
+.regla-tipo {
+  display: inline-block;
+  background-color: #e3f2fd;
+  color: #1565c0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.regla-valor {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #495057;
+}
+
+/* Reglas inactivas */
+.regla-item.inactiva {
+  opacity: 0.7;
+  border-left-color: #6c757d;
+}
+
+.regla-item.inactiva .regla-titulo {
+  color: #6c757d;
+}
+
+/* Modal de configuración */
+.modal-lg {
+  max-width: 800px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-control, .form-select {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  padding: 8px 12px;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #fd7e14;
+  box-shadow: 0 0 0 0.2rem rgba(253, 126, 20, 0.25);
+}
+
+.input-group .btn {
+  border-radius: 0 6px 6px 0;
+}
+
+/* Keywords container */
+.keywords-container {
+  min-height: 60px;
+  max-height: 120px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 8px;
+  background-color: #f8f9fa;
+}
+
+.keyword-tag {
+  display: inline-block;
+  background-color: #e3f2fd;
+  color: #1565c0;
+  padding: 4px 8px;
+  margin: 2px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  position: relative;
+  padding-right: 24px;
+}
+
+.keyword-tag .remove-keyword {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #d32f2f;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.keyword-tag .remove-keyword:hover {
+  color: #b71c1c;
+}
+
+/* Help section */
+.help-section {
+  margin-bottom: 25px;
+}
+
+.help-section h5 {
+  color: #2d3748;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.help-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.help-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.help-list li:last-child {
+  border-bottom: none;
+}
+
+/* Responsive para configuración */
+@media (max-width: 768px) {
+  .config-toolbar {
+    justify-content: center;
+  }
+  
+  .regla-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .regla-actions {
+    align-self: flex-start;
+  }
+  
+  .modal-lg {
+    max-width: 95%;
+  }
+}
+
 /* Tema oscuro - Estilos adicionales */
 html[data-coreui-theme="dark"] .texto-destacado-modal {
   background-color: #664d03;
@@ -239,4 +496,64 @@ html[data-coreui-theme="dark"] .data-table tbody tr:nth-child(even) {
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* Tema oscuro - Configuración */
+html[data-coreui-theme="dark"] .configuracion-container {
+  background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+  border-left-color: #fd7e14;
+}
+
+html[data-coreui-theme="dark"] .reglas-list {
+  background-color: #374151;
+  border-color: #4a5568;
+}
+
+html[data-coreui-theme="dark"] .regla-item {
+  background-color: #2d3748;
+  border-color: #4a5568;
+  color: #f7fafc;
+}
+
+html[data-coreui-theme="dark"] .regla-titulo {
+  color: #f7fafc;
+}
+
+html[data-coreui-theme="dark"] .regla-asunto {
+  color: #a0aec0;
+}
+
+html[data-coreui-theme="dark"] .regla-details {
+  border-color: #4a5568;
+}
+
+html[data-coreui-theme="dark"] .regla-tipo {
+  background-color: #1e3a8a;
+  color: #dbeafe;
+}
+
+html[data-coreui-theme="dark"] .regla-valor {
+  color: #cbd5e0;
+}
+
+html[data-coreui-theme="dark"] .form-label {
+  color: #f7fafc;
+}
+
+html[data-coreui-theme="dark"] .form-control,
+html[data-coreui-theme="dark"] .form-select {
+  background-color: #374151;
+  border-color: #4a5568;
+  color: #f7fafc;
+}
+
+html[data-coreui-theme="dark"] .form-control:focus,
+html[data-coreui-theme="dark"] .form-select:focus {
+  background-color: #374151;
+  border-color: #fd7e14;
+}
+
+html[data-coreui-theme="dark"] .keywords-container {
+  background-color: #374151;
+  border-color: #4a5568;
 }

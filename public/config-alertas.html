@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es" data-coreui-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración de Reglas de Alertas</title>
+  
+  <!-- CoreUI CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.0/dist/css/coreui.min.css" rel="stylesheet">
+  
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="modulos/config-alertas/config-alertas.css">
+  
+  <style>
+    /* Estilos específicos para configuración de alertas */
+    .config-alertas-root {
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+    
+    /* Header compacto para configuración */
+    .config-header {
+      background: linear-gradient(135deg, #fff9f5 0%, #ffffff 100%);
+      border-bottom: 2px solid #fd7e14;
+      padding: 12px 20px;
+      border-radius: 8px 8px 0 0;
+      border-left: 4px solid #fd7e14;
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .header-left {
+      flex: 1;
+      min-width: 300px;
+    }
+    
+    .module-title {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #fd7e14;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .header-subtitle {
+      color: #6c757d;
+      font-size: 0.85rem;
+      margin-left: 28px;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .btn-group-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    
+    .btn-action {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    
+    .btn-action.btn-primary {
+      background-color: #0d6efd;
+      color: white;
+    }
+    
+    .btn-action.btn-primary:hover {
+      background-color: #0b5ed7;
+      transform: translateY(-1px);
+    }
+    
+    .btn-action.btn-success {
+      background-color: #198754;
+      color: white;
+    }
+    
+    .btn-action.btn-success:hover {
+      background-color: #157347;
+      transform: translateY(-1px);
+    }
+    
+    .btn-action.btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+    
+    .btn-action.btn-secondary:hover {
+      background-color: #5c636a;
+      transform: translateY(-1px);
+    }
+    
+    .btn-action.btn-info {
+      background-color: #0dcaf0;
+      color: white;
+    }
+    
+    .btn-action.btn-info:hover {
+      background-color: #31d2f2;
+      transform: translateY(-1px);
+    }
+    
+    /* Card principal */
+    .config-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin: 0 auto;
+      max-width: 1400px;
+    }
+    
+    .config-content {
+      padding: 20px;
+    }
+    
+    /* Breadcrumb de navegación */
+    .config-breadcrumb {
+      background-color: #f8f9fa;
+      padding: 10px 20px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+    
+    .config-breadcrumb a {
+      color: #fd7e14;
+      text-decoration: none;
+    }
+    
+    .config-breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Grid de reglas */
+    .reglas-grid {
+      display: grid;
+      gap: 30px;
+      grid-template-columns: 1fr;
+    }
+    
+    @media (min-width: 1200px) {
+      .reglas-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    /* Estilos para estado vacío */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #6c757d;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+    
+    .empty-state h4 {
+      margin-bottom: 10px;
+      color: #495057;
+    }
+    
+    .empty-state p {
+      margin-bottom: 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .header-left {
+        min-width: auto;
+        text-align: center;
+      }
+      
+      .btn-group-actions {
+        justify-content: center;
+      }
+    }
+    
+    /* Tema oscuro */
+    html[data-coreui-theme="dark"] .config-header {
+      background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+      border-bottom-color: #fd7e14;
+    }
+    
+    html[data-coreui-theme="dark"] .module-title {
+      color: #fd7e14;
+    }
+    
+    html[data-coreui-theme="dark"] .header-subtitle {
+      color: #a0aec0;
+    }
+    
+    html[data-coreui-theme="dark"] .config-card {
+      background-color: #2d3748;
+    }
+    
+    html[data-coreui-theme="dark"] .config-breadcrumb {
+      background-color: #374151;
+      color: #f7fafc;
+    }
+    
+    html[data-coreui-theme="dark"] .empty-state {
+      color: #a0aec0;
+    }
+    
+    html[data-coreui-theme="dark"] .empty-state h4 {
+      color: #f7fafc;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  
+  <main id="main-content" class="config-alertas-root" style="display: none;">
+    <div class="config-card">
+      <!-- Header compacto -->
+      <div class="config-header">
+        <div class="header-content">
+          <div class="header-left">
+            <h4 class="module-title">
+              <i class="ti ti-settings" style="font-size: 1.2em;"></i>
+              Configuración de Reglas de Alertas
+            </h4>
+            <small class="header-subtitle">Gestiona las reglas que determinan cuándo se disparan las alertas</small>
+          </div>
+          
+          <div class="header-actions">
+            <div class="btn-group-actions">
+              <button id="btn-nueva-regla" class="btn-action btn-primary" title="Crear nueva regla">
+                <i class="ti ti-plus"></i> Nueva Regla
+              </button>
+              <button id="btn-refrescar-config" class="btn-action btn-success" title="Refrescar lista">
+                <i class="ti ti-refresh"></i> Refrescar
+              </button>
+              <button id="btn-volver-alertas" class="btn-action btn-secondary" onclick="window.location.href='alertas.html'" title="Volver al dashboard">
+                <i class="ti ti-arrow-left"></i> Volver
+              </button>
+              <button id="btn-ayuda-config" class="btn-action btn-info" title="Ayuda sobre configuración">
+                <i class="ti ti-help-circle"></i> Ayuda
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Contenido principal -->
+      <div class="config-content">
+        <!-- Breadcrumb -->
+        <nav class="config-breadcrumb">
+          <i class="ti ti-home"></i>
+          <a href="alertas.html">Monitor de Alertas</a> 
+          <i class="ti ti-chevron-right" style="margin: 0 8px;"></i>
+          <span>Configuración de Reglas</span>
+        </nav>
+        
+        <!-- Grid de reglas -->
+        <div class="reglas-grid">
+          <!-- Reglas Activas -->
+          <section class="section-container">
+            <h2 class="section-title section-title-alertas">
+              <i class="ti ti-check-circle" style="color: #198754;"></i>
+              Reglas Activas
+            </h2>
+            <div id="lista-reglas-activas" class="reglas-list">
+              <div id="loading-reglas-activas" class="status-message info">Cargando reglas activas...</div>
+              <div id="no-reglas-activas" class="empty-state hidden">
+                <i class="ti ti-settings-off"></i>
+                <h4>No hay reglas activas</h4>
+                <p>Crea tu primera regla para comenzar a monitorear alertas</p>
+              </div>
+              <div id="error-reglas-activas" class="status-message error-message hidden">Error al cargar reglas activas.</div>
+            </div>
+          </section>
+          
+          <!-- Reglas Inactivas -->
+          <section class="section-container">
+            <h2 class="section-title">
+              <i class="ti ti-x-circle" style="color: #6c757d;"></i>
+              Reglas Inactivas
+            </h2>
+            <div id="lista-reglas-inactivas" class="reglas-list">
+              <div id="loading-reglas-inactivas" class="status-message info">Cargando reglas inactivas...</div>
+              <div id="no-reglas-inactivas" class="empty-state hidden">
+                <i class="ti ti-sleep"></i>
+                <h4>No hay reglas inactivas</h4>
+                <p>Las reglas desactivadas aparecerán aquí</p>
+              </div>
+              <div id="error-reglas-inactivas" class="status-message error-message hidden">Error al cargar reglas inactivas.</div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL de configuración de regla -->
+    <div id="configReglaModal" class="modal-overlay hidden">
+      <div class="modal-dialog modal-lg">
+        <header class="modal-header">
+          <h3 id="modalConfigTitulo">Configurar Regla de Alerta</h3>
+          <button id="modalConfigCerrarBtn" class="modal-close-button" aria-label="Cerrar">
+            <i class="ti ti-x"></i>
+          </button>
+        </header>
+        <section class="modal-body">
+          <form id="formConfigRegla" novalidate>
+            <input type="hidden" id="reglaRowNumber">
+            <input type="hidden" id="reglaOriginalIndex">
+            
+            <!-- Descripción de la regla -->
+            <div class="form-group">
+              <label for="reglaDescripcion" class="form-label">
+                <i class="ti ti-file-text"></i> Descripción de la regla
+              </label>
+              <textarea id="reglaDescripcion" class="form-control" rows="2" placeholder="Ej: Alerta para errores de sincronización de stock" required></textarea>
+              <small class="form-text text-muted">Describe el propósito de esta regla</small>
+            </div>
+            
+            <!-- Asunto del email -->
+            <div class="form-group">
+              <label for="reglaAsunto" class="form-label">
+                <i class="ti ti-mail"></i> Asunto del email (o parte)
+              </label>
+              <input type="text" id="reglaAsunto" class="form-control" placeholder="Ej: Error en el pedido" required>
+              <small class="form-text text-muted">La regla se activará si el asunto contiene este texto</small>
+            </div>
+            
+            <!-- Tipo de condición -->
+            <div class="form-group">
+              <label for="reglaTipoCondicion" class="form-label">
+                <i class="ti ti-filter"></i> Tipo de condición
+              </label>
+              <div class="input-group">
+                <select id="reglaTipoCondicion" class="form-select">
+                  <option value="SiemprePositivo">Siempre Positivo (si asunto coincide)</option>
+                  <option value="PalabraClaveEnCuerpo">Palabra Clave en Cuerpo</option>
+                  <option value="ExcluirSKU">Excluir SKU específicos</option>
+                  <option value="MultiCondicional">Multi-Condicional (Avanzado)</option>
+                </select>
+                <button type="button" id="btnInfoCondicion" class="btn btn-outline-info" title="Información sobre tipos">
+                  <i class="ti ti-info-circle"></i>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Valor de condición (dinámico) -->
+            <div id="valorCondicionContainer" class="form-group hidden">
+              <label class="form-label">
+                <i class="ti ti-code"></i> Configuración de la condición
+              </label>
+              
+              <!-- Input simple -->
+              <input type="text" id="reglaValorSimple" class="form-control hidden" placeholder="Palabras separadas por coma">
+              
+              <!-- Multi-condicional -->
+              <div id="multiCondicionalContainer" class="hidden">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label class="form-label text-success">Palabras para ACTIVAR</label>
+                    <div class="input-group mb-2">
+                      <input type="text" id="inputActivar" class="form-control" placeholder="Palabra activadora">
+                      <button type="button" id="btnAddActivar" class="btn btn-success btn-sm">
+                        <i class="ti ti-plus"></i>
+                      </button>
+                    </div>
+                    <div id="listaActivar" class="keywords-container"></div>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label text-danger">Palabras para EXCLUIR</label>
+                    <div class="input-group mb-2">
+                      <input type="text" id="inputExcluir" class="form-control" placeholder="Palabra excluyente">
+                      <button type="button" id="btnAddExcluir" class="btn btn-danger btn-sm">
+                        <i class="ti ti-plus"></i>
+                      </button>
+                    </div>
+                    <div id="listaExcluir" class="keywords-container"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <small id="condicionHelpText" class="form-text text-muted"></small>
+            </div>
+            
+            <!-- Estado de la regla -->
+            <div class="form-group">
+              <label for="reglaEstado" class="form-label">
+                <i class="ti ti-toggle-left"></i> Estado de la regla
+              </label>
+              <select id="reglaEstado" class="form-select">
+                <option value="Sí">Activa</option>
+                <option value="No">Inactiva</option>
+              </select>
+            </div>
+            
+            <!-- Botones de acción -->
+            <div class="modal-actions">
+              <button type="button" id="btnCancelarConfig" class="btn btn-secondary">
+                <i class="ti ti-x"></i> Cancelar
+              </button>
+              <button type="submit" id="btnGuardarConfig" class="btn btn-primary">
+                <i class="ti ti-check"></i> Guardar Regla
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+
+    <!-- MODAL de ayuda -->
+    <div id="ayudaConfigModal" class="modal-overlay hidden">
+      <div class="modal-dialog modal-lg">
+        <header class="modal-header">
+          <h3>Ayuda - Configuración de Alertas</h3>
+          <button id="modalAyudaCerrarBtn" class="modal-close-button" aria-label="Cerrar">
+            <i class="ti ti-x"></i>
+          </button>
+        </header>
+        <section class="modal-body-content">
+          <div class="help-section">
+            <h5><i class="ti ti-info-circle text-info"></i> Tipos de Condición</h5>
+            <ul class="help-list">
+              <li><strong>Siempre Positivo:</strong> La alerta se marca como "Positivo" si el asunto coincide.</li>
+              <li><strong>Palabra Clave en Cuerpo:</strong> Busca palabras específicas en el contenido del email.</li>
+              <li><strong>Excluir SKU:</strong> Se activa si hay SKUs que NO están en la lista de exclusión.</li>
+              <li><strong>Multi-Condicional:</strong> Lógica avanzada con palabras activadoras y excluyentes.</li>
+            </ul>
+          </div>
+          
+          <div class="help-section">
+            <h5><i class="ti ti-lightbulb text-warning"></i> Consejos de Uso</h5>
+            <ul class="help-list">
+              <li>Usa descripciones claras para identificar fácilmente cada regla.</li>
+              <li>Las reglas inactivas no procesarán emails pero se mantienen guardadas.</li>
+              <li>En Multi-Condicional, las palabras excluyentes tienen prioridad sobre las activadoras.</li>
+              <li>Prueba tus reglas con emails reales antes de activarlas en producción.</li>
+            </ul>
+          </div>
+          
+          <div class="help-section">
+            <h5><i class="ti ti-code text-primary"></i> Ejemplos de Reglas</h5>
+            <ul class="help-list">
+              <li><strong>Error de stock:</strong> Asunto: "stock", Tipo: PalabraClaveEnCuerpo, Valor: "agotado,sin stock"</li>
+              <li><strong>Pedidos fallidos:</strong> Asunto: "pedido", Tipo: MultiCondicional, Activar: "error,fallo", Excluir: "exitoso"</li>
+              <li><strong>Alertas críticas:</strong> Asunto: "crítico", Tipo: SiemprePositivo</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- CoreUI JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.0/dist/js/coreui.bundle.min.js"></script>
+  
+  <!-- Layout and Module Scripts -->
+  <script type="module">
+    import { renderLayout } from './js/layout.js';
+    import './modulos/config-alertas/config-alertas.js';
+    
+    // Render layout with config content
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('CONFIG-ALERTAS: DOM loaded, starting layout render...');
+      
+      const user = JSON.parse(localStorage.getItem('user') || '{"role": "admin", "name": "Usuario"}');
+      
+      // Get the config content
+      const configContent = document.getElementById('main-content').innerHTML;
+      console.log('CONFIG-ALERTAS: Content length:', configContent.length);
+      
+      // Render layout with the config content
+      renderLayout({ user, content: configContent });
+      console.log('CONFIG-ALERTAS: Layout rendered');
+      
+      // Hide the original content since it's now inside the layout
+      document.getElementById('main-content').style.display = 'none';
+      
+      // Initialize CoreUI components and theme switcher
+      setTimeout(() => {
+        console.log('CONFIG-ALERTAS: Inicializando CoreUI...');
+        
+        if (window.coreui) {
+          // Initialize sidebar
+          const sidebar = document.querySelector('#sidebar');
+          if (sidebar && window.coreui.Sidebar) {
+            const sidebarInstance = window.coreui.Sidebar.getOrCreateInstance(sidebar);
+            console.log('CONFIG-ALERTAS: Sidebar inicializado:', !!sidebarInstance);
+          }
+          
+          // Initialize theme system
+          function initTheme() {
+            const savedTheme = localStorage.getItem('coreui-theme') || 'light';
+            document.documentElement.setAttribute('data-coreui-theme', savedTheme);
+            console.log('CONFIG-ALERTAS: Tema inicial:', savedTheme);
+          }
+          
+          function changeTheme(newTheme) {
+            document.documentElement.setAttribute('data-coreui-theme', newTheme);
+            localStorage.setItem('coreui-theme', newTheme);
+            
+            if (window.updateThemeIcon) {
+              window.updateThemeIcon();
+            }
+            
+            console.log('CONFIG-ALERTAS: Tema cambiado a:', newTheme);
+            window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: newTheme } }));
+          }
+          
+          initTheme();
+          
+          // Set up theme button listeners
+          const themeButtons = document.querySelectorAll('[data-coreui-theme-value]');
+          themeButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              const theme = button.getAttribute('data-coreui-theme-value');
+              changeTheme(theme);
+            });
+          });
+        }
+      }, 200);
+      
+      // Initialize config module
+      setTimeout(async () => {
+        if (window.initConfigAlertas) {
+          console.log('CONFIG-ALERTAS: Inicializando módulo...');
+          try {
+            await window.initConfigAlertas();
+            console.log('CONFIG-ALERTAS: Módulo inicializado correctamente');
+          } catch (error) {
+            console.error('CONFIG-ALERTAS: Error al inicializar:', error);
+          }
+        } else {
+          console.error('CONFIG-ALERTAS: initConfigAlertas no está disponible en window');
+        }
+      }, 500);
+    });
+  </script>
+  
+  <!-- Config Alertas Module JavaScript -->
+  <script src="modulos/config-alertas/config-alertas.js"></script>
+</body>
+</html>

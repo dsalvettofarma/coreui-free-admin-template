@@ -366,8 +366,19 @@ export default async function handler(req, res) {
       
       // Handle searchInSheet action (for alertas module)
       if (action === 'searchInSheet') {
-        const moduleToUse = sheetName === 'ALERTAS' ? 'ALERTAS' : (module || 'INSPECTOR');
-        const finalSheetName = sheetName === 'ALERTAS' ? 'Alertas' : sheetName;
+        let moduleToUse, finalSheetName;
+        
+        // Handle ConfiguracionAlertas specifically
+        if (sheetName === 'ConfiguracionAlertas') {
+          moduleToUse = 'ALERTAS';
+          finalSheetName = 'ConfiguracionAlertas';
+        } else if (sheetName === 'ALERTAS') {
+          moduleToUse = 'ALERTAS';
+          finalSheetName = 'Alertas';
+        } else {
+          moduleToUse = module || 'INSPECTOR';
+          finalSheetName = sheetName;
+        }
         
         try {
           const result = await searchInSheet(moduleToUse, finalSheetName, {
@@ -474,6 +485,309 @@ export default async function handler(req, res) {
         }
       }
       
+      // Handle addConfigRule action (for configuration rules)
+      if (action === 'addConfigRule') {
+        try {
+          const sheets = getGoogleSheetsService();
+          const { descripcion, asunto, tipoCondicion, valorCondicion, estado } = req.body;
+          
+          if (!descripcion || !asunto) {
+            return res.status(400).json({
+              success: false,
+              error: 'Descripción y asunto son requeridos'
+            });
+          }
+          
+          // Generate UID for new rule
+          const uid = `CONFIG_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          const timestamp = new Date().toISOString();
+          
+          const newRow = [
+            uid,
+            descripcion,
+            asunto,
+            tipoCondicion || 'SiemprePositivo',
+            valorCondicion || '',
+            estado || 'Sí',
+            timestamp,
+            timestamp
+          ];
+          
+          await sheets.spreadsheets.values.append({
+            spreadsheetId: SPREADSHEET_IDS.ALERTAS,
+            range: 'ConfiguracionAlertas!A:H',
+            valueInputOption: 'RAW',
+            requestBody: {
+              values: [newRow]
+            }
+          });
+          
+          return res.status(200).json({
+            success: true,
+            message: 'Regla de configuración agregada correctamente',
+            uid: uid
+          });
+        } catch (error) {
+          console.error('Error in addConfigRule:', error);
+          return res.status(500).json({
+            success: false,
+            error: error.message
+          });
+        }
+      }
+      
+      // Handle updateConfigRule action
+      if (action === 'updateConfigRule') {
+        try {
+          const sheets = getGoogleSheetsService();
+          const { uid, descripcion, asunto, tipoCondicion, valorCondicion, estado } = req.body;
+          
+          if (!uid) {
+            return res.status(400).json({
+              success: false,
+              error: 'UID es requerido para actualizar'
+            });
+          }
+          
+          // Get all data to find the row with the UID
+          const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_IDS.ALERTAS,
+            range: 'ConfiguracionAlertas!A:Z',
+          });
+          
+          const rows = response.data.values || [];
+          if (rows.length < 2) {
+            return res.status(404).json({
+              success: false,
+              error: 'No se encontraron datos en ConfiguracionAlertas'
+            });
+          }
+          
+          const headers = rows[0];
+          const uidIndex = headers.findIndex(h => h.toLowerCase() === 'uid');
+          
+          if (uidIndex === -1) {
+            return res.status(400).json({
+              success: false,
+              error: 'No se encontró la columna UID'
+            });
+          }
+          
+          // Find the row with the matching UID
+          let rowIndex = -1;
+          for (let i = 1; i < rows.length; i++) {
+            if (rows[i][uidIndex] === uid) {
+              rowIndex = i;
+              break;
+            }
+          }
+          
+          if (rowIndex === -1) {
+            return res.status(404).json({
+              success: false,
+              error: 'No se encontró la regla con ese UID'
+            });
+          }
+          
+          // Update the entire row
+          const updatedRow = [...rows[rowIndex]];
+          if (descripcion !== undefined) updatedRow[1] = descripcion;
+          if (asunto !== undefined) updatedRow[2] = asunto;
+          if (tipoCondicion !== undefined) updatedRow[3] = tipoCondicion;
+          if (valorCondicion !== undefined) updatedRow[4] = valorCondicion;
+          if (estado !== undefined) updatedRow[5] = estado;
+          updatedRow[7] = new Date().toISOString(); // Updated timestamp
+          
+          await sheets.spreadsheets.values.update({
+            spreadsheetId: SPREADSHEET_IDS.ALERTAS,
+            range: `ConfiguracionAlertas!A${rowIndex + 1}:H${rowIndex + 1}`,
+            valueInputOption: 'RAW',
+            requestBody: {
+              values: [updatedRow.slice(0, 8)]
+            }
+          });
+          
+          return res.status(200).json({
+            success: true,
+            message: 'Regla actualizada correctamente'
+          });
+        } catch (error) {
+          console.error('Error in updateConfigRule:', error);
+          return res.status(500).json({
+            success: false,
+            error: error.message
+          });
+        }
+      }
+      
+      // Handle deleteConfigRule action
+      if (action === 'deleteConfigRule') {
+        try {
+          const sheets = getGoogleSheetsService();
+          const { uid } = req.body;
+          
+          if (!uid) {
+            return res.status(400).json({
+              success: false,
+              error: 'UID es requerido para eliminar'
+            });
+          }
+          
+          // Get all data to find the row with the UID
+          const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_IDS.ALERTAS,
+            range: 'ConfiguracionAlertas!A:Z',
+          });
+          
+          const rows = response.data.values || [];
+          if (rows.length < 2) {
+            return res.status(404).json({
+              success: false,
+              error: 'No se encontraron datos en ConfiguracionAlertas'
+            });
+          }
+          
+          const headers = rows[0];
+          const uidIndex = headers.findIndex(h => h.toLowerCase() === 'uid');
+          
+          if (uidIndex === -1) {
+            return res.status(400).json({
+              success: false,
+              error: 'No se encontró la columna UID'
+            });
+          }
+          
+          // Find the row with the matching UID
+          let rowIndex = -1;
+          for (let i = 1; i < rows.length; i++) {
+            if (rows[i][uidIndex] === uid) {
+              rowIndex = i;
+              break;
+            }
+          }
+          
+          if (rowIndex === -1) {
+            return res.status(404).json({
+              success: false,
+              error: 'No se encontró la regla con ese UID'
+            });
+          }
+          
+          // Delete the row using batchUpdate
+          await sheets.spreadsheets.batchUpdate({
+            spreadsheetId: SPREADSHEET_IDS.ALERTAS,
+            requestBody: {
+              requests: [{
+                deleteDimension: {
+                  range: {
+                    sheetId: 0, // Assuming ConfiguracionAlertas is the first sheet
+                    dimension: 'ROWS',
+                    startIndex: rowIndex,
+                    endIndex: rowIndex + 1
+                  }
+                }
+              }]
+            }
+          });
+          
+          return res.status(200).json({
+            success: true,
+            message: 'Regla eliminada correctamente'
+          });
+        } catch (error) {
+          console.error('Error in deleteConfigRule:', error);
+          return res.status(500).json({
+            success: false,
+            error: error.message
+          });
+        }
+      }
+      
+      // Handle toggleConfigRule action
+      if (action === 'toggleConfigRule') {
+        try {
+          const sheets = getGoogleSheetsService();
+          const { uid } = req.body;
+          
+          if (!uid) {
+            return res.status(400).json({
+              success: false,
+              error: 'UID es requerido para toggle'
+            });
+          }
+          
+          // Get all data to find the row with the UID
+          const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_IDS.ALERTAS,
+            range: 'ConfiguracionAlertas!A:Z',
+          });
+          
+          const rows = response.data.values || [];
+          if (rows.length < 2) {
+            return res.status(404).json({
+              success: false,
+              error: 'No se encontraron datos en ConfiguracionAlertas'
+            });
+          }
+          
+          const headers = rows[0];
+          const uidIndex = headers.findIndex(h => h.toLowerCase() === 'uid');
+          const activaIndex = headers.findIndex(h => h.toLowerCase() === 'activa' || h.toLowerCase() === 'estado');
+          
+          if (uidIndex === -1 || activaIndex === -1) {
+            return res.status(400).json({
+              success: false,
+              error: 'No se encontraron las columnas UID o Activa/Estado'
+            });
+          }
+          
+          // Find the row with the matching UID
+          let rowIndex = -1;
+          for (let i = 1; i < rows.length; i++) {
+            if (rows[i][uidIndex] === uid) {
+              rowIndex = i;
+              break;
+            }
+          }
+          
+          if (rowIndex === -1) {
+            return res.status(404).json({
+              success: false,
+              error: 'No se encontró la regla con ese UID'
+            });
+          }
+          
+          // Toggle the active state
+          const currentState = rows[rowIndex][activaIndex];
+          const newState = (currentState === 'Sí' || currentState === 'Activa') ? 'No' : 'Sí';
+          
+          // Update the "Activa" column
+          const columnLetter = String.fromCharCode(65 + activaIndex);
+          const cellRange = `ConfiguracionAlertas!${columnLetter}${rowIndex + 1}`;
+          
+          await sheets.spreadsheets.values.update({
+            spreadsheetId: SPREADSHEET_IDS.ALERTAS,
+            range: cellRange,
+            valueInputOption: 'RAW',
+            requestBody: {
+              values: [[newState]]
+            }
+          });
+          
+          return res.status(200).json({
+            success: true,
+            message: `Regla ${newState === 'Sí' ? 'activada' : 'desactivada'} correctamente`,
+            newState: newState
+          });
+        } catch (error) {
+          console.error('Error in toggleConfigRule:', error);
+          return res.status(500).json({
+            success: false,
+            error: error.message
+          });
+        }
+      }
+
       // Handle add action (existing functionality)
       if (action === 'add') {
         const moduleToUse = module || 'FRAUDES';

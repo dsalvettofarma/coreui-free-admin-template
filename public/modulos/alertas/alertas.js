@@ -135,11 +135,20 @@ function _inicializarBotones() {
     
     if (btnConfiguracion) {
         _addManagedEventListener(btnConfiguracion, 'click', () => {
-            console.log('ALERTAS: Abrir configuración...');
-            // Aquí puedes agregar la lógica de configuración
-            alert('Función de configuración en desarrollo');
+            console.log('ALERTAS: Toggling configuración...');
+            // Bootstrap collapse se maneja automáticamente por data-bs-toggle
+            // Pero podemos cargar la configuración cuando se abra
+            setTimeout(() => {
+                const configSection = document.getElementById('configuracion-section');
+                if (configSection && configSection.classList.contains('show')) {
+                    _cargarConfiguracion();
+                }
+            }, 300);
         });
     }
+    
+    // Inicializar botones de configuración
+    _inicializarBotonesConfiguracion();
 }
 
 // --- Handler para tecla ESC ---
@@ -555,10 +564,304 @@ function cleanupAlertas() {
     activeEventListeners = [];
 }
 
+// === FUNCIONALIDAD DE CONFIGURACIÓN DE ALERTAS ===
+
+// Variables para configuración
+let reglasConfiguracion = [];
+let palabrasActivadoras = [];
+let palabrasExcluyentes = [];
+
+// --- Inicializar Botones de Configuración ---
+function _inicializarBotonesConfiguracion() {
+    const btnNuevaRegla = document.getElementById('btn-nueva-regla');
+    const btnRefrescarConfig = document.getElementById('btn-refrescar-config');
+    const btnAyudaConfig = document.getElementById('btn-ayuda-config');
+    
+    if (btnNuevaRegla) {
+        _addManagedEventListener(btnNuevaRegla, 'click', () => {
+            _abrirModalConfiguracion();
+        });
+    }
+    
+    if (btnRefrescarConfig) {
+        _addManagedEventListener(btnRefrescarConfig, 'click', () => {
+            _cargarConfiguracion();
+        });
+    }
+    
+    if (btnAyudaConfig) {
+        _addManagedEventListener(btnAyudaConfig, 'click', (e) => {
+            e.preventDefault();
+            _mostrarAyudaConfiguracion();
+        });
+    }
+    
+    // Inicializar modal de configuración
+    _inicializarModalConfiguracion();
+}
+
+// --- Cargar Configuración de Reglas ---
+async function _cargarConfiguracion() {
+    console.log('ALERTAS: Cargando configuración de reglas...');
+    
+    const loadingActivasElement = document.getElementById('loading-reglas-activas');
+    const loadingInactivasElement = document.getElementById('loading-reglas-inactivas');
+    const noActivasElement = document.getElementById('no-reglas-activas');
+    const noInactivasElement = document.getElementById('no-reglas-inactivas');
+    const errorActivasElement = document.getElementById('error-reglas-activas');
+    const errorInactivasElement = document.getElementById('error-reglas-inactivas');
+    const listaActivasElement = document.getElementById('lista-reglas-activas');
+    const listaInactivasElement = document.getElementById('lista-reglas-inactivas');
+    
+    // Mostrar loading
+    if (loadingActivasElement) loadingActivasElement.classList.remove('hidden');
+    if (loadingInactivasElement) loadingInactivasElement.classList.remove('hidden');
+    if (noActivasElement) noActivasElement.classList.add('hidden');
+    if (noInactivasElement) noInactivasElement.classList.add('hidden');
+    if (errorActivasElement) errorActivasElement.classList.add('hidden');
+    if (errorInactivasElement) errorInactivasElement.classList.add('hidden');
+    
+    try {
+        // Simular carga de reglas (en producción usar API Gateway)
+        const response = await apiGatewayRequest('searchInSheet', {
+            sheetName: 'ConfiguracionAlertas',
+            searchTerm: '',
+            maxResults: 1000
+        });
+        
+        if (response && response.success && response.data) {
+            reglasConfiguracion = response.data;
+            
+            // Separar reglas activas e inactivas
+            const reglasActivas = reglasConfiguracion.filter(r => r.Activa === 'Sí');
+            const reglasInactivas = reglasConfiguracion.filter(r => r.Activa === 'No');
+            
+            console.log('ALERTAS: Reglas cargadas - Activas:', reglasActivas.length, 'Inactivas:', reglasInactivas.length);
+            
+            // Renderizar reglas activas
+            if (listaActivasElement) {
+                _renderizarReglas(reglasActivas, listaActivasElement, true);
+            }
+            
+            // Renderizar reglas inactivas
+            if (listaInactivasElement) {
+                _renderizarReglas(reglasInactivas, listaInactivasElement, false);
+            }
+            
+            // Mostrar mensajes apropiados
+            if (reglasActivas.length === 0 && noActivasElement) {
+                noActivasElement.classList.remove('hidden');
+            }
+            if (reglasInactivas.length === 0 && noInactivasElement) {
+                noInactivasElement.classList.remove('hidden');
+            }
+        }
+    } catch (error) {
+        console.error('ALERTAS: Error al cargar configuración:', error);
+        if (errorActivasElement) {
+            errorActivasElement.textContent = `Error: ${error.message}`;
+            errorActivasElement.classList.remove('hidden');
+        }
+        if (errorInactivasElement) {
+            errorInactivasElement.textContent = `Error: ${error.message}`;
+            errorInactivasElement.classList.remove('hidden');
+        }
+    } finally {
+        // Ocultar loading
+        if (loadingActivasElement) loadingActivasElement.classList.add('hidden');
+        if (loadingInactivasElement) loadingInactivasElement.classList.add('hidden');
+    }
+}
+
+// --- Renderizar Lista de Reglas ---
+function _renderizarReglas(reglas, container, esActiva) {
+    if (!container) return;
+    
+    // Limpiar contenido anterior
+    const reglasExistentes = container.querySelectorAll('.regla-item');
+    reglasExistentes.forEach(item => item.remove());
+    
+    reglas.forEach((regla, index) => {
+        const reglaDiv = document.createElement('div');
+        reglaDiv.className = `regla-item ${esActiva ? 'activa' : 'inactiva'}`;
+        
+        const tipoCondicion = regla.TipoCondicion || 'SiemprePositivo';
+        const valorCondicion = regla.ValorCondicion || '';
+        
+        reglaDiv.innerHTML = `
+            <div class="regla-header">
+                <div class="regla-info">
+                    <h5 class="regla-titulo">${regla.Descripcion || 'Sin descripción'}</h5>
+                    <p class="regla-asunto">Asunto: "${regla.Asunto || 'No especificado'}"</p>
+                </div>
+                <div class="regla-actions">
+                    <button class="btn btn-sm btn-outline-primary btn-editar-regla" data-index="${index}" data-activa="${esActiva}">
+                        <i class="ti ti-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger btn-eliminar-regla" data-index="${index}" data-activa="${esActiva}">
+                        <i class="ti ti-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="regla-details">
+                <span class="regla-tipo">${tipoCondicion}</span>
+                ${valorCondicion ? `<div class="regla-valor"><strong>Valor:</strong> ${valorCondicion}</div>` : ''}
+            </div>
+        `;
+        
+        container.appendChild(reglaDiv);
+    });
+    
+    // Agregar event listeners a los botones
+    const botonesEditar = container.querySelectorAll('.btn-editar-regla');
+    const botonesEliminar = container.querySelectorAll('.btn-eliminar-regla');
+    
+    botonesEditar.forEach(btn => {
+        _addManagedEventListener(btn, 'click', () => {
+            const index = parseInt(btn.dataset.index);
+            const esActiva = btn.dataset.activa === 'true';
+            const reglas = esActiva ? reglasConfiguracion.filter(r => r.Activa === 'Sí') : reglasConfiguracion.filter(r => r.Activa === 'No');
+            _editarRegla(reglas[index]);
+        });
+    });
+    
+    botonesEliminar.forEach(btn => {
+        _addManagedEventListener(btn, 'click', () => {
+            const index = parseInt(btn.dataset.index);
+            const esActiva = btn.dataset.activa === 'true';
+            const reglas = esActiva ? reglasConfiguracion.filter(r => r.Activa === 'Sí') : reglasConfiguracion.filter(r => r.Activa === 'No');
+            _eliminarRegla(reglas[index]);
+        });
+    });
+}
+
+// --- Modal de Configuración ---
+function _inicializarModalConfiguracion() {
+    const modal = document.getElementById('configReglaModal');
+    const btnCerrar = document.getElementById('modalConfigCerrarBtn');
+    const btnCancelar = document.getElementById('btnCancelarConfig');
+    const form = document.getElementById('formConfigRegla');
+    const selectTipo = document.getElementById('reglaTipoCondicion');
+    
+    if (btnCerrar) {
+        _addManagedEventListener(btnCerrar, 'click', _cerrarModalConfiguracion);
+    }
+    
+    if (btnCancelar) {
+        _addManagedEventListener(btnCancelar, 'click', _cerrarModalConfiguracion);
+    }
+    
+    if (modal) {
+        _addManagedEventListener(modal, 'click', (e) => {
+            if (e.target === modal) _cerrarModalConfiguracion();
+        });
+    }
+    
+    if (selectTipo) {
+        _addManagedEventListener(selectTipo, 'change', _manejarCambioTipoCondicion);
+    }
+    
+    if (form) {
+        _addManagedEventListener(form, 'submit', _guardarReglaConfiguracion);
+    }
+    
+    // Inicializar botones de keywords
+    _inicializarBotonesKeywords();
+}
+
+function _abrirModalConfiguracion(regla = null) {
+    const modal = document.getElementById('configReglaModal');
+    const titulo = document.getElementById('modalConfigTitulo');
+    
+    if (!modal) return;
+    
+    // Limpiar formulario
+    _limpiarFormularioConfiguracion();
+    
+    if (regla) {
+        titulo.textContent = 'Editar Regla de Alerta';
+        _cargarDatosReglaEnFormulario(regla);
+    } else {
+        titulo.textContent = 'Nueva Regla de Alerta';
+    }
+    
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function _cerrarModalConfiguracion() {
+    const modal = document.getElementById('configReglaModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function _mostrarAyudaConfiguracion() {
+    const modal = document.getElementById('ayudaConfigModal');
+    const btnCerrar = document.getElementById('modalAyudaCerrarBtn');
+    
+    if (!modal) return;
+    
+    if (btnCerrar && !btnCerrar.hasAttribute('data-listener')) {
+        _addManagedEventListener(btnCerrar, 'click', () => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        });
+        btnCerrar.setAttribute('data-listener', 'true');
+    }
+    
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+// Funciones auxiliares para configuración (simplificadas)
+function _limpiarFormularioConfiguracion() {
+    document.getElementById('reglaDescripcion').value = '';
+    document.getElementById('reglaAsunto').value = '';
+    document.getElementById('reglaTipoCondicion').value = 'SiemprePositivo';
+    document.getElementById('reglaEstado').value = 'Sí';
+    _manejarCambioTipoCondicion();
+}
+
+function _manejarCambioTipoCondicion() {
+    console.log('ALERTAS: Cambio en tipo de condición - funcionalidad básica');
+}
+
+function _inicializarBotonesKeywords() {
+    console.log('ALERTAS: Inicializando botones de keywords - funcionalidad básica');
+}
+
+function _cargarDatosReglaEnFormulario(regla) {
+    console.log('ALERTAS: Cargando datos de regla en formulario:', regla);
+}
+
+function _editarRegla(regla) {
+    console.log('ALERTAS: Editando regla:', regla);
+    _abrirModalConfiguracion(regla);
+}
+
+function _eliminarRegla(regla) {
+    if (confirm('¿Estás seguro de que quieres eliminar esta regla?')) {
+        console.log('ALERTAS: Eliminando regla:', regla);
+        // Aquí implementar eliminación via API Gateway
+    }
+}
+
+async function _guardarReglaConfiguracion(e) {
+    e.preventDefault();
+    console.log('ALERTAS: Guardando regla de configuración...');
+    
+    // Implementar guardado via API Gateway
+    _cerrarModalConfiguracion();
+    await _cargarConfiguracion(); // Recargar lista
+}
+
 // --- Exportar funciones globalmente ---
 window.initAlertas = initAlertas;
 window.cleanupAlertas = cleanupAlertas;
 window._cargarYFiltrarAlertas = _cargarYFiltrarAlertas;
 window._recargarAlertas = _cargarYFiltrarAlertas; // Alias para compatibilidad
+window._cargarConfiguracion = _cargarConfiguracion; // Para uso externo
 
 console.log('ALERTAS: Módulo cargado y listo para inicializar');
