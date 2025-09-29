@@ -263,9 +263,22 @@ function renderBloqueadosMesSimple(mesKey, cantidad) {
 
 async function onEnter() {
   // layout is rendered in fraudes.html via renderLayout, no need to call loadLayout here
+  console.log('FRAUDES: onEnter iniciando...');
+  
   const form = document.getElementById('fraude-form');
   const mensaje = document.getElementById('mensaje');
+  
+  if (!form) {
+    console.error('FRAUDES: No se encontró el formulario fraude-form');
+    return;
+  }
+  
   const btn = form.querySelector('.btn-primario');
+  if (!btn) {
+    console.error('FRAUDES: No se encontró el botón .btn-primario');
+    return;
+  }
+  
   const btnText = btn.querySelector('.btn-text');
   const btnSpinner = btn.querySelector('.btn-spinner');
   const noLogueadoCheckbox = document.getElementById('no_logueado');
@@ -274,6 +287,14 @@ async function onEnter() {
   // Obtener referencias ANTES de definir funciones que las usan
   const ordenarSelect = document.getElementById('ordenarMiniCards');
   const buscador = document.getElementById('buscadorFraude');
+  
+  console.log('FRAUDES: Elementos encontrados:', {
+    form: !!form,
+    btn: !!btn,
+    btnText: !!btnText,
+    btnSpinner: !!btnSpinner,
+    mensaje: !!mensaje
+  });
 
   // Lógica para autocompletar documento cuando marca "No logueado"
   if (noLogueadoCheckbox && documentoInput) {
@@ -481,9 +502,8 @@ function onLeave() {
 
 export { onEnter, onLeave };
 
-// Inicializar módulo de fraudes siempre que cargue la página
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', onEnter);
-} else {
-  onEnter();
-}
+// Make function available globally for initialization
+window.initFraudes = onEnter;
+
+// Don't auto-initialize, let the parent page control when to initialize
+console.log('FRAUDES: Módulo cargado, esperando inicialización manual');

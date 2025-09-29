@@ -200,10 +200,20 @@
         }
       }, 200);
       
-      // Initialize fraudes module
+      // Initialize fraudes module - wait for DOM elements to be fully rendered
       setTimeout(async () => {
-        console.log('FRAUDES: Módulo cargado automáticamente via ES6 import');
-      }, 500);
+        if (window.initFraudes) {
+          console.log('FRAUDES: Inicializando módulo...');
+          try {
+            await window.initFraudes();
+            console.log('FRAUDES: Módulo inicializado correctamente');
+          } catch (error) {
+            console.error('FRAUDES: Error al inicializar:', error);
+          }
+        } else {
+          console.error('FRAUDES: initFraudes no está disponible en window');
+        }
+      }, 800);
     });
   </script>
 </body>
