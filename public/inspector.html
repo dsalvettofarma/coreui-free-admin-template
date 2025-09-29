@@ -282,9 +282,110 @@
       background-color: #23272b !important;
     }
     
-    /* Asegurar que el wrapper no tenga margin raro */
-    .wrapper {
-      background-color: var(--cui-body-bg, #f8f9fa);
+    /* TEMA PARA EL CONTENIDO DEL INSPECTOR */
+    
+    /* Tema claro - contenido inspector */
+    html[data-coreui-theme="light"] .wrapper,
+    html[data-coreui-theme="light"] .body,
+    html[data-coreui-theme="light"] .content,
+    html[data-coreui-theme="light"] main,
+    html[data-coreui-theme="light"] .container-fluid {
+      background-color: #f8f9fa !important;
+      color: #212529 !important;
+    }
+    
+    html[data-coreui-theme="light"] .inspector-card,
+    html[data-coreui-theme="light"] .card {
+      background-color: #fff !important;
+      color: #212529 !important;
+      border-color: #dee2e6 !important;
+    }
+    
+    html[data-coreui-theme="light"] .form-control,
+    html[data-coreui-theme="light"] .form-select {
+      background-color: #fff !important;
+      color: #212529 !important;
+      border-color: #dee2e6 !important;
+    }
+    
+    html[data-coreui-theme="light"] .btn:not(.btn-primary):not(.btn-danger) {
+      background-color: #6c757d !important;
+      color: #fff !important;
+    }
+    
+    /* Tema oscuro - contenido inspector */
+    html[data-coreui-theme="dark"] .wrapper,
+    html[data-coreui-theme="dark"] .body,
+    html[data-coreui-theme="dark"] .content,
+    html[data-coreui-theme="dark"] main,
+    html[data-coreui-theme="dark"] .container-fluid {
+      background-color: #1a1d21 !important;
+      color: #dee2e6 !important;
+    }
+    
+    html[data-coreui-theme="dark"] .inspector-card,
+    html[data-coreui-theme="dark"] .card {
+      background-color: #23272b !important;
+      color: #dee2e6 !important;
+      border-color: #495057 !important;
+    }
+    
+    html[data-coreui-theme="dark"] .form-control,
+    html[data-coreui-theme="dark"] .form-select {
+      background-color: #495057 !important;
+      color: #dee2e6 !important;
+      border-color: #6c757d !important;
+    }
+    
+    html[data-coreui-theme="dark"] .form-control::placeholder {
+      color: #adb5bd !important;
+    }
+    
+    html[data-coreui-theme="dark"] .btn:not(.btn-primary):not(.btn-danger) {
+      background-color: #495057 !important;
+      color: #dee2e6 !important;
+    }
+    
+    html[data-coreui-theme="dark"] .btn:not(.btn-primary):not(.btn-danger):hover {
+      background-color: #6c757d !important;
+    }
+    
+    /* Tabla responsive al tema */
+    html[data-coreui-theme="dark"] #tablaResultados table {
+      background-color: #23272b !important;
+      color: #dee2e6 !important;
+    }
+    
+    html[data-coreui-theme="dark"] #tablaResultados th {
+      background-color: #495057 !important;
+      color: #dee2e6 !important;
+      border-color: #6c757d !important;
+    }
+    
+    html[data-coreui-theme="dark"] #tablaResultados td {
+      border-color: #495057 !important;
+    }
+    
+    html[data-coreui-theme="dark"] #tablaResultados tr:hover {
+      background-color: #2c3034 !important;
+    }
+    
+    /* Mensajes de estado */
+    html[data-coreui-theme="dark"] .info-message {
+      background-color: #1c4966 !important;
+      color: #9ec5fe !important;
+      border-color: #084298 !important;
+    }
+    
+    html[data-coreui-theme="dark"] .error-message {
+      background-color: #58151c !important;
+      color: #f1aeb5 !important;
+      border-color: #842029 !important;
+    }
+    
+    /* Forzar actualización de estilos cuando cambie el tema */
+    html[data-coreui-theme] * {
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease !important;
     }
     
     /* Header sin separaciones */
@@ -486,9 +587,23 @@
               const theme = button.getAttribute('data-coreui-theme-value');
               document.documentElement.setAttribute('data-coreui-theme', theme);
               localStorage.setItem('coreui-theme', theme);
+              
+              // Force refresh all elements
+              document.body.className = document.body.className;
+              
               console.log('INSPECTOR: Tema cambiado a:', theme);
+              
+              // Trigger a custom event for theme change
+              window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
             });
           });
+          
+          // Load saved theme on startup
+          const savedTheme = localStorage.getItem('coreui-theme');
+          if (savedTheme) {
+            document.documentElement.setAttribute('data-coreui-theme', savedTheme);
+            console.log('INSPECTOR: Tema cargado desde localStorage:', savedTheme);
+          }
         }
       }, 200);
       

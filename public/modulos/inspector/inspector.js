@@ -296,6 +296,17 @@ async function initInspector() {
                 }
             });
         }
+        
+        // Listen for theme changes
+        window.addEventListener('themeChanged', function(e) {
+            console.log('INSPECTOR: Theme changed event received:', e.detail.theme);
+            // Force refresh of current table styles
+            const tabla = document.getElementById('tablaResultados');
+            if (tabla) {
+                tabla.className = tabla.className; // Force style recalculation
+            }
+        });
+        
         _updateStatus('Selecciona una hoja y haz clic en "Precargar hoja".', false);
         console.log("INSPECTOR: Llamando a _precargar(false)");
         await _precargar(false);
