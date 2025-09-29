@@ -260,23 +260,43 @@ async function initInspector() {
             overlayTextElement: !!overlayTextElement
         });
         
-        // Verificar que los elementos principales existen
-        if (!selectHoja || !btnPrecargar || !btnBuscar || !inputValor || !tablaResultados|| !overlaySpinnerElement || !overlayTextElement) {
-            console.error("INSPECTOR: Faltan elementos cruciales del DOM. La sección no puede inicializarse.");
-            if(estadoElement) estadoElement.textContent = "Error: Interfaz del inspector no cargada correctamente.";
-            const mainBody = document.getElementById('main-body');
-            if(mainBody) mainBody.innerHTML = '<p class="status-message error-message" style="padding:20px;">Error al cargar la interfaz del Inspector. Elementos no encontrados.</p>';
+        // Verificar que los elementos críticos existen
+        const criticalElements = [selectHoja, btnBuscar, inputValor, tablaResultados];
+        const missingCritical = criticalElements.filter(elem => !elem);
+        
+        if (missingCritical.length > 0) {
+            console.error("INSPECTOR: Faltan elementos críticos del DOM:", {
+                selectHoja: !!selectHoja,
+                btnBuscar: !!btnBuscar,
+                inputValor: !!inputValor,
+                tablaResultados: !!tablaResultados
+            });
+            if(estadoElement) estadoElement.textContent = "Error: Elementos críticos no encontrados.";
             return;
         }
-        // Añadir Listeners usando el helper
-        _addManagedEventListener(btnRefrescarHojas, 'click', () => _precargar(true));
-        _addManagedEventListener(btnPrecargar, 'click', () => _precargar(false));
-        _addManagedEventListener(btnBuscar, 'click', _buscar);
-        _addManagedEventListener(inputValor, 'keyup', (event) => {
-            if (event.key === 'Enter') {
-                _buscar();
-            }
+        
+        // Advertir sobre elementos opcionales faltantes
+        if (!btnPrecargar) console.warn("INSPECTOR: btnPrecargar no encontrado");
+        if (!overlaySpinnerElement) console.warn("INSPECTOR: overlaySpinnerElement no encontrado");
+        if (!overlayTextElement) console.warn("INSPECTOR: overlayTextElement no encontrado");
+        // Añadir Listeners usando el helper - solo si los elementos existen
+        if (btnRefrescarHojas) _addManagedEventListener(btnRefrescarHojas, 'click', () => _precargar(true));
+        if (btnPrecargar) _addManagedEventListener(btnPrecargar, 'click', () => _precargar(false));
+        
+        // El botón de búsqueda es crítico
+        _addManagedEventListener(btnBuscar, 'click', () => {
+            console.log('INSPECTOR: Botón buscar clickeado');
+            _buscar();
         });
+        
+        if (inputValor) {
+            _addManagedEventListener(inputValor, 'keyup', (event) => {
+                if (event.key === 'Enter') {
+                    console.log('INSPECTOR: Enter presionado en input valor');
+                    _buscar();
+                }
+            });
+        }
         if(btnLimpiarFiltroFechas) {
             _addManagedEventListener(btnLimpiarFiltroFechas, 'click', () => {
                 if(inputFechaDesde) inputFechaDesde.value = '';

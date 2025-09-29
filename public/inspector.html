@@ -1252,22 +1252,40 @@
         }
       }, 200);
       
-      // Initialize inspector
-      if (window.initInspector) {
-        console.log('INSPECTOR: Inicializando módulo...');
-        try {
-          await window.initInspector();
-          console.log('INSPECTOR: Módulo inicializado correctamente');
-        } catch (error) {
-          console.error('INSPECTOR: Error al inicializar:', error);
+      // Wait a bit more and then initialize inspector
+      setTimeout(async () => {
+        // Debug: Check if elements exist
+        const criticalIds = ['sheet', 'btnBuscar', 'valor', 'columna', 'tipoMatch'];
+        criticalIds.forEach(id => {
+          const elem = document.getElementById(id);
+          console.log(`INSPECTOR DEBUG: Element ${id}:`, elem ? 'FOUND' : 'NOT FOUND');
+        });
+        
+        if (window.initInspector) {
+          console.log('INSPECTOR: Inicializando módulo...');
+          try {
+            await window.initInspector();
+            console.log('INSPECTOR: Módulo inicializado correctamente');
+            
+            // Verify button click listener
+            const btnBuscar = document.getElementById('btnBuscar');
+            if (btnBuscar) {
+              console.log('INSPECTOR DEBUG: btnBuscar encontrado, verificando listener...');
+              btnBuscar.addEventListener('click', () => {
+                console.log('INSPECTOR DEBUG: Click en btnBuscar detectado!');
+              });
+            }
+          } catch (error) {
+            console.error('INSPECTOR: Error al inicializar:', error);
+          }
+        } else {
+          console.error('INSPECTOR: initInspector no está disponible en window');
         }
-      } else {
-        console.error('INSPECTOR: initInspector no está disponible en window');
-      }
+      }, 500);
     });
   </script>
   
   <!-- Debug Script -->
-  <script src="debug-inspector.js"></script>
+  <!-- <script src="debug-inspector.js"></script> -->
 </body>
 </html>
