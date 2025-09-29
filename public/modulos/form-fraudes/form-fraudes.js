@@ -57,28 +57,14 @@ function renderMiniCards(data) {
   if (!container) return;
   container.innerHTML = '';
   
-  // Generar colores de avatar basados en el nombre
-  const avatarColors = ['#007bff', '#28a745', '#dc3545', '#ffc107', '#17a2b8', '#6f42c1', '#fd7e14', '#20c997'];
-  
   data.forEach((item, index) => {
     const card = document.createElement('div');
     card.className = 'col';
     
-    // Seleccionar color de avatar basado en el índice
-    const avatarColor = avatarColors[index % avatarColors.length];
-    
-    // Extraer iniciales del nombre
-    const initials = (item.nombre || 'U')
-      .split(' ')
-      .map(word => word.charAt(0))
-      .slice(0, 2)
-      .join('')
-      .toUpperCase();
-    
     card.innerHTML = `
       <div class="card h-100 fraude-report-card">
         <div class="card-body d-flex align-items-start gap-3">
-          <div class="fraude-avatar" style="background-color: ${avatarColor}">
+          <div class="fraude-avatar">
             <i class="ti ti-user"></i>
           </div>
           <div class="flex-grow-1 min-w-0">

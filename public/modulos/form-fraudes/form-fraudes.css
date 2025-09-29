@@ -442,21 +442,15 @@ select, input[type="checkbox"] {
 }
 
 .fraude-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 1.25rem;
-  font-weight: 600;
+  color: var(--cui-secondary-color);
   flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .fraude-avatar .ti {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
 }
 
 .fraude-details {
@@ -495,14 +489,8 @@ select, input[type="checkbox"] {
     padding: 1rem;
   }
   
-  .fraude-avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
-  }
-  
   .fraude-avatar .ti {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
   }
   
   .detail-item {
@@ -580,3 +568,8 @@ select, input[type="checkbox"] {
   background: linear-gradient(135deg, #1abc9c 0%, #138496 100%);
   box-shadow: 0 4px 8px rgba(32, 201, 151, 0.4);
 }
+@media (min-width: 1200px) {
+    .row-cols-xl-3>* {
+        width: 30%;
+    }
+  }
