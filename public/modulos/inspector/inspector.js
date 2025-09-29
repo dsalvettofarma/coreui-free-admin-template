@@ -287,12 +287,6 @@ async function initInspector() {
         if(btnUltimoRegistro) _addManagedEventListener(btnUltimoRegistro, 'click', _mostrarUltimo);
         if(btnPagosAnulados) _addManagedEventListener(btnPagosAnulados, 'click', _analizarAnulados);
         if(btnPagosRechazados) _addManagedEventListener(btnPagosRechazados, 'click', _analizarErrores);
-        
-        // Botón de test para tabla
-        const btnTestTabla = document.getElementById('btnTestTabla');
-        if (btnTestTabla) {
-            _addManagedEventListener(btnTestTabla, 'click', _testRenderTabla);
-        }
         if(selectHoja) {
             _addManagedEventListener(selectHoja, 'change', () => {
                 console.log("INSPECTOR: Hoja seleccionada cambiada. Se recomienda precargar.");

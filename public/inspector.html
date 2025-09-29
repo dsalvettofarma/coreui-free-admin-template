@@ -254,31 +254,7 @@
       color: #41464b !important;
     }
     
-    /* Asegurar que el layout CoreUI se muestre correctamente */
-    .sidebar {
-      width: 256px;
-      background-color: var(--cui-sidebar-bg, #fff);
-      border-right: 1px solid var(--cui-border-color, #dee2e6);
-    }
-    
-    .wrapper {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    
-    .body {
-      margin-left: 0;
-      transition: margin-left 0.15s;
-    }
-    
-    @media (min-width: 992px) {
-      .sidebar:not(.sidebar-narrow) ~ .wrapper .body {
-        margin-left: 256px;
-      }
-    }
-    
-    /* Asegurar altura completa */
+    /* Layout CoreUI arreglado */
     html, body {
       height: 100%;
       margin: 0;
@@ -286,9 +262,79 @@
     }
     
     #app {
-      height: 100%;
+      height: 100vh;
+      display: flex;
+    }
+    
+    /* Sidebar fijo */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 256px;
+      z-index: 1000;
+    }
+    
+    /* Wrapper ajustado para sidebar fijo */
+    .wrapper {
+      margin-left: 256px;
+      width: calc(100% - 256px);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
+    }
+    
+    /* Header limpio */
+    .header {
+      background: #fff;
+      border-bottom: 1px solid #dee2e6;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+    
+    .header .container-fluid:first-child {
+      padding: 0.75rem 1.5rem;
+      background: #fff;
+    }
+    
+    .header .container-fluid:last-child {
+      padding: 0.5rem 1.5rem;
+      background: #f8f9fa;
+      border-top: 1px solid #dee2e6;
+    }
+    
+    /* Body content */
+    .body {
+      flex: 1;
+      padding: 1.5rem;
+      background: #f8f9fa;
+    }
+    
+    /* Footer fijo al bottom */
+    .footer {
+      background: #fff;
+      border-top: 1px solid #dee2e6;
+      padding: 1rem 1.5rem;
+      margin-top: auto;
+    }
+    
+    /* Responsive */
+    @media (max-width: 991px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.15s;
+      }
+      
+      .sidebar.show {
+        transform: translateX(0);
+      }
+      
+      .wrapper {
+        margin-left: 0;
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -327,7 +373,6 @@
         <button id="btnAnulados">🧾 Pagos anulados</button>
         <button id="btnRechazados">📊 Pagos rechazados</button>
         <button id="btnBuscar" class="button-buscar">🔍 Buscar</button>
-        <button id="btnTestTabla" style="background-color: #17a2b8 !important;">🧪 Test Tabla</button>
       </div>
       
       <div class="container">
@@ -440,21 +485,35 @@
       console.log('INSPECTOR: Todos los elementos críticos encontrados');
       
       // Initialize CoreUI components
-      if (window.coreui) {
-        console.log('INSPECTOR: Inicializando componentes CoreUI...');
-        
-        // Initialize sidebar
-        const sidebar = document.querySelector('.sidebar');
-        if (sidebar && window.coreui.Sidebar) {
-          window.coreui.Sidebar.getOrCreateInstance(sidebar);
+      setTimeout(() => {
+        if (window.coreui) {
+          console.log('INSPECTOR: Inicializando componentes CoreUI...');
+          
+          // Initialize sidebar
+          const sidebar = document.querySelector('#sidebar');
+          if (sidebar && window.coreui.Sidebar) {
+            const sidebarInstance = window.coreui.Sidebar.getOrCreateInstance(sidebar);
+            console.log('INSPECTOR: Sidebar inicializado:', !!sidebarInstance);
+          }
+          
+          // Initialize header toggler
+          const headerToggler = document.querySelector('.header-toggler');
+          if (headerToggler) {
+            headerToggler.addEventListener('click', () => {
+              const sidebar = document.querySelector('#sidebar');
+              if (sidebar && window.coreui.Sidebar) {
+                window.coreui.Sidebar.getInstance(sidebar)?.toggle();
+              }
+            });
+          }
+          
+          // Initialize tooltips
+          const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-coreui-toggle="tooltip"]'));
+          tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new window.coreui.Tooltip(tooltipTriggerEl);
+          });
         }
-        
-        // Initialize tooltips and other components
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-coreui-toggle="tooltip"]'));
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-          return new window.coreui.Tooltip(tooltipTriggerEl);
-        });
-      }
+      }, 100);
       
       // Initialize inspector
       if (window.initInspector) {
