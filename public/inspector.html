@@ -388,9 +388,424 @@
       transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease !important;
     }
     
-    /* Header sin separaciones */
-    .header {
-      border-bottom: 1px solid var(--cui-border-color, #dee2e6);
+    /* NUEVO DISEÑO HÍBRIDO - Header compacto + Filtros expandibles */
+    
+    /* Header compacto y elegante */
+    .compact-header {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-bottom: 2px solid #dee2e6;
+      padding: 12px 20px;
+      border-radius: 8px 8px 0 0;
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .header-left {
+      flex: 1;
+      min-width: 300px;
+    }
+    
+    .module-title {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #2d3748;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .header-subtitle {
+      color: #6c757d;
+      font-size: 0.85rem;
+      margin-left: 28px;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    /* Botones de acción con colores del tema claro */
+    .btn-group-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    
+    .btn-action {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    
+    .btn-action.btn-primary {
+      background-color: #0d6efd;
+      color: white;
+    }
+    
+    .btn-action.btn-primary:hover {
+      background-color: #0b5ed7;
+      transform: translateY(-1px);
+    }
+    
+    .btn-action.btn-warning {
+      background-color: #fd7e14;
+      color: white;
+    }
+    
+    .btn-action.btn-warning:hover {
+      background-color: #e8681a;
+      transform: translateY(-1px);
+    }
+    
+    .btn-action.btn-success {
+      background-color: #198754;
+      color: white;
+    }
+    
+    .btn-action.btn-success:hover {
+      background-color: #157347;
+      transform: translateY(-1px);
+    }
+    
+    .btn-action.btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+    
+    .btn-action.btn-secondary:hover {
+      background-color: #5c636a;
+      transform: translateY(-1px);
+    }
+    
+    .btn-action.btn-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+    
+    .btn-action.btn-danger:hover {
+      background-color: #bb2d3b;
+      transform: translateY(-1px);
+    }
+    
+    /* Enlaces del header */
+    .header-links {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .link-action {
+      padding: 8px;
+      color: #6c757d;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    
+    .link-action:hover {
+      background-color: #e9ecef;
+      color: #0d6efd;
+    }
+    
+    /* Filtros híbridos - compactos pero completos */
+    .filters-hybrid {
+      background-color: #fff;
+      border-bottom: 1px solid #dee2e6;
+      padding: 15px 20px;
+    }
+    
+    /* Fila principal de búsqueda */
+    .search-row {
+      display: flex;
+      align-items: end;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    
+    .search-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 100px;
+    }
+    
+    .search-group.flex-grow {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    .search-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #495057;
+      margin: 0;
+    }
+    
+    .search-control {
+      padding: 6px 10px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      background-color: #fff;
+      transition: border-color 0.2s ease;
+    }
+    
+    .search-control:focus {
+      outline: none;
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1);
+    }
+    
+    .search-control-sm {
+      min-width: 90px;
+    }
+    
+    /* Botón de búsqueda principal */
+    .btn-search-main {
+      padding: 8px 16px;
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    
+    .btn-search-main:hover {
+      background-color: #0b5ed7;
+      transform: translateY(-1px);
+    }
+    
+    /* Filtros avanzados */
+    .advanced-filters {
+      margin-top: 5px;
+    }
+    
+    .btn-toggle-advanced {
+      background: none;
+      border: 1px solid #dee2e6;
+      color: #6c757d;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .btn-toggle-advanced:hover {
+      background-color: #f8f9fa;
+      color: #495057;
+    }
+    
+    .toggle-icon {
+      transition: transform 0.2s ease;
+    }
+    
+    .btn-toggle-advanced[aria-expanded="true"] .toggle-icon {
+      transform: rotate(180deg);
+    }
+    
+    .advanced-content {
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 8px;
+    }
+    
+    /* Secciones de filtros */
+    .filter-section {
+      margin-bottom: 15px;
+    }
+    
+    .filter-section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+    
+    /* Filtros de fecha */
+    .date-filters {
+      display: flex;
+      align-items: end;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .date-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .date-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #6c757d;
+      margin: 0;
+    }
+    
+    .date-control {
+      padding: 5px 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      width: 140px;
+    }
+    
+    .btn-clear-dates {
+      padding: 6px 12px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+    }
+    
+    .btn-clear-dates:hover {
+      background-color: #bb2d3b;
+    }
+    
+    /* Filtros específicos */
+    .specific-filters {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .specific-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 150px;
+    }
+    
+    .specific-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #6c757d;
+      margin: 0;
+    }
+    
+    .specific-control {
+      padding: 5px 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      background-color: #fff;
+    }
+    
+    /* Responsive para pantallas pequeñas */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .header-left {
+        min-width: auto;
+        text-align: center;
+      }
+      
+      .header-actions {
+        justify-content: center;
+      }
+      
+      .btn-group-actions {
+        justify-content: center;
+      }
+      
+      .search-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .search-group {
+        min-width: auto;
+      }
+    }
+    
+    /* Tema oscuro para el nuevo diseño */
+    html[data-coreui-theme="dark"] .compact-header {
+      background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+      border-bottom-color: #4a5568;
+    }
+    
+    html[data-coreui-theme="dark"] .module-title {
+      color: #f7fafc;
+    }
+    
+    html[data-coreui-theme="dark"] .header-subtitle {
+      color: #a0aec0;
+    }
+    
+    html[data-coreui-theme="dark"] .filters-hybrid {
+      background-color: #2d3748;
+      border-bottom-color: #4a5568;
+    }
+    
+    html[data-coreui-theme="dark"] .search-control,
+    html[data-coreui-theme="dark"] .date-control,
+    html[data-coreui-theme="dark"] .specific-control {
+      background-color: #4a5568;
+      color: #f7fafc;
+      border-color: #6b7280;
+    }
+    
+    html[data-coreui-theme="dark"] .advanced-content {
+      background-color: #374151;
+      border-color: #6b7280;
+    }
+    
+    html[data-coreui-theme="dark"] .btn-toggle-advanced {
+      color: #d1d5db;
+      border-color: #6b7280;
+    }
+    
+    html[data-coreui-theme="dark"] .btn-toggle-advanced:hover {
+      background-color: #374151;
+      color: #f9fafb;
     }
   </style>
 </head>
@@ -406,80 +821,145 @@
     </div>
     
     <div class="inspector-card">
-      <div class="header">
-        <h2>
-          Inspector de pagos
-          <img src="https://i.pinimg.com/originals/29/94/3d/29943dea02925e3b1f046cee1b53a682.png" alt="Ícono" style="width: 50px; height: 50px; vertical-align: middle;">
-        </h2>
-        <div class="links">
-          <a href="#" target="_blank" class="btn-ayuda-simple" title="Ver guía del Inspector de Pagos">
-            <i class="ti ti-help-circle" style="font-size: 1.2em;"></i> Documentación
-          </a>
-          <a href="https://docs.google.com/spreadsheets/d/1SBniJctF3j2nMt4M1IQWFkvjsKhCqJ_h6kqEtcvGdsg/edit" id="sheet-link" class="sheet-button" target="_blank" rel="noopener noreferrer">
-            <i class="ti ti-external-link"></i> 📄 Ver hoja
-          </a>
+      <!-- Header compacto y elegante -->
+      <div class="compact-header">
+        <div class="header-content">
+          <div class="header-left">
+            <h4 class="module-title">
+              <i class="ti ti-search" style="font-size: 1.2em; color: #0d6efd;"></i>
+              Inspector de pagos
+            </h4>
+            <small class="header-subtitle">Recordá precargar la hoja. Los filtros se aplican en orden: fecha → texto</small>
+          </div>
+          
+          <div class="header-actions">
+            <!-- Botones principales con colores del tema claro -->
+            <div class="btn-group-actions">
+              <button id="btnRefrescarHojas" class="btn-action btn-primary" title="Refrescar hojas disponibles">
+                <i class="ti ti-refresh"></i> Refrescar
+              </button>
+              <button id="btnPrecargar" class="btn-action btn-warning" title="Precargar datos de la hoja">
+                <i class="ti ti-download"></i> Precargar
+              </button>
+              <button id="btnMostrarUltimo" class="btn-action btn-success" title="Mostrar último registro">
+                <i class="ti ti-clock"></i> Último
+              </button>
+              <button id="btnAnulados" class="btn-action btn-secondary" title="Filtrar pagos anulados">
+                <i class="ti ti-x"></i> Anulados
+              </button>
+              <button id="btnRechazados" class="btn-action btn-danger" title="Filtrar pagos rechazados">
+                <i class="ti ti-alert-triangle"></i> Rechazados
+              </button>
+            </div>
+            
+            <!-- Enlaces externos -->
+            <div class="header-links">
+              <a href="#" target="_blank" class="link-action" title="Ver documentación">
+                <i class="ti ti-help-circle"></i>
+              </a>
+              <a href="https://docs.google.com/spreadsheets/d/1SBniJctF3j2nMt4M1IQWFkvjsKhCqJ_h6kqEtcvGdsg/edit" id="sheet-link" class="link-action" target="_blank" title="Ver hoja de cálculo">
+                <i class="ti ti-external-link"></i>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
       
-      <div class="acciones">
-        <p class="mensaje-info">Recordá precargar la hoja. El filtro de fecha se aplica sobre la hoja seleccionada. Los filtros de texto se aplican después del filtro de fecha.</p> 
-        <button id="btnRefrescarHojas">🔁 Refrescar hojas</button>
-        <button id="btnPrecargar">🔄 Precargar hoja</button>
-        <button id="btnMostrarUltimo">🕒 Último registro</button>
-        <button id="btnAnulados">🧾 Pagos anulados</button>
-        <button id="btnRechazados">📊 Pagos rechazados</button>
-        <button id="btnBuscar" class="button-buscar">🔍 Buscar</button>
+      <!-- Filtros compactos en diseño híbrido -->
+      <div class="filters-hybrid">
+        <!-- Fila principal de búsqueda -->
+        <div class="search-row">
+          <div class="search-group">
+            <label class="search-label">Hoja:</label>
+            <select id="sheet" class="search-control"></select>
+          </div>
+          
+          <div class="search-group">
+            <label class="search-label">Columna:</label>
+            <select id="columna" class="search-control">
+              <option value="">Todas las columnas</option>
+            </select>
+          </div>
+          
+          <div class="search-group flex-grow">
+            <label class="search-label">Valor:</label>
+            <input type="text" id="valor" class="search-control" placeholder="Buscar...">
+          </div>
+          
+          <div class="search-group">
+            <label class="search-label">Tipo:</label>
+            <select id="tipoMatch" class="search-control search-control-sm">
+              <option value="contains">Contiene</option>
+              <option value="exact">Exacto</option>
+              <option value="starts">Comienza</option>
+              <option value="ends">Termina</option>
+            </select>
+          </div>
+          
+          <div class="search-group">
+            <button id="btnBuscar" class="btn-search-main">
+              <i class="ti ti-search"></i> Buscar
+            </button>
+          </div>
+        </div>
+        
+        <!-- Filtros avanzados expandibles -->
+        <div class="advanced-filters">
+          <div class="advanced-toggle">
+            <button type="button" class="btn-toggle-advanced" data-bs-toggle="collapse" data-bs-target="#advancedFilters">
+              <i class="ti ti-filter"></i> Filtros Avanzados
+              <i class="ti ti-chevron-down toggle-icon"></i>
+            </button>
+          </div>
+          
+          <div class="collapse" id="advancedFilters">
+            <div class="advanced-content">
+              <!-- Filtros de fecha -->
+              <div class="filter-section">
+                <label class="section-label">
+                  <i class="ti ti-calendar"></i> Filtro por fechas
+                </label>
+                <div class="date-filters">
+                  <div class="date-group">
+                    <label class="date-label">Desde:</label>
+                    <input type="date" id="fechaDesde" class="date-control">
+                  </div>
+                  <div class="date-group">
+                    <label class="date-label">Hasta:</label>
+                    <input type="date" id="fechaHasta" class="date-control">
+                  </div>
+                  <div class="date-actions">
+                    <button id="btnLimpiarFiltroFechas" class="btn-clear-dates">
+                      <i class="ti ti-trash"></i> Limpiar
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Filtros adicionales -->
+              <div class="filter-section">
+                <label class="section-label">
+                  <i class="ti ti-filter-star"></i> Filtros específicos
+                </label>
+                <div class="specific-filters">
+                  <div class="specific-group">
+                    <label class="specific-label">Canal:</label>
+                    <select id="canalVenta" class="specific-control">
+                      <option value="">Todos</option>
+                    </select>
+                  </div>
+                  <div class="specific-group">
+                    <label class="specific-label">Comercio:</label>
+                    <select id="comercio" class="specific-control">
+                      <option value="">Todos</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <div class="container">
-        <div>
-          <label for="sheet">Hoja:</label>
-          <select id="sheet"></select>
-        </div>
-        <div>
-          <label for="valor">Valor a buscar:</label>
-          <input type="text" id="valor" placeholder="Ingrese valor a buscar...">
-        </div>
-        <div>
-          <label for="columna">Columna:</label>
-          <select id="columna">
-            <option value="">Todas las columnas</option>
-          </select>
-        </div>
-        <div>
-          <label for="tipoMatch">Tipo de búsqueda:</label>
-          <select id="tipoMatch">
-            <option value="contains">Contiene</option>
-            <option value="exact">Exacto</option>
-            <option value="starts">Comienza con</option>
-            <option value="ends">Termina con</option>
-          </select>
-        </div>
-        <div>
-          <label for="fechaDesde">Fecha desde:</label>
-          <input type="date" id="fechaDesde">
-        </div>
-        <div>
-          <label for="fechaHasta">Fecha hasta:</label>
-          <input type="date" id="fechaHasta">
-        </div>
-        <div>
-          <label for="canalVenta">Canal de venta:</label>
-          <select id="canalVenta">
-            <option value="">Todos</option>
-          </select>
-        </div>
-        <div>
-          <label for="comercio">Comercio:</label>
-          <select id="comercio">
-            <option value="">Todos</option>
-          </select>
-        </div>
-      </div>
-      
-      <button id="btnLimpiarFiltroFechas" style="margin-bottom: 15px; padding: 8px 16px; background-color: #dc3545; color: white; border: none; border-radius: 4px;">
-        🗑️ Limpiar filtros de fecha
-      </button>
       
       <div id="estado" class="mensaje-estado" style="display: none;"></div>
       
