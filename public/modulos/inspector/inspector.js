@@ -336,8 +336,13 @@ async function initInspector() {
     }
 }
 
-// Exportar la función globalmente para ser llamada desde inspector.html
+// Exportar las funciones globalmente para ser llamadas desde inspector.html
 window.initInspector = initInspector;
+window._buscar = _buscar;
+window._precargar = _precargar;
+window._mostrarUltimo = _mostrarUltimo;
+window._analizarAnulados = _analizarAnulados;
+window._analizarErrores = _analizarErrores;
 
 // --- Funciones de Caché y Precarga ---
 function _cacheExpirada() { //

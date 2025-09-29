@@ -1256,9 +1256,23 @@
       setTimeout(async () => {
         // Debug: Check if elements exist
         const criticalIds = ['sheet', 'btnBuscar', 'valor', 'columna', 'tipoMatch'];
+        console.log('INSPECTOR DEBUG: Verificando elementos críticos en el DOM...');
         criticalIds.forEach(id => {
           const elem = document.getElementById(id);
-          console.log(`INSPECTOR DEBUG: Element ${id}:`, elem ? 'FOUND' : 'NOT FOUND');
+          console.log(`INSPECTOR DEBUG: Element ${id}:`, elem ? 'FOUND' : 'NOT FOUND', elem);
+          if (elem) {
+            console.log(`  - Tipo: ${elem.tagName}, Clases: ${elem.className}, Visible: ${elem.offsetWidth > 0}`);
+          }
+        });
+        
+        // También verificar que el contenedor padre esté visible
+        const mainBody = document.getElementById('main-body');
+        const wrapper = document.querySelector('.wrapper');
+        console.log('INSPECTOR DEBUG: Contenedores:', {
+          mainBody: !!mainBody,
+          wrapper: !!wrapper,
+          mainBodyVisible: mainBody ? mainBody.offsetWidth > 0 : false,
+          wrapperVisible: wrapper ? wrapper.offsetWidth > 0 : false
         });
         
         if (window.initInspector) {
@@ -1267,13 +1281,48 @@
             await window.initInspector();
             console.log('INSPECTOR: Módulo inicializado correctamente');
             
-            // Verify button click listener
+            // Test button click directly - OVERRIDE para debug
             const btnBuscar = document.getElementById('btnBuscar');
             if (btnBuscar) {
-              console.log('INSPECTOR DEBUG: btnBuscar encontrado, verificando listener...');
-              btnBuscar.addEventListener('click', () => {
-                console.log('INSPECTOR DEBUG: Click en btnBuscar detectado!');
+              console.log('INSPECTOR DEBUG: btnBuscar encontrado, forzando funcionalidad...');
+              
+              // Limpiar cualquier listener previo
+              const newBtn = btnBuscar.cloneNode(true);
+              btnBuscar.parentNode.replaceChild(newBtn, btnBuscar);
+              
+              // Añadir listener directo al nuevo botón
+              newBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('INSPECTOR DEBUG: Click directo detectado!');
+                
+                // Test de funciones disponibles
+                console.log('INSPECTOR DEBUG: Funciones disponibles:', {
+                  _buscar: typeof window._buscar,
+                  initInspector: typeof window.initInspector,
+                  cacheData: !!window.cacheData
+                });
+                
+                // Intentar ejecutar búsqueda
+                if (window._buscar) {
+                  console.log('INSPECTOR DEBUG: Ejecutando _buscar...');
+                  try {
+                    window._buscar();
+                    console.log('INSPECTOR DEBUG: _buscar ejecutado exitosamente');
+                  } catch (error) {
+                    console.error('INSPECTOR DEBUG: Error en _buscar:', error);
+                    alert('Error al ejecutar búsqueda: ' + error.message);
+                  }
+                } else {
+                  console.log('INSPECTOR DEBUG: _buscar no disponible');
+                  alert('Función de búsqueda no disponible - revisar console');
+                }
               });
+              
+              console.log('INSPECTOR DEBUG: Listener de override añadido');
+            } else {
+              console.error('INSPECTOR DEBUG: btnBuscar NO encontrado');
             }
           } catch (error) {
             console.error('INSPECTOR: Error al inicializar:', error);
