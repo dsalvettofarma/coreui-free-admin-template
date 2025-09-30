@@ -15,7 +15,20 @@
   <link rel="stylesheet" href="assets/css/style.css">
   
   <style>
-    /* Estilos consistentes para sidebar y header */
+    /* Estilos copiados exactamente del inspector.html */
+    
+    /* Arreglos para unificar header y sidebar */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    #app {
+      height: 100%;
+    }
+    
+    /* Forzar que header y sidebar tengan el mismo color */
     html[data-coreui-theme="light"] .header {
       background-color: #fff !important;
     }
@@ -30,6 +43,99 @@
     
     html[data-coreui-theme="dark"] .sidebar {
       background-color: #23272b !important;
+    }
+    
+    /* TEMA PARA EL CONTENIDO */
+    
+    /* Tema claro - contenido */
+    html[data-coreui-theme="light"] .wrapper,
+    html[data-coreui-theme="light"] .body,
+    html[data-coreui-theme="light"] .content,
+    html[data-coreui-theme="light"] main,
+    html[data-coreui-theme="light"] .container-fluid {
+      background-color: #f8f9fa !important;
+      color: #212529 !important;
+    }
+    
+    html[data-coreui-theme="light"] .card {
+      background-color: #fff !important;
+      color: #212529 !important;
+      border-color: #dee2e6 !important;
+    }
+    
+    html[data-coreui-theme="light"] .form-control,
+    html[data-coreui-theme="light"] .form-select {
+      background-color: #fff !important;
+      color: #212529 !important;
+      border-color: #dee2e6 !important;
+    }
+    
+    html[data-coreui-theme="light"] .btn:not(.btn-primary):not(.btn-danger):not(.btn-info):not(.btn-warning):not(.btn-success) {
+      background-color: #6c757d !important;
+      color: #fff !important;
+    }
+    
+    /* Tema oscuro - contenido */
+    html[data-coreui-theme="dark"] .wrapper,
+    html[data-coreui-theme="dark"] .body,
+    html[data-coreui-theme="dark"] .content,
+    html[data-coreui-theme="dark"] main,
+    html[data-coreui-theme="dark"] .container-fluid {
+      background-color: #1a1d21 !important;
+      color: #dee2e6 !important;
+    }
+    
+    html[data-coreui-theme="dark"] .card {
+      background-color: #23272b !important;
+      color: #dee2e6 !important;
+      border-color: #495057 !important;
+    }
+    
+    html[data-coreui-theme="dark"] .form-control,
+    html[data-coreui-theme="dark"] .form-select {
+      background-color: #495057 !important;
+      color: #dee2e6 !important;
+      border-color: #6c757d !important;
+    }
+    
+    html[data-coreui-theme="dark"] .form-control::placeholder {
+      color: #adb5bd !important;
+    }
+    
+    html[data-coreui-theme="dark"] .btn:not(.btn-primary):not(.btn-danger):not(.btn-info):not(.btn-warning):not(.btn-success) {
+      background-color: #495057 !important;
+      color: #dee2e6 !important;
+    }
+    
+    html[data-coreui-theme="dark"] .btn:not(.btn-primary):not(.btn-danger):not(.btn-info):not(.btn-warning):not(.btn-success):hover {
+      background-color: #6c757d !important;
+    }
+    
+    /* Estilos específicos para nav items */
+    html[data-coreui-theme="light"] .sidebar .nav-link {
+      color: #212529 !important;
+    }
+    
+    html[data-coreui-theme="light"] .sidebar .nav-link:hover {
+      background-color: #e9ecef !important;
+    }
+    
+    html[data-coreui-theme="light"] .sidebar .nav-link.active {
+      background-color: #0d6efd !important;
+      color: #fff !important;
+    }
+    
+    html[data-coreui-theme="dark"] .sidebar .nav-link {
+      color: #dee2e6 !important;
+    }
+    
+    html[data-coreui-theme="dark"] .sidebar .nav-link:hover {
+      background-color: #495057 !important;
+    }
+    
+    html[data-coreui-theme="dark"] .sidebar .nav-link.active {
+      background-color: #0d6efd !important;
+      color: #fff !important;
     }
   </style>
 </head>
