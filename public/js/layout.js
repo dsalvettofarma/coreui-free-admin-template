@@ -124,7 +124,7 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
   }
   app.innerHTML = `
     <!-- SIDEBAR -->
-    <div class="sidebar sidebar-dark sidebar-fixed border-end" id="sidebar">
+    <div class="sidebar sidebar-fixed border-end" id="sidebar">
       <div class="sidebar-header border-bottom">
         <div class="sidebar-brand">
           <svg class="sidebar-brand-full" width="88" height="32" alt="CoreUI Logo">
@@ -134,7 +134,7 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
             <use xlink:href="../assets/brand/coreui.svg#signet"></use>
           </svg>
         </div>
-        <button class="btn-close d-lg-none" type="button" data-coreui-theme="dark" aria-label="Close" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()"></button>
+        <button class="btn-close d-lg-none" type="button" aria-label="Close" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()"></button>
       </div>
       ${renderSidebarMenu()}
       <div class="sidebar-footer border-top d-none d-md-flex">
@@ -237,6 +237,31 @@ document.addEventListener('DOMContentLoaded', () => {
     attributes: true,
     attributeFilter: ['data-coreui-theme']
   });
+
+  // Agregar estilos consistentes para el sidebar
+  if (!document.getElementById('layout-sidebar-styles')) {
+    const sidebarStyles = document.createElement('style');
+    sidebarStyles.id = 'layout-sidebar-styles';
+    sidebarStyles.textContent = `
+      /* Forzar que header y sidebar tengan el mismo color */
+      html[data-coreui-theme="light"] .header {
+        background-color: #fff !important;
+      }
+      
+      html[data-coreui-theme="light"] .sidebar {
+        background-color: #fff !important;
+      }
+      
+      html[data-coreui-theme="dark"] .header {
+        background-color: #23272b !important;
+      }
+      
+      html[data-coreui-theme="dark"] .sidebar {
+        background-color: #23272b !important;
+      }
+    `;
+    document.head.appendChild(sidebarStyles);
+  }
 });
 
 // Exportar funciones
