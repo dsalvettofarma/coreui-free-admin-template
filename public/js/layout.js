@@ -8,78 +8,29 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
   // Podés agregar, quitar o ajustar el "show" según roles, flags, etc.
   const menuItems = [
     { type: 'item', label: 'Dashboard', href: 'index.html', icon: 'ti-dashboard', badge: { text: 'NEW', color: 'info' }, show: true },
-    { type: 'title', label: 'Theme', show: true },
-    { type: 'item', label: 'Colors', href: 'colors.html', icon: 'ti-palette', show: true },
+    { type: 'title', label: 'Theme', show: false },
     { type: 'item', label: 'Typography', href: 'typography.html', icon: 'ti-typography', show: true },
-    { type: 'title', label: 'Components', show: true },
+    { type: 'title', label: 'Herramientas', show: true },
     { type: 'item', label: 'Gestión de Fraudes', href: 'fraudes.html', icon: 'ti-shield-lock', show: user.role === 'admin' || user.role === 'fraude' },
     { type: 'item', label: 'Inspector de Pagos', href: 'inspector.html', icon: 'ti-search', show: user.role === 'admin' },
     { type: 'group', label: 'Monitor de Alertas', icon: 'ti-alert-triangle', show: user.role === 'admin' || user.role === 'monitor', items: [
       { label: 'Dashboard de Alertas', href: 'alertas.html' },
       { label: 'Configuración de Reglas', href: 'config-alertas.html' }
     ]},
-    { type: 'group', label: 'Base', icon: 'ti-box', show: user.role !== 'guest', items: [
-      { label: 'Accordion', href: 'base/accordion.html' },
-      { label: 'Breadcrumb', href: 'base/breadcrumb.html' },
-      { label: 'Cards', href: 'base/cards.html' },
-      { label: 'Carousel', href: 'base/carousel.html' },
-      { label: 'Collapse', href: 'base/collapse.html' },
-      { label: 'List group', href: 'base/list-group.html' },
-      { label: 'Navs & Tabs', href: 'base/navs-tabs.html' },
-      { label: 'Pagination', href: 'base/pagination.html' },
-      { label: 'Placeholders', href: 'base/placeholders.html' },
-      { label: 'Popovers', href: 'base/popovers.html' },
-      { label: 'Progress', href: 'base/progress.html' },
-      { label: 'Spinners', href: 'base/spinners.html' },
-      { label: 'Tables', href: 'base/tables.html' },
-      { label: 'Tooltips', href: 'base/tooltips.html' }
-    ]},
     { type: 'group', label: 'Buttons', icon: 'ti-square-rounded', show: true, items: [
       { label: 'Buttons', href: 'buttons/buttons.html' },
       { label: 'Buttons Group', href: 'buttons/button-group.html' },
       { label: 'Dropdowns', href: 'buttons/dropdowns.html' },
-      { label: 'Loading Buttons', href: 'https://coreui.io/bootstrap/docs/components/loading-buttons/', badge: { text: 'PRO', color: 'danger' }, external: true }
+      { label: 'Loading Buttons', href: 'https://coreui.io/bootstrap/docs/components/loading-buttons/', badge: { text: 'PRO', color: 'danger' }, external: false }
     ]},
     { type: 'item', label: 'Charts', href: 'charts.html', icon: 'ti-chart-bar', show: true },
-    { type: 'group', label: 'Forms', icon: 'ti-forms', show: true, items: [
-      { label: 'Autocomplete', href: 'https://coreui.io/bootstrap/docs/forms/autocomplete/', badge: { text: 'PRO', color: 'danger' }, external: true },
-      { label: 'Checks and radios', href: 'forms/checks-radios.html' },
-      { label: 'Date Picker', href: 'https://coreui.io/bootstrap/docs/forms/date-picker/', badge: { text: 'PRO', color: 'danger' }, external: true },
-      { label: 'Date Range Picker', href: 'https://coreui.io/bootstrap/docs/forms/date-range-picker/', badge: { text: 'PRO', color: 'danger' }, external: true },
-      { label: 'Floating labels', href: 'forms/floating-labels.html' },
-      { label: 'Form Control', href: 'forms/form-control.html' },
-      { label: 'Input group', href: 'forms/input-group.html' },
-      { label: 'Multi Select', href: 'https://coreui.io/bootstrap/docs/forms/multi-select/', badge: { text: 'PRO', color: 'danger' }, external: true },
-      { label: 'Range', href: 'forms/range.html' },
-      { label: 'Range Slider', href: 'https://coreui.io/bootstrap/docs/forms/range-slider/', badge: { text: 'PRO', color: 'danger' }, external: true },
-      { label: 'Rating', href: 'https://coreui.io/bootstrap/docs/forms/rating/', badge: { text: 'PRO', color: 'danger' }, external: true },
-      { label: 'Select', href: 'forms/select.html' },
-      { label: 'Time Picker', href: 'https://coreui.io/bootstrap/docs/forms/time-picker/', badge: { text: 'PRO', color: 'danger' }, external: true },
-      { label: 'Layout', href: 'forms/layout.html' },
-      { label: 'Validation', href: 'forms/validation.html' }
-    ]},
     { type: 'group', label: 'Icons', icon: 'ti-icons', show: true, items: [
       { label: 'CoreUI Icons', href: 'icons/coreui-icons-free.html', badge: { text: 'Free', color: 'success' } },
       { label: 'CoreUI Icons - Brand', href: 'icons/coreui-icons-brand.html' },
       { label: 'CoreUI Icons - Flag', href: 'icons/coreui-icons-flag.html' }
     ]},
-    { type: 'group', label: 'Notifications', icon: 'ti-bell', show: true, items: [
-      { label: 'Alerts', href: 'notifications/alerts.html' },
-      { label: 'Badge', href: 'notifications/badge.html' },
-      { label: 'Modals', href: 'notifications/modals.html' },
-      { label: 'Toasts', href: 'notifications/toasts.html' }
-    ]},
     { type: 'item', label: 'Widgets', href: 'widgets.html', icon: 'ti-layout-grid', badge: { text: 'NEW', color: 'info' }, show: true },
     { type: 'divider', show: true },
-    { type: 'title', label: 'Extras', show: true },
-    { type: 'group', label: 'Pages', icon: 'ti-file', show: true, items: [
-      { label: 'Login', href: 'login.html', external: false },
-      { label: 'Register', href: 'register.html', external: false },
-      { label: 'Error 404', href: '404.html', external: false },
-      { label: 'Error 500', href: '500.html', external: false }
-    ]},
-    { type: 'item', label: 'Docs', href: 'https://coreui.io/bootstrap/docs/templates/installation/', icon: 'ti-file-description', external: true, show: true },
-    { type: 'item', label: 'Try CoreUI PRO', href: 'https://coreui.io/product/bootstrap-dashboard-template/', icon: 'ti-stack', customIcon: '', show: true, external: true, badge: null, classes: 'text-primary fw-semibold' }
   ];
 
   // Renderizar el menú lateral dinámico
@@ -233,8 +184,8 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
 
       <!-- FOOTER -->
       <footer class="footer px-4" id="main-footer">
-        <div><a href="https://coreui.io">CoreUI </a><a href="https://coreui.io/product/free-bootstrap-admin-template/">Bootstrap Admin Template</a> &copy; 2025 creativeLabs.</div>
-        <div class="ms-auto">Powered by&nbsp;<a href="https://coreui.io/bootstrap/docs/">CoreUI UI Components</a></div>
+        <div><!--<a href="https://coreui.io">CoreUI </a><a href="https://coreui.io/product/free-bootstrap-admin-template/">Bootstrap Admin Template</a> &copy; 2025 creativeLabs.--></div>
+        <div class="ms-auto">Powered by Plataformas</div>
       </footer>
     </div>
   `;
