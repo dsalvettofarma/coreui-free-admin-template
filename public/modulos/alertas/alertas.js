@@ -102,12 +102,26 @@ function _inicializarModalDetalle() {
         return;
     }
     
-    _addManagedEventListener(modalDetalleCerrarBtnElement, 'click', _cerrarModalDetalle);
+    _addManagedEventListener(modalDetalleCerrarBtnElement, 'click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        _cerrarModalDetalle();
+    });
+    
+    // Solo cerrar si se hace clic en el overlay, no en el modal
     _addManagedEventListener(alertaModalElement, 'click', (event) => {
         if (event.target === alertaModalElement) {
             _cerrarModalDetalle();
         }
     });
+    
+    // Prevenir cierre al hacer clic dentro del modal
+    const modalDialog = alertaModalElement.querySelector('.modal-dialog');
+    if (modalDialog) {
+        _addManagedEventListener(modalDialog, 'click', (event) => {
+            event.stopPropagation();
+        });
+    }
     
     // Listener para la tecla ESC
     _addManagedEventListener(document, 'keydown', _escKeyHandlerModal);
@@ -215,7 +229,7 @@ function _abrirModalDetalle(titulo, cuerpoEmail, motivoDisparo = '', alerta = {}
     });
 
     // Establecer el contenido del modal
-    modalDetalleCuerpoElement.innerHTML = motivoHtml + datosParseadosHtml + `<div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px; max-height: 400px; overflow-y: auto;"><pre style="white-space: pre-wrap; font-size: 0.9rem; margin: 0;">${contenidoHtmlProcesado}</pre></div>`;
+    modalDetalleCuerpoElement.innerHTML = motivoHtml + datosParseadosHtml + `<div class="email-content"><pre>${contenidoHtmlProcesado}</pre></div>`;
 
     alertaModalElement.classList.remove('hidden');
     document.body.style.overflow = 'hidden';

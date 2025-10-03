@@ -269,11 +269,13 @@
     .modal-dialog {
       background: white;
       border-radius: 8px;
-      max-width: 600px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
+      max-width: 800px;
+      width: 95%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
       position: relative;
+      overflow: hidden;
     }
     
     .modal-header {
@@ -282,28 +284,61 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-shrink: 0;
     }
     
     .modal-header h3 {
       margin: 0;
       color: #2d3748;
+      font-size: 1.25rem;
     }
     
     .modal-close-button {
       background: none;
       border: none;
-      font-size: 1.2rem;
+      font-size: 1.5rem;
       cursor: pointer;
       color: #6c757d;
-      padding: 5px;
+      padding: 8px;
+      border-radius: 4px;
+      transition: all 0.2s;
     }
     
     .modal-close-button:hover {
       color: #dc3545;
+      background: #f8f9fa;
     }
     
     .modal-body-content {
       padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+    
+    /* Mejorar legibilidad del contenido */
+    .modal-body-content pre {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #e9ecef;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    
+    .motivo-alerta-modal {
+      background-color: #fff3cd !important;
+      border: 1px solid #ffeaa7 !important;
+      color: #856404 !important;
+    }
+    
+    .datos-parseados {
+      background-color: #d1ecf1 !important;
+      border: 1px solid #b8daff !important;
+      color: #0c5460 !important;
     }
     
     /* Responsive */
@@ -380,6 +415,37 @@
     
     html[data-coreui-theme="dark"] .modal-header {
       border-color: #4a5568;
+    }
+    
+    html[data-coreui-theme="dark"] .modal-header h3 {
+      color: #f7fafc;
+    }
+    
+    html[data-coreui-theme="dark"] .modal-close-button {
+      color: #a0aec0;
+    }
+    
+    html[data-coreui-theme="dark"] .modal-close-button:hover {
+      color: #dc3545;
+      background: #4a5568;
+    }
+    
+    html[data-coreui-theme="dark"] .modal-body-content pre {
+      background: #1a202c;
+      border-color: #4a5568;
+      color: #f7fafc;
+    }
+    
+    html[data-coreui-theme="dark"] .motivo-alerta-modal {
+      background-color: #975a16 !important;
+      border-color: #b7791f !important;
+      color: #fef3c7 !important;
+    }
+    
+    html[data-coreui-theme="dark"] .datos-parseados {
+      background-color: #0c4a6e !important;
+      border-color: #0284c7 !important;
+      color: #bae6fd !important;
     }
     
     html[data-coreui-theme="dark"] .status-message.info {
