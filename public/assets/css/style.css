@@ -1,7 +1,7 @@
 /* Set base font-size: 1rem *//*1.6rem = 1rem */
-html {
+/* html {
   font-size: 62.5%;
-}
+} */
 
 /* Hover más claro para links del sidebar en modo claro */
 html[data-coreui-theme="light"] .sidebar .nav-link:hover {
