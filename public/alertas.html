@@ -269,13 +269,14 @@
     .modal-dialog {
       background: white;
       border-radius: 8px;
-      max-width: 800px;
+      max-width: 900px;
       width: 95%;
-      max-height: 85vh;
+      max-height: 90vh;
       display: flex;
       flex-direction: column;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
     }
     
     .modal-header {
@@ -312,8 +313,29 @@
     .modal-body-content {
       padding: 20px;
       overflow-y: auto;
+      overflow-x: hidden;
       flex: 1;
       min-height: 0;
+      max-height: calc(90vh - 120px);
+    }
+    
+    /* Mejorar scrollbar */
+    .modal-body-content::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .modal-body-content::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    
+    .modal-body-content::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+    }
+    
+    .modal-body-content::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
     }
     
     /* Mejorar legibilidad del contenido */
@@ -409,7 +431,8 @@
     }
     
     html[data-coreui-theme="dark"] .modal-dialog {
-      background-color: #2d3748;
+      background: #2d3748 !important;
+      background-color: #2d3748 !important;
       color: #f7fafc;
     }
     
@@ -446,6 +469,42 @@
       background-color: #0c4a6e !important;
       border-color: #0284c7 !important;
       color: #bae6fd !important;
+    }
+    
+    /* Scrollbar dark mode */
+    html[data-coreui-theme="dark"] .modal-body-content::-webkit-scrollbar-track {
+      background: #4a5568;
+    }
+    
+    html[data-coreui-theme="dark"] .modal-body-content::-webkit-scrollbar-thumb {
+      background: #718096;
+    }
+    
+    html[data-coreui-theme="dark"] .modal-body-content::-webkit-scrollbar-thumb:hover {
+      background: #a0aec0;
+    }
+    
+    /* Modal responsive */
+    @media (max-width: 768px) {
+      .modal-dialog {
+        max-width: 95vw;
+        width: 95vw;
+        max-height: 95vh;
+        margin: 10px;
+      }
+      
+      .modal-body-content {
+        padding: 15px;
+        max-height: calc(95vh - 100px);
+      }
+      
+      .modal-header {
+        padding: 15px;
+      }
+      
+      .modal-header h3 {
+        font-size: 1.1rem;
+      }
     }
     
     html[data-coreui-theme="dark"] .status-message.info {
