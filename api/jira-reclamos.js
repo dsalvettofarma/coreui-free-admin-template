@@ -197,19 +197,29 @@ export default async function handler(req, res) {
       const {
         proyecto = 'SEO',
         tipoIssue = 'Reclamos',
-        canal = 'Web,APP,WEB',
-        categoria = 'Navegación',
-        fechaDesde = '2025-10-06',
-        fechaHasta = '2025-10-13',
-        limit = '1'
+        canal,
+        categoria,
+        fechaDesde,
+        fechaHasta,
+        limit = '3'
       } = req.query;
       
       // Construir JQL dinámicamente
       jqlQuery = `project = ${proyecto} AND issuetype = "${tipoIssue}"`;
       
       if (canal) {
-        const canales = canal.split(',').map(c => `"${c.trim()}"`).join(', ');
-        jqlQuery += ` AND customfield_11055 IN (${canales})`;
+        // Limpiar y validar los canales
+        const canalesArray = canal.split(',')
+          .map(c => c.trim())
+          .filter(c => c); // Eliminar vacíos
+        
+        // Eliminar duplicados
+        const canalesUnicos = [...new Set(canalesArray)];
+        
+        if (canalesUnicos.length > 0) {
+          const canalesFormateados = canalesUnicos.map(c => `"${c}"`).join(', ');
+          jqlQuery += ` AND customfield_11055 IN (${canalesFormateados})`;
+        }
       }
       
       if (categoria) {
@@ -228,6 +238,10 @@ export default async function handler(req, res) {
       jqlQuery += ' ORDER BY created DESC';
       maxResults = parseInt(limit, 10) || 3; // Por defecto 3 resultados
     }
+    
+    // Log del JQL para debug (solo en desarrollo)
+    console.log('JQL Query:', jqlQuery);
+    console.log('Max Results:', maxResults);
     
     // Preparar el body de la petición a Jira
     const jiraRequestBody = {
@@ -269,11 +283,25 @@ export default async function handler(req, res) {
     if (!jiraResponse.ok) {
       const errorText = await jiraResponse.text();
       console.error('Error de Jira API:', jiraResponse.status, errorText);
+      console.error('JQL que falló:', jqlQuery);
+      
+      let mensajeError = 'La API de Jira devolvió un error';
+      
+      try {
+        const errorJson = JSON.parse(errorText);
+        if (errorJson.errorMessages && errorJson.errorMessages.length > 0) {
+          mensajeError = errorJson.errorMessages.join(', ');
+        }
+      } catch (e) {
+        // Si no se puede parsear como JSON, usar el texto plano
+        mensajeError = errorText.substring(0, 200);
+      }
       
       return res.status(jiraResponse.status).json({
         error: 'Error al consultar Jira',
-        mensaje: 'La API de Jira devolvió un error',
-        status: jiraResponse.status
+        mensaje: mensajeError,
+        status: jiraResponse.status,
+        jql: jqlQuery // Incluir el JQL en la respuesta de error para debug
       });
     }
     
