@@ -61,6 +61,35 @@ function procesarDescripcionJira(description) {
 }
 
 /**
+ * Extrae el valor de un custom field que puede ser string, objeto o array
+ */
+function extraerValorCustomField(campo) {
+  if (!campo) return '';
+  
+  // Si es string, devolverlo
+  if (typeof campo === 'string') return campo;
+  
+  // Si es array, extraer valores
+  if (Array.isArray(campo)) {
+    return campo.map(item => {
+      if (typeof item === 'string') return item;
+      if (item.value) return item.value;
+      if (item.name) return item.name;
+      return '';
+    }).filter(v => v).join(', ');
+  }
+  
+  // Si es objeto
+  if (typeof campo === 'object') {
+    if (campo.value) return campo.value;
+    if (campo.name) return campo.name;
+    if (campo.displayName) return campo.displayName;
+  }
+  
+  return '';
+}
+
+/**
  * Construye el objeto de resumen a partir de la respuesta de Jira
  * 
  * @param {Object} issue - Issue de Jira
@@ -68,6 +97,18 @@ function procesarDescripcionJira(description) {
  */
 function construirResumen(issue) {
   const fields = issue.fields || {};
+  
+  // Procesar comentarios
+  const comentarios = [];
+  if (fields.comment && fields.comment.comments) {
+    fields.comment.comments.forEach(comment => {
+      comentarios.push({
+        autor: comment.author?.displayName || 'Desconocido',
+        fecha: comment.created || '',
+        texto: procesarDescripcionJira(comment.body)
+      });
+    });
+  }
   
   return {
     id: issue.key || issue.id,
@@ -81,14 +122,16 @@ function construirResumen(issue) {
     ultimaActualizacion: fields.updated || '',
     estado: fields.status?.name || 'Desconocido',
     responsable: fields.assignee?.displayName || 'Sin asignar',
-    canal: fields.customfield_11055 || '',
-    categoria: fields.customfield_11054 || '',
+    canal: extraerValorCustomField(fields.customfield_11055) || 'No especificado',
+    categoria: extraerValorCustomField(fields.customfield_11054) || 'No especificada',
     descripcion: procesarDescripcionJira(fields.description),
+    comentarios: comentarios,
+    totalComentarios: comentarios.length,
     // Campos personalizados adicionales (si existen)
     customFields: {
-      field_11057: fields.customfield_11057 || null,
-      field_11058: fields.customfield_11058 || null,
-      field_11059: fields.customfield_11059 || null
+      field_11057: extraerValorCustomField(fields.customfield_11057) || null,
+      field_11058: extraerValorCustomField(fields.customfield_11058) || null,
+      field_11059: extraerValorCustomField(fields.customfield_11059) || null
     }
   };
 }
@@ -183,7 +226,7 @@ export default async function handler(req, res) {
       }
       
       jqlQuery += ' ORDER BY created DESC';
-      maxResults = parseInt(limit, 10) || 1;
+      maxResults = parseInt(limit, 10) || 3; // Por defecto 3 resultados
     }
     
     // Preparar el body de la petición a Jira
@@ -201,12 +244,14 @@ export default async function handler(req, res) {
         'labels',
         'issuetype',
         'project',
+        'comment', // Comentarios
         'customfield_11055', // Canal
         'customfield_11054', // Categoría
         'customfield_11057',
         'customfield_11058',
         'customfield_11059'
-      ]
+      ],
+      expand: ['names'] // Expandir nombres de campos custom
     };
     
     // Realizar la petición a Jira API
