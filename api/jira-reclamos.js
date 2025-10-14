@@ -188,6 +188,9 @@ export default async function handler(req, res) {
     let jqlQuery;
     let maxResults = 1;
     
+    console.log('Método:', req.method);
+    console.log('Query params:', req.query);
+    
     if (req.method === 'POST' && req.body.jql) {
       // Si viene JQL personalizado en el body
       jqlQuery = req.body.jql;
@@ -232,7 +235,8 @@ export default async function handler(req, res) {
       }
       
       if (fechaHasta) {
-        jqlQuery += ` AND created <= "${fechaHasta}"`;
+        // Agregar 23:59:59 para incluir todo el día
+        jqlQuery += ` AND created <= "${fechaHasta} 23:59"`;
       }
       
       jqlQuery += ' ORDER BY created DESC';
