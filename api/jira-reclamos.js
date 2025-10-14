@@ -201,7 +201,7 @@ export default async function handler(req, res) {
         categoria,
         fechaDesde,
         fechaHasta,
-        limit = '3'
+        limit = '60'
       } = req.query;
       
       // Construir JQL dinámicamente
