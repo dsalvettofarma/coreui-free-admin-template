@@ -43,3 +43,17 @@ Thumbs.db
 # Folders to ignore
 /node_modules/
 /dist/
+
+# ============================================
+# Variables de Entorno y Secretos
+# ============================================
+# IMPORTANTE: NUNCA subir archivos con tokens o credenciales
+.env
+.env.local
+.env*.local
+.vercel
+
+# Archivos temporales
+*.tmp
+*.temp
+.DS_Store

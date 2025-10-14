@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Reclamos Jira - Demo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #667eea;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .form-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-error {
+            background: #fee;
+            border-left: 4px solid #c62828;
+            color: #c62828;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            border-left: 4px solid #2e7d32;
+            color: #2e7d32;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            border-left: 4px solid #1976d2;
+            color: #1976d2;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-header h3 {
+            color: #333;
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .info-section {
+            margin-bottom: 20px;
+        }
+
+        .info-section h4 {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #666;
+            min-width: 150px;
+        }
+
+        .info-value {
+            color: #333;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-open { background: #fff3cd; color: #856404; }
+        .status-progress { background: #cfe2ff; color: #084298; }
+        .status-done { background: #d1e7dd; color: #0f5132; }
+        .status-closed { background: #e2e3e5; color: #41464b; }
+
+        .description-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎫 Consulta de Reclamos Jira</h1>
+            <p>Sistema seguro de consulta sin exponer credenciales</p>
+        </div>
+
+        <div class="content">
+            <!-- Alertas -->
+            <div id="alertContainer"></div>
+
+            <!-- Formulario de Consulta -->
+            <div class="form-section">
+                <h2>📋 Parámetros de Búsqueda</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fechaDesde">Fecha Desde:</label>
+                        <input type="date" id="fechaDesde" value="2025-10-06">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fechaHasta">Fecha Hasta:</label>
+                        <input type="date" id="fechaHasta" value="2025-10-13">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="canal">Canal:</label>
+                        <select id="canal">
+                            <option value="Web,APP,WEB">Todos (Web, APP)</option>
+                            <option value="Web">Web</option>
+                            <option value="APP">APP</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="limit">Cantidad de Resultados:</label>
+                        <input type="number" id="limit" value="5" min="1" max="100">
+                    </div>
+                </div>
+
+                <button class="btn" onclick="consultarReclamos()" id="btnConsultar">
+                    🔍 Buscar Reclamos
+                </button>
+            </div>
+
+            <!-- Loading -->
+            <div id="loadingContainer" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Consultando Jira Service Desk...</p>
+            </div>
+
+            <!-- Resultados -->
+            <div id="resultsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Muestra una alerta en la interfaz
+         */
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertClass = `alert alert-${type} show`;
+            alertContainer.innerHTML = `
+                <div class="${alertClass}">
+                    <strong>${type === 'error' ? '❌ Error:' : type === 'success' ? '✅ Éxito:' : 'ℹ️ Info:'}</strong> ${message}
+                </div>
+            `;
+            
+            // Auto-ocultar después de 5 segundos (excepto errores)
+            if (type !== 'error') {
+                setTimeout(() => {
+                    alertContainer.innerHTML = '';
+                }, 5000);
+            }
+        }
+
+        /**
+         * Formatea una fecha a formato legible en español
+         */
+        function formatearFecha(fechaISO) {
+            const fecha = new Date(fechaISO);
+            return fecha.toLocaleString('es-AR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        /**
+         * Obtiene la clase CSS para el badge de estado
+         */
+        function getEstadoClass(estado) {
+            const estadoLower = estado.toLowerCase();
+            if (estadoLower.includes('open') || estadoLower.includes('abierto')) return 'status-open';
+            if (estadoLower.includes('progress') || estadoLower.includes('progreso')) return 'status-progress';
+            if (estadoLower.includes('done') || estadoLower.includes('finalizado')) return 'status-done';
+            if (estadoLower.includes('closed') || estadoLower.includes('cerrado')) return 'status-closed';
+            return 'status-open';
+        }
+
+        /**
+         * Renderiza un reclamo en formato card
+         */
+        function renderizarReclamo(reclamo) {
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <h3>${reclamo.titulo || 'Sin título'}</h3>
+                        <span class="badge">${reclamo.id}</span>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>👤 Información del Cliente</h4>
+                        <div class="info-row">
+                            <span class="info-label">Nombre:</span>
+                            <span class="info-value">${reclamo.cliente.nombre || 'Desconocido'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">${reclamo.cliente.email || 'No disponible'}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📊 Estado y Asignación</h4>
+                        <div class="info-row">
+                            <span class="info-label">Estado:</span>
+                            <span class="info-value">
+                                <span class="status-badge ${getEstadoClass(reclamo.estado)}">${reclamo.estado}</span>
+                            </span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Responsable:</span>
+                            <span class="info-value">${reclamo.responsable || 'Sin asignar'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Canal:</span>
+                            <span class="info-value">${reclamo.canal || 'No especificado'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Categoría:</span>
+                            <span class="info-value">${reclamo.categoria || 'No especificada'}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h4>📅 Fechas</h4>
+                        <div class="info-row">
+                            <span class="info-label">Creación:</span>
+                            <span class="info-value">${formatearFecha(reclamo.fechaCreacion)}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Última actualización:</span>
+                            <span class="info-value">${formatearFecha(reclamo.ultimaActualizacion)}</span>
+                        </div>
+                    </div>
+
+                    ${reclamo.descripcion ? `
+                        <div class="info-section">
+                            <h4>📝 Descripción</h4>
+                            <div class="description-box">${reclamo.descripcion}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        /**
+         * Función principal para consultar reclamos
+         */
+        async function consultarReclamos() {
+            const btnConsultar = document.getElementById('btnConsultar');
+            const loadingContainer = document.getElementById('loadingContainer');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const alertContainer = document.getElementById('alertContainer');
+
+            // Limpiar alertas y resultados anteriores
+            alertContainer.innerHTML = '';
+            resultsContainer.innerHTML = '';
+
+            // Obtener valores del formulario
+            const fechaDesde = document.getElementById('fechaDesde').value;
+            const fechaHasta = document.getElementById('fechaHasta').value;
+            const canal = document.getElementById('canal').value;
+            const limit = document.getElementById('limit').value;
+
+            // Validar fechas
+            if (!fechaDesde || !fechaHasta) {
+                showAlert('Por favor, completa las fechas de búsqueda.', 'error');
+                return;
+            }
+
+            // Mostrar loading
+            btnConsultar.disabled = true;
+            loadingContainer.classList.remove('hidden');
+
+            try {
+                // Construir URL con parámetros
+                const params = new URLSearchParams({
+                    fechaDesde,
+                    fechaHasta,
+                    canal,
+                    limit
+                });
+
+                // Realizar la petición al endpoint
+                const response = await fetch(`/api/jira-reclamos?${params.toString()}`);
+                
+                // Parsear respuesta
+                const data = await response.json();
+
+                // Manejar errores HTTP
+                if (!response.ok) {
+                    throw new Error(data.error || `Error ${response.status}: ${response.statusText}`);
+                }
+
+                // Renderizar resultados
+                if (data.resumen) {
+                    // Un solo resultado
+                    resultsContainer.innerHTML = `
+                        <h2 style="margin-bottom: 20px; color: #333;">📋 Resultado de la Búsqueda</h2>
+                        ${renderizarReclamo(data.resumen)}
+                    `;
+                    showAlert('Se encontró 1 reclamo.', 'success');
+                } else if (data.reclamos && data.reclamos.length > 0) {
+                    // Múltiples resultados
+                    resultsContainer.innerHTML = `
+                        <h2 style="margin-bottom: 10px; color: #333;">📋 Resultados de la Búsqueda</h2>
+                        <p style="margin-bottom: 20px; color: #666;">Se encontraron ${data.resultados} de ${data.total} reclamos.</p>
+                        ${data.reclamos.map(reclamo => renderizarReclamo(reclamo)).join('')}
+                    `;
+                    showAlert(`Se encontraron ${data.resultados} reclamos.`, 'success');
+                } else {
+                    resultsContainer.innerHTML = `
+                        <div class="alert alert-info show">
+                            <strong>ℹ️ Sin resultados:</strong> No se encontraron reclamos con los criterios especificados.
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                console.error('Error al consultar reclamos:', error);
+                showAlert(error.message, 'error');
+                resultsContainer.innerHTML = '';
+            } finally {
+                // Ocultar loading
+                btnConsultar.disabled = false;
+                loadingContainer.classList.add('hidden');
+            }
+        }
+
+        // Inicializar fechas con valores por defecto al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('✅ Aplicación de Reclamos Jira cargada correctamente');
+            console.log('📡 Endpoint configurado: /api/jira-reclamos');
+        });
+    </script>
+</body>
+</html>

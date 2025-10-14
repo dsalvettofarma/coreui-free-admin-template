@@ -1,9 +1,21 @@
 {
     "functions": {
         "api/**/*.js": {
-            "memory": 1024
+            "memory": 1024,
+            "maxDuration": 10
         }
     },
+    "headers": [
+        {
+            "source": "/api/jira-reclamos",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "s-maxage=60, stale-while-revalidate"
+                }
+            ]
+        }
+    ],
     "rewrites": [
         {
             "source": "/api/(.*)",
