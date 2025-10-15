@@ -616,18 +616,7 @@
 
                 // Manejar errores HTTP
                 if (!response.ok) {
-                    // Mostrar el error completo de la API para debug
-                    console.error('Error completo de la API:', data);
-                    
-                    let errorMsg = data.mensaje || data.error || `Error ${response.status}: ${response.statusText}`;
-                    
-                    // Si hay JQL en el error, mostrarlo también
-                    if (data.jql) {
-                        console.error('JQL que falló:', data.jql);
-                        errorMsg += `\n\nJQL generado: ${data.jql}`;
-                    }
-                    
-                    throw new Error(errorMsg);
+                    throw new Error(data.mensaje || data.error || `Error ${response.status}: ${response.statusText}`);
                 }
 
                 // Renderizar resultados

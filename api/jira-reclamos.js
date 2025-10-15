@@ -188,9 +188,6 @@ export default async function handler(req, res) {
     let jqlQuery;
     let maxResults = 1;
     
-    console.log('Método:', req.method);
-    console.log('Query params:', req.query);
-    
     if (req.method === 'POST' && req.body.jql) {
       // Si viene JQL personalizado en el body
       jqlQuery = req.body.jql;
@@ -235,17 +232,16 @@ export default async function handler(req, res) {
       }
       
       if (fechaHasta) {
-        // Agregar 23:59:59 para incluir todo el día
-        jqlQuery += ` AND created <= "${fechaHasta} 23:59"`;
+        // Sumar 1 día para incluir todo el día hasta
+        const fecha = new Date(fechaHasta);
+        fecha.setDate(fecha.getDate() + 1);
+        const fechaSiguiente = fecha.toISOString().split('T')[0];
+        jqlQuery += ` AND created < "${fechaSiguiente}"`;
       }
       
       jqlQuery += ' ORDER BY created DESC';
       maxResults = parseInt(limit, 10) || 3; // Por defecto 3 resultados
     }
-    
-    // Log del JQL para debug (solo en desarrollo)
-    console.log('JQL Query:', jqlQuery);
-    console.log('Max Results:', maxResults);
     
     // Preparar el body de la petición a Jira
     const jiraRequestBody = {
@@ -287,25 +283,11 @@ export default async function handler(req, res) {
     if (!jiraResponse.ok) {
       const errorText = await jiraResponse.text();
       console.error('Error de Jira API:', jiraResponse.status, errorText);
-      console.error('JQL que falló:', jqlQuery);
-      
-      let mensajeError = 'La API de Jira devolvió un error';
-      
-      try {
-        const errorJson = JSON.parse(errorText);
-        if (errorJson.errorMessages && errorJson.errorMessages.length > 0) {
-          mensajeError = errorJson.errorMessages.join(', ');
-        }
-      } catch (e) {
-        // Si no se puede parsear como JSON, usar el texto plano
-        mensajeError = errorText.substring(0, 200);
-      }
       
       return res.status(jiraResponse.status).json({
         error: 'Error al consultar Jira',
-        mensaje: mensajeError,
-        status: jiraResponse.status,
-        jql: jqlQuery // Incluir el JQL en la respuesta de error para debug
+        mensaje: 'La API de Jira devolvió un error',
+        status: jiraResponse.status
       });
     }
     
