@@ -473,32 +473,6 @@
          * Renderiza un reclamo en formato card compacto
          */
         function renderizarReclamo(reclamo) {
-            // Generar HTML de comentarios
-            let comentariosHTML = '';
-            if (reclamo.totalComentarios > 0) {
-                const comentariosListHTML = reclamo.comentarios.map((comentario, index) => `
-                    <div class="comment-item">
-                        <div class="comment-header">
-                            <span class="comment-author">👤 ${comentario.autor}</span>
-                            <span class="comment-date">${formatearFecha(comentario.fecha)}</span>
-                        </div>
-                        <div class="comment-body">${comentario.texto || 'Sin contenido'}</div>
-                    </div>
-                `).join('');
-                
-                comentariosHTML = `
-                    <div class="comments-section">
-                        <button class="comments-toggle" onclick="toggleComments('comments-${reclamo.id.replace(/[^a-zA-Z0-9]/g, '_')}', this)">
-                            <span>💬 Comentarios (${reclamo.totalComentarios})</span>
-                            <span class="arrow">▼</span>
-                        </button>
-                        <div id="comments-${reclamo.id.replace(/[^a-zA-Z0-9]/g, '_')}" class="comments-list">
-                            ${comentariosListHTML}
-                        </div>
-                    </div>
-                `;
-            }
-            
             return `
                 <div class="card">
                     <div class="card-header">
@@ -543,31 +517,34 @@
                             <span class="info-label">Actualizado</span>
                             <span class="info-value">${formatearFecha(reclamo.ultimaActualizacion)}</span>
                         </div>
+                        
+                        ${reclamo.customFields?.documento ? `
+                        <div class="info-item">
+                            <span class="info-label">Documento (CI)</span>
+                            <span class="info-value">${reclamo.customFields.documento}</span>
+                        </div>
+                        ` : ''}
+                        
+                        ${reclamo.customFields?.nombreCliente ? `
+                        <div class="info-item">
+                            <span class="info-label">Nombre del Cliente</span>
+                            <span class="info-value">${reclamo.customFields.nombreCliente}</span>
+                        </div>
+                        ` : ''}
+                        
+                        ${reclamo.customFields?.numeroPedido ? `
+                        <div class="info-item">
+                            <span class="info-label">Número de Pedido</span>
+                            <span class="info-value">${reclamo.customFields.numeroPedido}</span>
+                        </div>
+                        ` : ''}
                     </div>
 
                     ${reclamo.descripcion ? `
                         <div class="card-description">${reclamo.descripcion}</div>
                     ` : ''}
-                    
-                    ${comentariosHTML}
                 </div>
             `;
-        }
-
-        /**
-         * Toggle para mostrar/ocultar comentarios
-         */
-        function toggleComments(commentId, button) {
-            const commentsList = document.getElementById(commentId);
-            const isOpen = commentsList.classList.contains('show');
-            
-            if (isOpen) {
-                commentsList.classList.remove('show');
-                button.classList.remove('open');
-            } else {
-                commentsList.classList.add('show');
-                button.classList.add('open');
-            }
         }
 
         /**

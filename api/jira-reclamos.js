@@ -98,18 +98,6 @@ function extraerValorCustomField(campo) {
 function construirResumen(issue) {
   const fields = issue.fields || {};
   
-  // Procesar comentarios
-  const comentarios = [];
-  if (fields.comment && fields.comment.comments) {
-    fields.comment.comments.forEach(comment => {
-      comentarios.push({
-        autor: comment.author?.displayName || 'Desconocido',
-        fecha: comment.created || '',
-        texto: procesarDescripcionJira(comment.body)
-      });
-    });
-  }
-  
   return {
     id: issue.key || issue.id,
     titulo: fields.summary || 'Sin título',
@@ -125,13 +113,11 @@ function construirResumen(issue) {
     canal: extraerValorCustomField(fields.customfield_11055) || 'No especificado',
     categoria: extraerValorCustomField(fields.customfield_11054) || 'No especificada',
     descripcion: procesarDescripcionJira(fields.description),
-    comentarios: comentarios,
-    totalComentarios: comentarios.length,
-    // Campos personalizados adicionales (si existen)
+    // Campos personalizados adicionales
     customFields: {
-      field_11057: extraerValorCustomField(fields.customfield_11057) || null,
-      field_11058: extraerValorCustomField(fields.customfield_11058) || null,
-      field_11059: extraerValorCustomField(fields.customfield_11059) || null
+      documento: extraerValorCustomField(fields.customfield_11057) || null,
+      nombreCliente: extraerValorCustomField(fields.customfield_11058) || null,
+      numeroPedido: extraerValorCustomField(fields.customfield_11059) || null
     }
   };
 }
@@ -258,14 +244,12 @@ export default async function handler(req, res) {
         'labels',
         'issuetype',
         'project',
-        'comment',
         'customfield_11055',
         'customfield_11054',
         'customfield_11057',
         'customfield_11058',
         'customfield_11059'
-      ],
-      expand: ['names']
+      ]
     };
     
     // Realizar la petición a Jira API
