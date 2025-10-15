@@ -268,8 +268,8 @@ export default async function handler(req, res) {
       expand: ['names'] // Expandir nombres de campos custom
     };
     
-    // Realizar la petición a Jira API
-    const jiraResponse = await fetch('https://farmashop.atlassian.net/rest/api/3/search/jql', {
+    // Realizar la petición a Jira API (usando /search en vez de /search/jql)
+    const jiraResponse = await fetch('https://farmashop.atlassian.net/rest/api/3/search', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
