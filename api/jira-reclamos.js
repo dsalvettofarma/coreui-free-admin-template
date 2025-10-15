@@ -243,40 +243,37 @@ export default async function handler(req, res) {
       maxResults = parseInt(limit, 10) || 3; // Por defecto 3 resultados
     }
     
-    // Preparar el body de la petición a Jira
-    const jiraRequestBody = {
-      jql: jqlQuery,
-      maxResults: maxResults,
-      fields: [
-        'summary',
-        'description',
-        'status',
-        'assignee',
-        'reporter',
-        'created',
-        'updated',
-        'labels',
-        'issuetype',
-        'project',
-        'comment', // Comentarios
-        'customfield_11055', // Canal
-        'customfield_11054', // Categoría
-        'customfield_11057',
-        'customfield_11058',
-        'customfield_11059'
-      ],
-      expand: ['names'] // Expandir nombres de campos custom
-    };
+    // Construir la URL con query params para Jira API
+    const jiraUrl = new URL('https://farmashop.atlassian.net/rest/api/3/search');
+    jiraUrl.searchParams.append('jql', jqlQuery);
+    jiraUrl.searchParams.append('maxResults', maxResults);
+    jiraUrl.searchParams.append('fields', [
+      'summary',
+      'description',
+      'status',
+      'assignee',
+      'reporter',
+      'created',
+      'updated',
+      'labels',
+      'issuetype',
+      'project',
+      'comment',
+      'customfield_11055',
+      'customfield_11054',
+      'customfield_11057',
+      'customfield_11058',
+      'customfield_11059'
+    ].join(','));
+    jiraUrl.searchParams.append('expand', 'names');
     
-    // Realizar la petición a Jira API (usando /search en vez de /search/jql)
-    const jiraResponse = await fetch('https://farmashop.atlassian.net/rest/api/3/search', {
-      method: 'POST',
+    // Realizar la petición a Jira API
+    const jiraResponse = await fetch(jiraUrl.toString(), {
+      method: 'GET',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': authHeader // Token formateado correctamente
-      },
-      body: JSON.stringify(jiraRequestBody)
+        'Authorization': authHeader
+      }
     });
     
     // Validar respuesta de Jira
