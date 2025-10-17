@@ -391,7 +391,9 @@
       initCharts();
       
       // Initialize theme switching
-      initializeThemeSwitch();
+      // ⚠️ COMENTADO TEMPORALMENTE PARA TESTING
+      // Esta función está causando conflictos con el sistema de temas de layout.js
+      // initializeThemeSwitch();
     });
     
     function initCharts() {
@@ -487,6 +489,7 @@
       });
     }
     
+    /* ⚠️ FUNCIÓN COMENTADA - CAUSA CONFLICTOS CON EL SISTEMA DE TEMAS
     function initializeThemeSwitch() {
       // Apply saved theme
       const savedTheme = localStorage.getItem('coreui-theme') || 'light';
@@ -503,6 +506,7 @@
         });
       }
     }
+    */
   </script>
 </body>
 </html>
