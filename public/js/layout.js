@@ -193,7 +193,71 @@ export function renderLayout({ user, content = '', breadcrumbs = [], pageTitle =
   // Actualizar icono del tema después de renderizar
   setTimeout(() => {
     updateThemeIcon();
+    attachThemeListeners(); // ⬅️ AGREGAR LISTENERS
   }, 100);
+}
+
+// Clave de localStorage para el tema (debe coincidir con color-modes.js)
+const THEME_STORAGE_KEY = 'coreui-free-bootstrap-admin-template-theme';
+
+// Obtener tema guardado
+function getStoredTheme() {
+  return localStorage.getItem(THEME_STORAGE_KEY);
+}
+
+// Guardar tema
+function setStoredTheme(theme) {
+  localStorage.setItem(THEME_STORAGE_KEY, theme);
+}
+
+// Obtener tema preferido (guardado o del sistema)
+function getPreferredTheme() {
+  const storedTheme = getStoredTheme();
+  if (storedTheme) {
+    return storedTheme;
+  }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+// Aplicar tema
+function setTheme(theme) {
+  if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.setAttribute('data-coreui-theme', 'dark');
+  } else {
+    document.documentElement.setAttribute('data-coreui-theme', theme);
+  }
+}
+
+// Marcar botón activo
+function showActiveTheme(theme) {
+  const btnToActive = document.querySelector(`[data-coreui-theme-value="${theme}"]`);
+  document.querySelectorAll('[data-coreui-theme-value]').forEach(element => {
+    element.classList.remove('active');
+  });
+  if (btnToActive) {
+    btnToActive.classList.add('active');
+  }
+}
+
+// Agregar listeners a los botones de tema
+function attachThemeListeners() {
+  const themeButtons = document.querySelectorAll('[data-coreui-theme-value]');
+  
+  themeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const theme = button.getAttribute('data-coreui-theme-value');
+      setStoredTheme(theme);
+      setTheme(theme);
+      showActiveTheme(theme);
+      updateThemeIcon();
+    });
+  });
+  
+  // Aplicar tema inicial
+  const currentTheme = getPreferredTheme();
+  setTheme(currentTheme);
+  showActiveTheme(currentTheme);
+  updateThemeIcon();
 }
 
 // Función para actualizar el icono del tema
